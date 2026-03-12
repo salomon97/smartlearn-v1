@@ -1,0 +1,21 @@
+export const classesDisponibles = [
+    "6ème",
+    "5ème",
+    "4ème",
+    "3ème",
+    "Seconde A",
+    "Seconde C",
+    "Seconde D",
+    "Seconde E",
+    "Seconde TI",
+    "Première A",
+    "Première C",
+    "Première D",
+    "Première E",
+    "Première TI",
+    "Terminale A",
+    "Terminale C",
+    "Terminale D",
+    "Terminale E",
+    "Terminale TI"
+];
