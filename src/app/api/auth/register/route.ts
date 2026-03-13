@@ -48,7 +48,14 @@ export async function POST(request: Request) {
         // Vérifier si l'utilisateur existe déjà
         const userExists = await User.findOne({ email });
         if (userExists) {
-            return NextResponse.json({ error: "Cet e-mail est déjà utilisé." }, { status: 400 });
+            if (!userExists.isVerified) {
+                // L'utilisateur existe mais n'a jamais été vérifié (compte fantôme ou e-mail non reçu)
+                // On supprime l'ancien compte non vérifié et ses anciens codes pour lui permettre de recommencer
+                await User.deleteOne({ email });
+                await VerificationCode.deleteMany({ userId: userExists._id });
+            } else {
+                return NextResponse.json({ error: "Cet e-mail est déjà utilisé." }, { status: 400 });
+            }
         }
 
         // Hasher le mot de passe
@@ -88,6 +95,10 @@ export async function POST(request: Request) {
         const emailResult = await sendVerificationEmail(email, otpCode);
         if (!emailResult.success) {
             console.error("Erreur e-mail :", emailResult.error);
+            // Si l'e-mail échoue, on annule la création du compte pour éviter les comptes fantômes
+            await User.findByIdAndDelete(user._id);
+            await VerificationCode.deleteMany({ userId: user._id });
+            return NextResponse.json({ error: "Impossible d'envoyer l'e-mail de vérification. Veuillez vérifier que l'adresse est correcte et réessayer." }, { status: 500 });
         }
 
         return NextResponse.json({
