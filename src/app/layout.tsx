@@ -79,7 +79,7 @@ export default function RootLayout({
               <div className="flex gap-6 text-sm font-bold text-gray-500">
                 <a href="/politique-confidentialite" className="hover:text-brand-orange transition-colors">Politique de Confidentialité</a>
                 <a href="/conditions-utilisation" className="hover:text-brand-orange transition-colors">Conditions d'Utilisation</a>
-                <a href="mailto:contact@smartlearn-edu.org" className="hover:text-brand-orange transition-colors">Contact</a>
+                <a href="mailto:foesalomon65@gmail.com" className="hover:text-brand-orange transition-colors">Contact</a>
               </div>
             </div>
           </footer>
