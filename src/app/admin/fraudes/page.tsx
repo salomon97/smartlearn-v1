@@ -3,7 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import Transaction from "@/models/Transaction";
 import User from "@/models/User";
-import { ShieldAlert, User as UserIcon, Globe, Mail, Ban, AlertTriangle } from "lucide-react";
+import { ShieldAlert, User as UserIcon, Globe, Mail, Ban, AlertTriangle, Handshake } from "lucide-react";
 
 export default async function AdminFraudsPage() {
     await connectToDatabase();
@@ -108,5 +108,4 @@ export default async function AdminFraudsPage() {
     );
 }
 
-// Icon non défini dans lucide-react (Handshake est Handshake)
-import { Handshake } from "lucide-react";
+// Icon non défini dans lucide-react (Handshake est Handshake - déjà importé en haut)

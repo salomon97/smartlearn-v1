@@ -147,27 +147,3 @@ export default async function DashboardPage() {
         </div>
     );
 }
-                    ) : (
-                        // Vue spécifique pour les Ambassadeurs (Affiliés)
-                        <div className="bg-white border border-gray-100 rounded-3xl p-8 text-center sm:p-12 shadow-sm animate-in fade-in zoom-in duration-500">
-                            <span className="text-6xl mb-6 block">💼</span>
-                            <h2 className="text-3xl font-extrabold text-gray-900 mb-4">Bienvenue dans votre Pôle Partenaire</h2>
-                            <p className="text-gray-500 text-lg max-w-2xl mx-auto mb-8">
-                                En tant qu'Ambassadeur SmartLearn, vous n'avez pas de modules de cours. Votre mission est de partager l'excellence éducative et d'être rémunéré pour chaque élève inscrit via votre lien.
-                            </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                <Link href="/dashboard/profil" className="px-8 py-3 bg-[var(--primary-dark)] text-white rounded-xl font-bold shadow-lg hover:bg-slate-800 transition-colors">
-                                    Récupérer mon Code d'Affiliation
-                                </Link>
-                                <Link href="/dashboard/profil" className="px-8 py-3 bg-emerald-50 text-emerald-600 rounded-xl font-bold border border-emerald-100 hover:bg-emerald-100 transition-colors">
-                                    Consulter mes Gains
-                                </Link>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            </main>
-        </div>
-    );
-}
