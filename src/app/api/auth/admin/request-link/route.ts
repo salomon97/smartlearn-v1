@@ -5,6 +5,7 @@ import AdminToken from '@/models/AdminToken';
 import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import { BASE_URL } from '@/lib/auth-env';
 
 export async function POST(req: Request) {
     try {
@@ -46,8 +47,7 @@ export async function POST(req: Request) {
 
         // 4. Envoyer l'email avec le jeton en clair
         // Le lien pointera vers la page de vérification qui s'occupera d'appeler NextAuth
-        const baseUrl = process.env.NEXTAUTH_URL || "https://smartlearn-edu.org";
-        const loginUrl = `${baseUrl}/api/auth/admin/verify?token=${rawToken}&email=${encodeURIComponent(adminUser.email)}`;
+        const loginUrl = `${BASE_URL}/api/auth/admin/verify?token=${rawToken}&email=${encodeURIComponent(adminUser.email)}`;
 
         const htmlTemplate = `
         <div style="font-family: Arial, sans-serif; max-w: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
