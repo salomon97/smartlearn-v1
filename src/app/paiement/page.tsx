@@ -10,6 +10,11 @@ const CHARIOW_LINK = "https://wttjdkki.mychariow.shop/prd_pihhbz";
 const PRIX_ACCES_A_VIE = 2000;
 
 function CheckoutContent() {
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const paymentSuccess = searchParams.get("success") === "true";
+
     const [checking, setChecking] = useState(true);
     const [isVerified, setIsVerified] = useState(false);
 
