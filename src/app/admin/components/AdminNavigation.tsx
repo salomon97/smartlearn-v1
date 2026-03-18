@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, LogOut } from "lucide-react";
 
 export default function AdminNavigation() {
