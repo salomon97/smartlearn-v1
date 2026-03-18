@@ -51,6 +51,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  verification: {
+    google: "AJOUTER_VOTRE_CODE_ICI", // À remplir par l'utilisateur
+  },
 };
 
 export default function RootLayout({
@@ -60,11 +63,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased flex flex-col min-h-screen">
         <MarketingBanner />
         <NextAuthProvider>
           <SessionGuardian />
-          {children}
+          <main className="flex-grow">
+            {children}
+          </main>
+          
+          <footer className="bg-white border-t border-gray-100 py-10 px-6">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-sm text-gray-400 font-medium">
+                © 2026 SmartLearn. Tous droits réservés.
+              </div>
+              <div className="flex gap-6 text-sm font-bold text-gray-500">
+                <a href="/politique-confidentialite" className="hover:text-brand-orange transition-colors">Politique de Confidentialité</a>
+                <a href="/conditions-utilisation" className="hover:text-brand-orange transition-colors">Conditions d'Utilisation</a>
+                <a href="mailto:contact@smartlearn-edu.org" className="hover:text-brand-orange transition-colors">Contact</a>
+              </div>
+            </div>
+          </footer>
         </NextAuthProvider>
       </body>
     </html>
