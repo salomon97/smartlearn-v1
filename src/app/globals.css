@@ -41,6 +41,16 @@ body {
   font-family: var(--font-geist-sans), sans-serif;
 }
 
+/* Fix pour les inputs invisibles en mode sombre */
+input, select, textarea {
+  color: #0f172a !important; /* Force le texte sombre sur fonds clairs */
+}
+
+/* Exception pour les placeholders qui doivent rester discrets */
+input::placeholder, textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
 @layer utilities {
   .animate-marquee {
     animation: marquee 35s linear infinite;

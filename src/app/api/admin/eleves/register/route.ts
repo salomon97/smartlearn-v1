@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { name, grade, origin } = body;
+        const { name, grade, school } = body;
 
         if (!name || !grade) {
             return NextResponse.json({ message: "Le nom et la classe sont obligatoires" }, { status: 400 });
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
             grade_level: grade,
             isPremium: true, // Inscription manuelle = Accès VIP par défaut
             isVerified: true, // Pas besoin de vérifier l'email puisqu'il est faux
-            origin_contract: origin // Info optionnelle pour savoir d'où il vient (Note: On peut l'ajouter physiquement au modèle plus tard si voulu)
+            school: school   // Nouvel intitulé pour "Établissement"
         });
 
         // 4. On renvoie les identifiants en clair à l'administrateur pour qu'il les transmette

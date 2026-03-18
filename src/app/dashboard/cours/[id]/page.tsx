@@ -7,6 +7,25 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import CourseViewerClient from "./components/CourseViewerClient";
+import { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    await connectToDatabase();
+    const resolvedParams = await params;
+    const course = await Course.findById(resolvedParams.id).lean();
+
+    if (!course) return { title: "Cours non trouvé" };
+
+    return {
+        title: course.title,
+        description: course.description?.substring(0, 160) || `Suivez le cours ${course.title} sur SmartLearn.`,
+        openGraph: {
+            title: course.title,
+            description: course.description,
+            type: "article",
+        }
+    };
+}
 
 export default async function StudentCourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
@@ -63,7 +82,7 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
 
             {/* Le Composant Client qui gère tout l'état de la playlist */}
             <CourseViewerClient 
-                course={{ description: course.description }}
+                course={{ _id: course._id.toString(), description: course.description }}
                 lessons={lessons} 
                 isPremium={isPremium} 
             />

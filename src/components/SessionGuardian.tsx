@@ -14,7 +14,7 @@ export default function SessionGuardian() {
 
             const verifySession = async () => {
                 try {
-                    const res = await fetch("/api/auth/verify-session");
+                    const res = await fetch("/api/user/session-check");
 
                     if (res.status === 403) {
                         const data = await res.json();

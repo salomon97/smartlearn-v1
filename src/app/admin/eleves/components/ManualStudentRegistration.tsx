@@ -10,7 +10,7 @@ export default function ManualStudentRegistration() {
     const [formData, setFormData] = useState({
         name: "",
         grade: classesDisponibles[0],
-        origin: "Contrat Etablissement XYZ"
+        school: "Lycée Leclerc"
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +27,7 @@ export default function ManualStudentRegistration() {
             if (res.ok) {
                 const data = await res.json();
                 alert(`Succès! L'élève a été inscrit.\n\nIdentifiant de connexion généré : ${data.generatedEmail}\nMot de passe par défaut : ${data.generatedPassword}\n\nVeuillez noter ces informations pour les transmettre à l'élève.`);
-                setFormData({ name: "", grade: classesDisponibles[0], origin: "Contrat Etablissement XYZ" });
+                setFormData({ name: "", grade: classesDisponibles[0], school: "Lycée Leclerc" });
                 router.refresh();
             } else {
                 const data = await res.json();
@@ -73,13 +73,13 @@ export default function ManualStudentRegistration() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">Origine / Référence</label>
+                        <label className="block text-sm font-bold text-gray-700 mb-1">Établissement</label>
                         <input 
                             type="text" 
-                            value={formData.origin}
-                            onChange={(e) => setFormData({...formData, origin: e.target.value})}
+                            value={formData.school}
+                            onChange={(e) => setFormData({...formData, school: e.target.value})}
                             className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none bg-gray-50 focus:bg-white transition-colors" 
-                            placeholder="Ex: Contrat Lycée Leclerc" 
+                            placeholder="Ex: Collège Laval" 
                         />
                     </div>
                 </div>

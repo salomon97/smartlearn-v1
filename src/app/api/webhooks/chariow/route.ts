@@ -63,18 +63,28 @@ export async function POST(req: Request) {
             parrainDoc = await User.findById(user.parrainId);
 
             if (parrainDoc) {
-                // S'assurer que les champs existent (pour les anciens comptes)
-                if (parrainDoc.balance_pending === undefined) parrainDoc.balance_pending = 0;
-                if (parrainDoc.commission_rate === undefined) parrainDoc.commission_rate = 10;
+                // --- ANTI-FRAUDE : AUTO-AFFILIATION ---
+                // On vérifie si l'acheteur et le parrain ont la même IP de création de compte
+                const isSameIp = user.registrationIp && parrainDoc.registrationIp && user.registrationIp === parrainDoc.registrationIp;
+                const isSameEmail = user.email.toLowerCase() === parrainDoc.email.toLowerCase();
 
-                // Calculer la commission dynamiquement basée sur le taux de l'affilié
-                commissionAmount = (amountPaid * parrainDoc.commission_rate) / 100;
+                if (isSameIp || isSameEmail) {
+                    console.log(`🚫 [FRAUDE] Tentative d'auto-affiliation détectée pour ${user.email} (Parrain: ${parrainDoc.email}). Commission annulée.`);
+                    commissionAmount = 0; // Pas de commission si c'est la même personne
+                } else {
+                    // S'assurer que les champs existent (pour les anciens comptes)
+                    if (parrainDoc.balance_pending === undefined) parrainDoc.balance_pending = 0;
+                    if (parrainDoc.commission_rate === undefined) parrainDoc.commission_rate = 10;
 
-                // Ajouter la commission en ATTENTE (balance_pending)
-                parrainDoc.balance_pending += commissionAmount;
+                    // Calculer la commission dynamiquement basée sur le taux de l'affilié
+                    commissionAmount = (amountPaid * parrainDoc.commission_rate) / 100;
 
-                await parrainDoc.save();
-                console.log(`💸 [WEBHOOK] Commission EN ATTENTE de ${commissionAmount} FCFA ajoutée au parrain ${parrainDoc.email}`);
+                    // Ajouter la commission en ATTENTE (balance_pending)
+                    parrainDoc.balance_pending += commissionAmount;
+
+                    await parrainDoc.save();
+                    console.log(`💸 [WEBHOOK] Commission EN ATTENTE de ${commissionAmount} FCFA ajoutée au parrain ${parrainDoc.email}`);
+                }
             } else {
                 console.log(`⚠️ [WEBHOOK] Le parrain (ID: ${user.parrainId}) n'a pas été trouvé pour l'affiliation.`);
             }
@@ -92,10 +102,15 @@ export async function POST(req: Request) {
             parrainId: user.parrainId || null,
             amount: amountPaid,
             commission: commissionAmount,
-            status: 'pending', // En attente de clairance (3 jours)
+            status: commissionAmount === 0 && user.parrainId ? 'fraud_suspected' : 'pending', 
             paymentMethod: 'Chariow',
             referenceId: data.id || null, // ID de la vente venant de Chariow (si dispo)
-            clearingDate: clearingDate
+            clearingDate: clearingDate,
+            metadata: {
+                buyerIp: user.registrationIp,
+                parrainIp: parrainDoc?.registrationIp,
+                fraudReason: (commissionAmount === 0 && user.parrainId) ? "Même IP ou Email détecté (Auto-Affiliation)" : null
+            }
         });
         
         console.log(`📝 [WEBHOOK] Transaction enregistrée. Libération prévue le : ${clearingDate.toLocaleDateString()}`);

@@ -15,10 +15,12 @@ export default function AddLessonForm({ courseId, nextOrder }: { courseId: strin
         order: nextOrder,
         isFreePreview: false
     });
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setSuccess(false);
 
         try {
             const res = await fetch(`/api/admin/cours/${courseId}/lessons`, {
@@ -28,15 +30,18 @@ export default function AddLessonForm({ courseId, nextOrder }: { courseId: strin
             });
 
             if (res.ok) {
+                setSuccess(true);
                 // Reset form on success but increment order
                 setFormData({
                     title: "",
                     videoUrl: "",
                     pdfUrl: "",
-                    order: formData.order + 1, // On anticipe le prochain
+                    order: formData.order + 1,
                     isFreePreview: false
                 });
                 router.refresh();
+                // Hide success message after 3 seconds
+                setTimeout(() => setSuccess(false), 3000);
             } else {
                 const data = await res.json();
                 alert(`Erreur: ${data.message}`);
@@ -52,6 +57,12 @@ export default function AddLessonForm({ courseId, nextOrder }: { courseId: strin
     return (
         <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm sticky top-8">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Ajouter une Leçon</h2>
+            
+            {success && (
+                <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-700 text-sm font-bold animate-in fade-in slide-in-from-top-2">
+                    ✅ Leçon ajoutée avec succès !
+                </div>
+            )}
             
             <div className="space-y-4">
                 <div>

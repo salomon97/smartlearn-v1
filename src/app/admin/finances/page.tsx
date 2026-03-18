@@ -29,15 +29,21 @@ export default async function AdminFinancesPage() {
     const readyToClear = allTransactions.filter(t => t.status === 'pending' && new Date(t.clearingDate) <= now)
                                      .map(t => ({...t, _id: t._id.toString()}));
     
-    // 3. Demandes de retrait
-    const eligibleAffiliatesRaw = await User.find({ role: 'affiliate', balance_available: { $gte: 1000 } }).lean();
-    const eligibleAffiliates = eligibleAffiliatesRaw.map((a: any) => ({...a, _id: a._id.toString()}));
+    // 3. Demandes de retrait (uniquement celles qui sont explicites et en attente)
+    const pendingWithdrawalsRaw = await WithdrawalHistory.find({ status: 'pending' }).sort({ createdAt: -1 }).lean();
+    const pendingRequests = pendingWithdrawalsRaw.map((w: any) => ({
+        ...w, 
+        _id: w._id.toString(), 
+        createdAt: w.createdAt.toISOString()
+    }));
 
-    // 4. Historique des paiements affiliés
-    const allWithdrawalsRaw = await WithdrawalHistory.find().sort({ createdAt: -1 }).lean();
+    // 4. Historique des paiements affiliés (uniquement payés ou échoués)
+    const allWithdrawalsRaw = await WithdrawalHistory.find({ status: { $ne: 'pending' } }).sort({ createdAt: -1 }).lean();
     const allWithdrawals = allWithdrawalsRaw.map((w: any) => ({...w, _id: w._id.toString(), createdAt: w.createdAt.toISOString()}));
     
-    const totalPaidToAffiliates = allWithdrawals.reduce((sum, w) => sum + w.amount, 0);
+    const totalPaidToAffiliates = allWithdrawals
+        .filter(w => w.status === 'paid')
+        .reduce((sum, w) => sum + w.amount, 0);
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -78,7 +84,7 @@ export default async function AdminFinancesPage() {
                 <PendingValidationsList initialTransactions={readyToClear} />
 
                 {/* Bloc 2 : Demandes de Retrait Affiliés - Client Component */}
-                <WithdrawalRequestsList initialAffiliates={eligibleAffiliates} />
+                <WithdrawalRequestsList initialRequests={pendingRequests} />
             </div>
 
             {/* Bloc 3 : Historique Complet */}

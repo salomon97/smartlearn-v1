@@ -6,7 +6,8 @@ export interface IWithdrawalHistory extends Document {
   affiliateEmail: string;
   amount: number;
   paymentMethod: string;
-  status: string;
+  accountNumber: string;
+  status: "pending" | "paid" | "failed";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -34,10 +35,14 @@ const WithdrawalHistorySchema: Schema<IWithdrawalHistory> = new Schema(
       type: String,
       default: "Mobile Money",
     },
+    accountNumber: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
-      enum: ["paid", "failed"],
-      default: "paid",
+      enum: ["pending", "paid", "failed"],
+      default: "pending",
     },
   },
   {

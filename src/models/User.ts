@@ -7,6 +7,7 @@ export interface IUser extends Document {
     isPremium: boolean;
     role: 'student' | 'affiliate' | 'admin';
     grade_level?: string;
+    school?: string;
     sessionId?: string;
     isVerified: boolean;
     image?: string;
@@ -17,6 +18,7 @@ export interface IUser extends Document {
     codeAffiliation?: string;
     resetPasswordOtp?: string;
     resetPasswordExpires?: Date;
+    registrationIp?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -29,6 +31,7 @@ const UserSchema = new Schema<IUser>(
         isPremium: { type: Boolean, default: false },
         role: { type: String, enum: ['student', 'affiliate', 'admin'], default: 'student' },
         grade_level: { type: String }, // Optionnel car les affiliés n'ont pas de classe
+        school: { type: String },      // Établissement (ex: Collège Laval)
         sessionId: { type: String },
         isVerified: { type: Boolean, default: false },
         image: { type: String }, // URL de la photo de profil
@@ -39,6 +42,7 @@ const UserSchema = new Schema<IUser>(
         codeAffiliation: { type: String },
         resetPasswordOtp: { type: String },
         resetPasswordExpires: { type: Date },
+        registrationIp: { type: String },
     },
     { timestamps: true }
 );

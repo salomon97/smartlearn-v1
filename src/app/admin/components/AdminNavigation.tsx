@@ -12,6 +12,7 @@ export default function AdminNavigation() {
         { href: "/admin/eleves", label: "Gestion des Élèves", icon: "🎓" },
         { href: "/admin/affilies", label: "Affiliations", icon: "🤝" },
         { href: "/admin/cours", label: "Contenu Pédagogique", icon: "📚" },
+        { href: "/admin/fraudes", label: "Surveillance Fraudes", icon: "🛡️" },
     ];
 
     return (

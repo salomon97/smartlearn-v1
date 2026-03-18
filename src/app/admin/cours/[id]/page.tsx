@@ -7,6 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AddLessonForm from "./components/AddLessonForm";
 import DeleteLessonButton from "./components/DeleteLessonButton";
+import ReorderLessonButtons from "./components/ReorderLessonButtons";
 
 export default async function AdminCourseDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const session = await getServerSession(authOptions);
@@ -106,8 +107,15 @@ export default async function AdminCourseDetailPage({ params }: { params: Promis
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="flex-shrink-0 pt-1">
-                                            <DeleteLessonButton lessonId={lesson._id} />
+                                        <div className="flex flex-col gap-2 flex-shrink-0 pt-1">
+                                            <ReorderLessonButtons 
+                                                lessonId={lesson._id} 
+                                                currentOrder={lesson.order} 
+                                                totalLessons={lessons.length}
+                                            />
+                                            <div className="border-t border-gray-200 mt-1 pt-1 text-center">
+                                                <DeleteLessonButton lessonId={lesson._id} />
+                                            </div>
                                         </div>
                                     </div>
                                 ))}

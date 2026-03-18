@@ -69,6 +69,10 @@ export async function POST(request: Request) {
             newCodeAffiliation = `${prefix}${randomNums}`;
         }
 
+        // Capturer l'IP (pour l'anti-fraude)
+        const forwarded = request.headers.get("x-forwarded-for");
+        const ip = forwarded ? forwarded.split(',')[0] : "127.0.0.1";
+
         // Créer l'utilisateur (non vérifié par défaut)
         const user = await User.create({
             name,
@@ -78,7 +82,8 @@ export async function POST(request: Request) {
             grade_level: finalRole === 'student' ? grade_level : undefined,
             isPremium: false,
             isVerified: false,
-            codeAffiliation: newCodeAffiliation
+            codeAffiliation: newCodeAffiliation,
+            registrationIp: ip
         });
 
         // Générer et enregistrer le code

@@ -46,7 +46,7 @@ export async function POST(req: Request) {
 
         // 4. Envoyer l'email avec le jeton en clair
         // Le lien pointera vers la page de vérification qui s'occupera d'appeler NextAuth
-        const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
+        const baseUrl = process.env.NEXTAUTH_URL || "https://smartlearn-edu.org";
         const loginUrl = `${baseUrl}/api/auth/admin/verify?token=${rawToken}&email=${encodeURIComponent(adminUser.email)}`;
 
         const htmlTemplate = `

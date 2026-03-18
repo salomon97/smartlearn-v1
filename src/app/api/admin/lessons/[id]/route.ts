@@ -32,3 +32,34 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         return NextResponse.json({ message: "Erreur interne" }, { status: 500 });
     }
 }
+
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const session = await getServerSession(authOptions);
+
+        if (!session || !session.user || session.user.role !== 'admin') {
+            return NextResponse.json({ message: "Non autorisé" }, { status: 403 });
+        }
+
+        const resolvedParams = await params;
+        const lessonId = resolvedParams.id;
+        const body = await req.json();
+
+        await connectToDatabase();
+
+        const updated = await Lesson.findByIdAndUpdate(lessonId, body, { new: true });
+        if (!updated) {
+            return NextResponse.json({ message: "Leçon introuvable" }, { status: 404 });
+        }
+
+        return NextResponse.json({ 
+            message: "Leçon mise à jour avec succès", 
+            lesson: updated,
+            success: true 
+        });
+
+    } catch (error) {
+        console.error("❌ Erreur lors de la mise à jour de la leçon:", error);
+        return NextResponse.json({ message: "Erreur interne" }, { status: 500 });
+    }
+}
