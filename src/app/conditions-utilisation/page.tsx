@@ -43,8 +43,8 @@ export default function TermsPage() {
                     <div className="mt-12 p-6 bg-gray-50 rounded-2xl border border-gray-200">
                         <p className="text-sm">
                             <strong>SmartLearn - Éducation pour tous</strong><br />
-                            Siège social : [Votre Ville/Pays]<br />
-                            Contact : contact@smartlearn-edu.org
+                            Siège social : Douala, Cameroun<br />
+                            Contact : foesalomon65@gmail.com
                         </p>
                     </div>
                 </div>

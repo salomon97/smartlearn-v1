@@ -54,8 +54,8 @@ export default function PrivacyPolicyPage() {
 
                     <div className="mt-12 p-6 bg-brand-orange/5 rounded-2xl border border-brand-orange/10">
                         <p className="text-sm font-bold text-brand-orange">
-                            Dernière mise à jour : 18 Mars 2026<br />
-                            Contact : contact@smartlearn-edu.org
+                            Dernière mise à jour : 19 Mars 2026<br />
+                            Contact : foesalomon65@gmail.com
                         </p>
                     </div>
                 </div>

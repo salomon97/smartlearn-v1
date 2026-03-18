@@ -40,7 +40,7 @@ export default function AdminNavigation() {
 
             {/* Sidebar (Responsive Overlay on mobile, Side-fixed on desktop) */}
             <aside className={`
-                fixed left-0 top-0 h-screen w-72 bg-slate-900 border-r border-slate-800 p-8 flex flex-col z-[60]
+                fixed left-0 top-0 h-screen w-64 bg-slate-900 border-r border-slate-800 p-8 flex flex-col z-[60]
                 transition-transform duration-300 ease-in-out
                 ${isOpen ? "translate-x-0" : "-translate-x-full"}
                 md:translate-x-0
