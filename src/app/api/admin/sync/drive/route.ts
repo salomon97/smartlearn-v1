@@ -33,11 +33,10 @@ const SUBJECT_MAP: Record<string, string> = {
     'info': 'Informatique', 'informatique': 'Informatique'
 };
 
-// Naming Mapper for Content Types
 const TYPE_MAP: Record<string, string> = {
     'chapitres': 'chapters', 'cours': 'chapters', 'chapters': 'chapters',
     'evaluations': 'evaluations', 'évaluations': 'evaluations', 'td': 'evaluations', 'exercices': 'evaluations',
-    'annales_officiels': 'annales_officiels', 'bac': 'annales_officiels', 'bepc': 'annales_officiels',
+    'annales_officiels': 'annales_officiels', 'officiels': 'annales_officiels', 'bac': 'annales_officiels', 'bepc': 'annales_officiels',
     'annales_blancs': 'annales_blancs', 'blancs': 'annales_blancs'
 };
 
