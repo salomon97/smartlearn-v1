@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, LogOut } from "lucide-react";
 
 export default function AdminNavigation() {
     const pathname = usePathname();
@@ -15,6 +16,7 @@ export default function AdminNavigation() {
         { href: "/admin/eleves", label: "Gestion des Élèves", icon: <Users size={20} /> },
         { href: "/admin/affilies", label: "Affiliations", icon: <Handshake size={20} /> },
         { href: "/admin/cours", label: "Contenu Pédagogique", icon: <BookOpen size={20} /> },
+        { href: "/admin/sync", label: "Synchronisation", icon: <RefreshCw size={20} /> },
         { href: "/admin/fraudes", label: "Surveillance Fraudes", icon: <ShieldAlert size={20} /> },
     ];
 
