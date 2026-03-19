@@ -1,7 +1,10 @@
-import Image from "next/image";
 import Link from "next/link";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import UserNav from "@/components/UserNav";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
   return (
     <div className="min-h-screen bg-[var(--primary-dark)] text-white">
       {/* Navbar */}
@@ -19,13 +22,7 @@ export default function Home() {
               Smart<span className="text-[var(--primary-gold)]">Learn</span>
             </span>
           </Link>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <Link href="/catalogue" className="hover:text-[var(--primary-gold)] transition-colors">Le Catalogue</Link>
-            <Link href="/auth/connexion" className="text-white hover:text-white/80 transition-colors">Connexion</Link>
-            <Link href="/auth/inscription" className="bg-[var(--primary-gold)] hover:bg-[var(--primary-gold-hover)] text-[var(--primary-dark)] px-6 py-2.5 rounded-full font-bold transition-all transform hover:scale-105 shadow-lg shadow-[var(--primary-gold)]/20">
-              Rejoindre l'Excellence
-            </Link>
-          </nav>
+          <UserNav session={session} />
         </div>
       </header>
 

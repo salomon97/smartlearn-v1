@@ -5,6 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 import connectToDatabase from "@/lib/mongoose";
 import DynamicContentBrowser from "./components/DynamicContentBrowser";
+import LogoutButton from "./components/LogoutButton";
+
 
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
@@ -51,6 +53,8 @@ export default async function DashboardPage() {
                         </>
                     )}
                 </nav>
+                <div className="mt-auto pt-8 border-t border-gray-100 flex flex-col gap-3">
+                    <LogoutButton />
                 {isPremium && (
                     <div className="mt-auto bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] text-emerald-700 text-sm shadow-sm font-black text-center animate-pulse">
                         MEMBRE VIP ACTIF ✨

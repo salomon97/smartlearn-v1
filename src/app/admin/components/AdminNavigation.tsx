@@ -4,6 +4,8 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, LogOut } from "lucide-react";
+import { signOut } from "next-auth/react";
+
 
 export default function AdminNavigation() {
     const pathname = usePathname();
@@ -79,14 +81,21 @@ export default function AdminNavigation() {
                     })}
                 </nav>
 
-                <div className="mt-auto pt-8 border-t border-slate-800">
+                <div className="mt-auto pt-8 border-t border-slate-800 space-y-2">
                     <Link
                         href="/dashboard"
-                        className="flex items-center gap-4 px-5 py-4 text-slate-400 hover:text-white transition-all font-bold text-sm bg-slate-800/30 rounded-2xl hover:bg-slate-800/50"
+                        className="flex items-center gap-4 px-5 py-3 text-slate-400 hover:text-white transition-all font-bold text-xs bg-slate-800/30 rounded-xl hover:bg-slate-800/50"
+                    >
+                        <LayoutDashboard size={14} />
+                        Retour au Dashboard
+                    </Link>
+                    <button
+                        onClick={() => signOut({ callbackUrl: '/' })}
+                        className="w-full flex items-center gap-4 px-5 py-4 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-black text-sm rounded-2xl border border-transparent hover:border-red-500/20"
                     >
                         <LogOut size={18} />
-                        Retour au site
-                    </Link>
+                        Déconnexion
+                    </button>
                 </div>
             </aside>
         </>
