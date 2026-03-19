@@ -4,37 +4,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from '@/lib/mongoose';
 import DriveMapping from '@/models/DriveMapping';
-import fs from 'fs';
-import path from 'path';
-
-// Helper to get Google Auth
-async function getGoogleAuth() {
-    let credentials, token;
-
-    // 1. Try Environment Variables (Vercel/Production)
-    if (process.env.GOOGLE_CREDENTIALS_JSON && process.env.GOOGLE_TOKEN_JSON) {
-        credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
-        token = JSON.parse(process.env.GOOGLE_TOKEN_JSON);
-    } 
-    // 2. Fallback to Local Files (Development)
-    else {
-        const credentialsPath = path.join(process.cwd(), 'credentials.json');
-        const tokenPath = path.join(process.cwd(), 'token.json');
-
-        if (!fs.existsSync(credentialsPath) || !fs.existsSync(tokenPath)) {
-            throw new Error("Identifiants Google manquants (Vérifiez les variables d'env ou les fichiers .json)");
-        }
-
-        credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-        token = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
-    }
-
-    const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
-    const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-    oAuth2Client.setCredentials(token);
-
-    return oAuth2Client;
-}
+import { getGoogleAuth } from '@/lib/googleAuth';
 
 // Naming Mapper for Grade Levels & Subjects (YouTube Titles)
 const GRADE_MAP: Record<string, string> = {

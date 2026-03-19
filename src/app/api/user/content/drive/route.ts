@@ -1,12 +1,4 @@
-import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-const drive = google.drive({
-    version: 'v3',
-    auth: process.env.GOOGLE_API_KEY
-});
+import { getGoogleAuth } from '@/lib/googleAuth';
 
 export async function GET(req: Request) {
     try {
@@ -28,14 +20,8 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Folder ID requis" }, { status: 400 });
         }
 
-        if (!process.env.GOOGLE_API_KEY) {
-            console.warn("⚠️ GOOGLE_API_KEY manquante dans l'environnement");
-            // Pour l'instant, on retourne un tableau vide ou un message d'erreur explicite
-            return NextResponse.json({ 
-                message: "Configuration Google API manquante",
-                files: [] 
-            });
-        }
+        const auth = await getGoogleAuth();
+        const drive = google.drive({ version: 'v3', auth });
 
         const response = await drive.files.list({
             q: `'${folderId}' in parents and trashed = false`,

@@ -1,12 +1,4 @@
-import { NextResponse } from 'next/server';
-import { google } from 'googleapis';
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-
-const youtube = google.youtube({
-    version: 'v3',
-    auth: process.env.GOOGLE_API_KEY
-});
+import { getGoogleAuth } from '@/lib/googleAuth';
 
 export async function GET(req: Request) {
     try {
@@ -28,13 +20,8 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Playlist ID requis" }, { status: 400 });
         }
 
-        if (!process.env.GOOGLE_API_KEY) {
-            console.warn("⚠️ GOOGLE_API_KEY manquante");
-            return NextResponse.json({ 
-                message: "Configuration YouTube API manquante",
-                videos: [] 
-            });
-        }
+        const auth = await getGoogleAuth();
+        const youtube = google.youtube({ version: 'v3', auth });
 
         const response = await youtube.playlistItems.list({
             playlistId: playlistId,
