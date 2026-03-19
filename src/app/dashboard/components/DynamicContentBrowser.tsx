@@ -67,10 +67,17 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                 if (url) {
                     const res = await fetch(url);
                     const data = await res.json();
-                    setItems(selectedType === "videos" ? data.videos : data.files);
+                    
+                    if (!res.ok) {
+                        setItems([{ isError: true, message: data.message, details: data.error }]);
+                        return;
+                    }
+                    
+                    setItems(selectedType === "videos" ? (data.videos || []) : (data.files || []));
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error(err);
+                setItems([{ isError: true, message: "Network Error", details: err.message }]);
             } finally {
                 setItemsLoading(false);
             }
@@ -160,6 +167,12 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                             <Library className="w-12 h-12 text-slate-300 mx-auto mb-4" />
                             <p className="text-slate-500 font-bold text-lg">Aucun contenu disponible</p>
                             <p className="text-slate-400 text-sm mt-1">Les professeurs mettront cette section à jour très bientôt.</p>
+                        </div>
+                    ) : items[0]?.isError ? (
+                        <div className="col-span-full text-center py-24 bg-red-50/50 backdrop-blur border-2 border-dashed border-red-200 rounded-[2.5rem] animate-in zoom-in-95 duration-500">
+                            <p className="text-red-600 font-bold text-xl mb-2">Erreur Technique API</p>
+                            <p className="text-red-500 font-medium">{items[0].message || "Le serveur n'a pas pu traiter la demande."}</p>
+                            <p className="text-red-400 text-sm mt-2 max-w-lg mx-auto bg-white/50 p-4 rounded-xl">{items[0].details || "Détails indisponibles (Vérifiez les tokens Vercel)."}</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
