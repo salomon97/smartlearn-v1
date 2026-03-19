@@ -9,15 +9,25 @@ import path from 'path';
 
 // Helper to get Google Auth
 async function getGoogleAuth() {
-    const credentialsPath = path.join(process.cwd(), 'credentials.json');
-    const tokenPath = path.join(process.cwd(), 'token.json');
+    let credentials, token;
 
-    if (!fs.existsSync(credentialsPath) || !fs.existsSync(tokenPath)) {
-        throw new Error("Fichiers credentials.json ou token.json manquants");
+    // 1. Try Environment Variables (Vercel/Production)
+    if (process.env.GOOGLE_CREDENTIALS_JSON && process.env.GOOGLE_TOKEN_JSON) {
+        credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+        token = JSON.parse(process.env.GOOGLE_TOKEN_JSON);
+    } 
+    // 2. Fallback to Local Files (Development)
+    else {
+        const credentialsPath = path.join(process.cwd(), 'credentials.json');
+        const tokenPath = path.join(process.cwd(), 'token.json');
+
+        if (!fs.existsSync(credentialsPath) || !fs.existsSync(tokenPath)) {
+            throw new Error("Identifiants Google manquants (Vérifiez les variables d'env ou les fichiers .json)");
+        }
+
+        credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+        token = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
     }
-
-    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
-    const token = JSON.parse(fs.readFileSync(tokenPath, 'utf8'));
 
     const { client_secret, client_id, redirect_uris } = credentials.installed || credentials.web;
     const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
