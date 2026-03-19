@@ -111,7 +111,8 @@ export default async function DashboardPage() {
                             )}
 
                             {/* Section Dynamique : Le Coeur du Site */}
-                            {isPremium ? (
+                            {(isPremium || role === 'admin') ? (
+
                                 <div className="space-y-12">
                                     <div className="flex items-center justify-between">
                                         <h3 className="text-2xl font-black text-gray-900">Vos modules d'apprentissage</h3>
