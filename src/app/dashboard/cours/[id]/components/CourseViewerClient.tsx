@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import YouTubePlayer from "@/components/YouTubePlayer";
 import { PlayCircle, Lock, FileText, CheckCircle2, Circle, Menu, X, BookOpen } from "lucide-react";
 
@@ -40,7 +40,7 @@ export default function CourseViewerClient({ course, lessons, isPremium }: Cours
         fetchProgress();
     }, [course._id]);
 
-    const toggleComplete = async (lessonId: string, isCompleted: boolean) => {
+    const toggleComplete = useCallback(async (lessonId: string, isCompleted: boolean) => {
         try {
             const res = await fetch("/api/user/progress", {
                 method: "POST",
@@ -61,9 +61,10 @@ export default function CourseViewerClient({ course, lessons, isPremium }: Cours
         } catch (error) {
             console.error("Erreur update progression:", error);
         }
-    };
+    }, [course._id]);
 
-    const handleVideoEnd = () => {
+
+    const handleVideoEnd = useCallback(() => {
         if (!activeLesson) return;
         
         if (!completedLessonIds.includes(activeLesson._id)) {
@@ -80,7 +81,8 @@ export default function CourseViewerClient({ course, lessons, isPremium }: Cours
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
-    };
+    }, [activeLesson, completedLessonIds, lessons, isPremium, toggleComplete]);
+
 
     if (lessons.length === 0) {
         return (
