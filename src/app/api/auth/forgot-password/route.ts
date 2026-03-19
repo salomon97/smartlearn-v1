@@ -34,14 +34,25 @@ export async function POST(req: Request) {
 
         // Envoyer l'email
         const emailContent = `
-            <h2>Réinitialisation de votre mot de passe</h2>
-            <p>Bonjour ${user.name},</p>
-            <p>Vous avez demandé à réinitialiser votre mot de passe sur SmartLearn.</p>
-            <p>Voici votre code de sécurité : <strong style="font-size: 24px; letter-spacing: 5px;">${otp}</strong></p>
-            <p>Ce code est valable pendant 15 minutes.</p>
-            <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email.</p>
-            <br/>
-            <p>L'équipe SmartLearn</p>
+            <div style="background-color: #0f172a; padding: 40px; font-family: sans-serif; color: #ffffff; border-radius: 20px;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h1 style="color: #ffffff; margin: 0;">Smart<span style="color: #fbbf24;">Learn</span></h1>
+                </div>
+                <div style="background-color: #1e293b; padding: 30px; border-radius: 15px; border: 1px solid #334155;">
+                    <h2 style="color: #ffffff; margin-top: 0;">Réinitialisation de mot de passe</h2>
+                    <p style="color: #94a3b8; line-height: 1.6;">Bonjour ${user.name},</p>
+                    <p style="color: #94a3b8; line-height: 1.6;">Vous avez demandé à réinitialiser votre mot de passe sur SmartLearn. Utilisez le code suivant pour valider l'opération :</p>
+                    
+                    <div style="background-color: #0f172a; padding: 20px; text-align: center; border-radius: 12px; margin: 30px 0; border: 1px dashed #fbbf24;">
+                        <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #fbbf24;">${otp}</span>
+                    </div>
+                    
+                    <p style="color: #94a3b8; font-size: 14px; text-align: center;">Ce code est valable pendant 15 minutes.</p>
+                </div>
+                <p style="color: #475569; font-size: 12px; text-align: center; margin-top: 30px;">
+                    © 2026 SmartLearn - L'Élite de l'Éducation au Cameroun
+                </p>
+            </div>
         `;
 
         await sendEmail({

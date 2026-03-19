@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
                         <form onSubmit={handleRequestOTP} className="space-y-6">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="email" className="text-sm font-medium text-slate-300 ml-1">Adresse E-mail</label>
+                                    <label htmlFor="email" className="text-sm font-bold text-white ml-1">Adresse E-mail</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                             <Mail className="h-5 w-5" />
@@ -144,7 +144,7 @@ export default function ForgotPasswordPage() {
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="block w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-[var(--primary-gold)] focus:border-transparent transition-all outline-none"
+                                            className="block w-full pl-11 pr-4 py-3.5 bg-slate-900/50 border border-slate-700 rounded-xl text-white font-medium placeholder-slate-500 focus:ring-2 focus:ring-[var(--primary-gold)] focus:border-transparent transition-all outline-none"
                                             placeholder="vous@exemple.com"
                                         />
                                     </div>
@@ -169,7 +169,7 @@ export default function ForgotPasswordPage() {
                         <form onSubmit={handleResetPassword} className="space-y-6 animate-in slide-in-from-right-4">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="otp" className="text-sm font-medium text-slate-300 ml-1">Code de Vérification (6 chiffres)</label>
+                                    <label htmlFor="otp" className="text-sm font-bold text-white ml-1">Code de Vérification (6 chiffres)</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                             <ShieldCheck className="h-5 w-5" />
@@ -188,7 +188,7 @@ export default function ForgotPasswordPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="newPassword" className="text-sm font-medium text-slate-300 ml-1">Nouveau mot de passe</label>
+                                    <label htmlFor="newPassword" className="text-sm font-bold text-white ml-1">Nouveau mot de passe</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                             <KeyRound className="h-5 w-5" />
@@ -206,7 +206,7 @@ export default function ForgotPasswordPage() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="confirmPassword" className="text-sm font-medium text-slate-300 ml-1">Confirmer mot de passe</label>
+                                    <label htmlFor="confirmPassword" className="text-sm font-bold text-white ml-1">Confirmer mot de passe</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                             <KeyRound className="h-5 w-5" />
