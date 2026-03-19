@@ -153,7 +153,8 @@ export default function AffiliationPage() {
                         <div className="relative z-10 max-w-xl">
                             <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-[var(--primary-gold)] text-sm font-bold mb-4 border border-[var(--primary-gold)]/30 backdrop-blur-sm">Partagez &amp; Gagnez</span>
                             <h2 className="text-3xl font-extrabold mb-4">Parrainez vos amis et encaissez de l&apos;argent.</h2>
-                            <p className="text-gray-300 text-lg">Pour chaque ami qui crée son compte VIP grâce à votre lien, vous gagnez <strong className="text-[var(--primary-gold)]">500 FCFA</strong>. Recevez vos gains directement sur votre Mobile Money !</p>
+                            <p className="text-gray-300 text-lg">Pour chaque ami qui crée son compte VIP grâce à votre lien, vous gagnez <strong className="text-[var(--primary-gold)]">10% de sa souscription (soit 200 FCFA)</strong>. Recevez vos gains directement sur votre Mobile Money !</p>
+
                         </div>
                         <div className="relative z-10 w-full md:w-auto">
                             <Image src="/logo.jpg" alt="Affiliation" width={150} height={150} className="rounded-full shadow-2xl border-4 border-[var(--primary-gold)]/50 mx-auto" />

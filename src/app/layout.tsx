@@ -71,18 +71,19 @@ export default function RootLayout({
             {children}
           </main>
           
-          <footer className="bg-white border-t border-gray-100 py-10 px-6">
+          <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-black border-t border-white/5 py-12 px-6">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-sm text-gray-400 font-medium">
+              <div className="text-sm text-gray-500 font-medium">
                 © 2026 SmartLearn. Tous droits réservés.
               </div>
-              <div className="flex gap-6 text-sm font-bold text-gray-500">
-                <a href="/politique-confidentialite" className="hover:text-brand-orange transition-colors">Politique de Confidentialité</a>
-                <a href="/conditions-utilisation" className="hover:text-brand-orange transition-colors">Conditions d'Utilisation</a>
-                <a href="mailto:foesalomon65@gmail.com" className="hover:text-brand-orange transition-colors">Contact</a>
+              <div className="flex gap-6 text-sm font-bold text-gray-400">
+                <a href="/politique-confidentialite" className="hover:text-[var(--primary-gold)] transition-colors">Politique de Confidentialité</a>
+                <a href="/conditions-utilisation" className="hover:text-[var(--primary-gold)] transition-colors">Conditions d'Utilisation</a>
+                <a href="mailto:foesalomon65@gmail.com" className="hover:text-[var(--primary-gold)] transition-colors">Contact</a>
               </div>
             </div>
           </footer>
+
         </NextAuthProvider>
       </body>
     </html>
