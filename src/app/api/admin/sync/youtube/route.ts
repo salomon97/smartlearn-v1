@@ -38,8 +38,8 @@ async function getGoogleAuth() {
 
 // Naming Mapper for Grade Levels & Subjects (YouTube Titles)
 const GRADE_MAP: Record<string, string> = {
-    '6e': '6e', '6ème': '6e', '5e': '5e', '5ème': '5e', '4e': '4e', '4ème': '4e', '3e': '3e', '3ème': '3e',
-    '1ère': '1ère', 'terminale': 'Tle', 'tle': 'Tle'
+    '6e': '6ème', '6ème': '6ème', '5e': '5ème', '5ème': '5ème', '4e': '4ème', '4ème': '4ème', '3e': '3ème', '3ème': '3ème',
+    '2nde': 'Seconde', '1ère': 'Première', 'terminale': 'Terminale', 'tle': 'Terminale'
 };
 
 const SUBJECT_MAP: Record<string, string> = {

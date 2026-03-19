@@ -36,24 +36,25 @@ async function getGoogleAuth() {
     return oAuth2Client;
 }
 
-// Naming Mapper for Grade Levels
+// Naming Mapper for Grade Levels (Must match lib/constants.ts)
 const GRADE_MAP: Record<string, string> = {
-    '6e': '6e', '6eme': '6e', '6ème': '6e', 'sixième': '6e',
-    '5e': '5e', '5eme': '5e', '5ème': '5e', 'cinquième': '5e',
-    '4e': '4e', '4eme': '4e', '4ème': '4e', 'quatrième': '4e',
-    '3e': '3e', '3eme': '3e', '3ème': '3e', 'troisième': '3e',
-    '2ndeA': '2ndeA4', '2ndeA4': '2ndeA4', 'secondeA': '2ndeA4',
-    '2ndeC': '2ndeC', 'secondeC': '2ndeC',
-    '2ndeD': '2ndeC', // Matching common cycle
-    '2ndeTI': '2ndeTI',
-    '1ereA': '1ère_A4', '1èreA': '1ère_A4', 'premièreA': '1ère_A4',
-    '1ereC': '1ère_C', '1èreC': '1ère_C', 'premièreC': '1ère_C',
-    '1ereD': '1ère_D', '1èreD': '1ère_D', 'premièreD': '1ère_D',
-    '1ereTI': '1ère_TI', '1èreTI': '1ère_TI',
-    'TleA': 'TleA4', 'TerminaleA': 'TleA4',
-    'TleC': 'TleC', 'TerminaleC': 'TleC',
-    'TleD': 'TleD', 'TerminaleD': 'TleD',
-    'TleTI': 'TleTI', 'TerminaleTI': 'TleTI'
+    '6e': '6ème', '6eme': '6ème', '6ème': '6ème', 'sixième': '6ème',
+    '5e': '5ème', '5eme': '5ème', '5ème': '5ème', 'cinquième': '5ème',
+    '4e': '4ème', '4eme': '4ème', '4ème': '4ème', 'quatrième': '4ème',
+    '3e': '3ème', '3eme': '3ème', '3ème': '3ème', 'troisième': '3ème',
+    '2ndeA': 'Seconde A', '2ndeA4': 'Seconde A', 'secondea': 'Seconde A',
+    '2ndec': 'Seconde C', 'secondec': 'Seconde C',
+    '2nded': 'Seconde D', 'seconded': 'Seconde D',
+    '2ndeti': 'Seconde TI', 'secondeti': 'Seconde TI',
+    '1erea': 'Première A', '1èrea': 'Première A',
+    '1erec': 'Première C', '1èrec': 'Première C',
+    '1ered': 'Première D', '1èred': 'Première D',
+    '1ereti': 'Première TI', '1èreti': 'Première TI',
+    'tlea': 'Terminale A', 'terminalea': 'Terminale A',
+    'tlec': 'Terminale C', 'terminalec': 'Terminale C',
+    'tled': 'Terminale D', 'terminaled': 'Terminale D',
+    'tleti': 'Terminale TI', 'terminaleti': 'Terminale TI',
+    'tlee': 'Terminale E'
 };
 
 // Naming Mapper for Subjects
