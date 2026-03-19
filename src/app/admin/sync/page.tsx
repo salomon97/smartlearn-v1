@@ -124,7 +124,7 @@ export default function SyncCenterPage() {
                                 placeholder="ID du dossier racine (ex: 1z...)"
                                 value={rootFolderId}
                                 onChange={(e) => setRootFolderId(e.target.value)}
-                                className="w-full pl-11 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-slate-600 focus:ring-2 focus:ring-brand-orange outline-none transition-all"
+                                className="w-full pl-11 pr-4 py-4 bg-white/20 border border-white/20 rounded-2xl !text-white font-bold placeholder-slate-500 focus:ring-2 focus:ring-brand-orange outline-none transition-all"
                             />
                         </div>
                         <button 
