@@ -55,12 +55,14 @@ export default async function DashboardPage() {
                 </nav>
                 <div className="mt-auto pt-8 border-t border-gray-100 flex flex-col gap-3">
                     <LogoutButton />
+                </div>
                 {isPremium && (
-                    <div className="mt-auto bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] text-emerald-700 text-sm shadow-sm font-black text-center animate-pulse">
+                    <div className="mt-6 bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] text-emerald-700 text-sm shadow-sm font-black text-center animate-pulse">
                         MEMBRE VIP ACTIF ✨
                     </div>
                 )}
             </aside>
+
 
             {/* Main Content Area */}
             <main className="flex-1 overflow-x-hidden">
