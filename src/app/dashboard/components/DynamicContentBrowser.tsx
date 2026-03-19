@@ -121,7 +121,8 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                     {[
                         { id: 'chapters', label: 'Chapitres', icon: FileText },
                         { id: 'evaluations', label: 'Évaluations', icon: Award },
-                        { id: 'annales_officiels', label: 'Annales', icon: Library },
+                        { id: 'annales_officiels', label: 'Annales Officiels', icon: Library },
+                        { id: 'annales_blancs', label: 'Annales Blancs', icon: Library },
                         { id: 'videos', label: 'Vidéos', icon: Video },
                     ].map(tab => (
                         <button
