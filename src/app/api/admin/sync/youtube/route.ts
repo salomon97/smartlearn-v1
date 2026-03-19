@@ -54,14 +54,23 @@ export async function POST(req: Request) {
             }
 
             if (detectedGrade && detectedSubject) {
-                // For YouTube, we usually map to 'chapters' as default video content type
-                // But we can update all contentType mappings that don't have a playlist yet
-                await DriveMapping.updateMany(
-                    { grade_level: { $regex: detectedGrade, $options: 'i' }, subject: detectedSubject },
-                    { playlistId: id }
+                // Créer ou mettre à jour un mapping DÉDIÉ aux vidéos
+                // On utilise findOneAndUpdate pour s'assurer qu'on a une entrée propre pour 'videos'
+                await DriveMapping.findOneAndUpdate(
+                    { 
+                        grade_level: detectedGrade, 
+                        subject: detectedSubject, 
+                        contentType: 'videos' 
+                    },
+                    { 
+                        playlistId: id,
+                        path: `YouTube Playlist: ${playlist.snippet?.title}`
+                    },
+                    { upsert: true, new: true }
                 );
                 count++;
             }
+
         }
 
         return NextResponse.json({ success: true, count });
