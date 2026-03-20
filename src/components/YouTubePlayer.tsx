@@ -49,7 +49,14 @@ export default function YouTubePlayer({ videoUrl, isLocked = false, onVideoEnd }
                 playerRef.current.destroy();
             }
 
-            playerRef.current = new window.YT.Player(containerRef.current, {
+            if (!containerRef.current) return;
+
+            // Créer un div enfant que YouTube pourra remplacer (sans détruire le div géré par React)
+            const playerDiv = document.createElement('div');
+            containerRef.current.innerHTML = '';
+            containerRef.current.appendChild(playerDiv);
+
+            playerRef.current = new window.YT.Player(playerDiv, {
                 videoId: videoId,
                 playerVars: {
                     rel: 0,

@@ -58,10 +58,24 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
         isFreePreview: !!l.isFreePreview
     }));
 
+    // Normalisation des noms pour correspondre au format DriveMapping
+    const GRADE_MAP: Record<string, string> = {
+        '6e': '6ème', '6ème': '6ème', '5e': '5ème', '5ème': '5ème', '4e': '4ème', '4ème': '4ème', '3e': '3ème', '3ème': '3ème',
+        '2nde': 'Seconde', 'seconde': 'Seconde', '1ère': 'Première', 'première': 'Première', 'terminale': 'Terminale', 'tle': 'Terminale'
+    };
+
+    const SUBJECT_MAP: Record<string, string> = {
+        'maths': 'Mathématiques', 'mathématiques': 'Mathématiques',
+        'info': 'Informatique', 'informatique': 'Informatique'
+    };
+
+    const normalizedGrade = GRADE_MAP[course.grade_level?.toLowerCase()] || course.grade_level;
+    const normalizedSubject = SUBJECT_MAP[course.subject?.toLowerCase()] || course.subject;
+
     // 2.5 Fetch dynamique depuis YouTube si un mapping existe
     const mapping = await DriveMapping.findOne({
-        grade_level: course.grade_level,
-        subject: course.subject,
+        grade_level: normalizedGrade,
+        subject: normalizedSubject,
         contentType: 'videos'
     });
 
