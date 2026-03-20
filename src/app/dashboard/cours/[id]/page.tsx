@@ -3,6 +3,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import Course from "@/models/Course";
 import Lesson from "@/models/Lesson";
+import DriveMapping from "@/models/DriveMapping";
+import { getGoogleAuth } from "@/lib/googleAuth";
+import { google } from "googleapis";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -46,7 +49,7 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
                                 .sort({ order: 1 })
                                 .lean();
                                 
-    const lessons = lessonsRaw.map((l: any) => ({
+    let lessons = lessonsRaw.map((l: any) => ({
         _id: l._id.toString(),
         title: l.title,
         videoUrl: l.videoUrl, // On passe l'URL, le client gère le paywall
@@ -54,6 +57,40 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
         order: l.order,
         isFreePreview: !!l.isFreePreview
     }));
+
+    // 2.5 Fetch dynamique depuis YouTube si un mapping existe
+    const mapping = await DriveMapping.findOne({
+        grade_level: course.grade_level,
+        subject: course.subject,
+        contentType: 'videos'
+    });
+
+    if (mapping && mapping.playlistId) {
+        try {
+            const auth = await getGoogleAuth();
+            const yt = google.youtube({ version: 'v3', auth });
+
+            const response = await yt.playlistItems.list({
+                playlistId: mapping.playlistId,
+                part: ['snippet', 'contentDetails'],
+                maxResults: 50,
+            });
+
+            if (response.data.items && response.data.items.length > 0) {
+                // Remplacer les leçons par le contenu dynamique YouTube
+                lessons = response.data.items.map((item, index) => ({
+                    _id: item.contentDetails?.videoId || `yt-${index}`,
+                    title: item.snippet?.title || `Vidéo ${index + 1}`,
+                    videoUrl: `https://www.youtube.com/watch?v=${item.contentDetails?.videoId}`,
+                    pdfUrl: '', 
+                    order: index + 1,
+                    isFreePreview: index === 0, // 1ère vidéo gratuite
+                }));
+            }
+        } catch (error) {
+            console.error("Erreur récupération YouTube dynamique:", error);
+        }
+    }
 
     // 3. Déterminer si l'utilisateur est Premium (VIP)
     const isPremium = session?.user?.isPremium || false;
