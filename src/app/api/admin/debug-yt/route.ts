@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
-import getGoogleAuth from '@/lib/googleAuth';
+import { getGoogleAuth } from '@/lib/googleAuth';
 
 export const dynamic = 'force-dynamic';
 
