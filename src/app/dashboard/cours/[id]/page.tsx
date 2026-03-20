@@ -44,67 +44,19 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
         return notFound();
     }
 
-    // 2. Fetch des leçons
+    // 2. Fetch des leçons depuis la base de données
     const lessonsRaw = await Lesson.find({ courseId: courseId })
                                 .sort({ order: 1 })
                                 .lean();
                                 
-    let lessons = lessonsRaw.map((l: any) => ({
+    const lessons = lessonsRaw.map((l: any) => ({
         _id: l._id.toString(),
         title: l.title,
-        videoUrl: l.videoUrl, // On passe l'URL, le client gère le paywall
+        videoUrl: l.videoUrl, // L'URL est maintenant persistée dans la BDD par la synchronisation
         pdfUrl: l.pdfUrl,
         order: l.order,
         isFreePreview: !!l.isFreePreview
     }));
-
-    // Normalisation des noms pour correspondre au format DriveMapping
-    const GRADE_MAP: Record<string, string> = {
-        '6e': '6ème', '6ème': '6ème', '5e': '5ème', '5ème': '5ème', '4e': '4ème', '4ème': '4ème', '3e': '3ème', '3ème': '3ème',
-        '2nde': 'Seconde', 'seconde': 'Seconde', '1ère': 'Première', 'première': 'Première', 'terminale': 'Terminale', 'tle': 'Terminale'
-    };
-
-    const SUBJECT_MAP: Record<string, string> = {
-        'maths': 'Mathématiques', 'mathématiques': 'Mathématiques',
-        'info': 'Informatique', 'informatique': 'Informatique'
-    };
-
-    const normalizedGrade = GRADE_MAP[course.grade_level?.toLowerCase()] || course.grade_level;
-    const normalizedSubject = SUBJECT_MAP[course.subject?.toLowerCase()] || course.subject;
-
-    // 2.5 Fetch dynamique depuis YouTube si un mapping existe
-    const mapping = await DriveMapping.findOne({
-        grade_level: normalizedGrade,
-        subject: normalizedSubject,
-        contentType: 'videos'
-    });
-
-    if (mapping && mapping.playlistId) {
-        try {
-            const auth = await getGoogleAuth();
-            const yt = google.youtube({ version: 'v3', auth });
-
-            const response = await yt.playlistItems.list({
-                playlistId: mapping.playlistId,
-                part: ['snippet', 'contentDetails'],
-                maxResults: 50,
-            });
-
-            if (response.data.items && response.data.items.length > 0) {
-                // Remplacer les leçons par le contenu dynamique YouTube
-                lessons = response.data.items.map((item, index) => ({
-                    _id: item.contentDetails?.videoId || `yt-${index}`,
-                    title: item.snippet?.title || `Vidéo ${index + 1}`,
-                    videoUrl: `https://www.youtube.com/watch?v=${item.contentDetails?.videoId}`,
-                    pdfUrl: '', 
-                    order: index + 1,
-                    isFreePreview: index === 0, // 1ère vidéo gratuite
-                }));
-            }
-        } catch (error) {
-            console.error("Erreur récupération YouTube dynamique:", error);
-        }
-    }
 
     // 3. Déterminer si l'utilisateur est Premium (VIP)
     const isPremium = session?.user?.isPremium || false;

@@ -55,7 +55,6 @@ export async function POST(req: Request) {
 
             if (detectedGrade && detectedSubject) {
                 // Créer ou mettre à jour un mapping DÉDIÉ aux vidéos
-                // On utilise findOneAndUpdate pour s'assurer qu'on a une entrée propre pour 'videos'
                 await DriveMapping.findOneAndUpdate(
                     { 
                         grade_level: detectedGrade, 
@@ -68,6 +67,59 @@ export async function POST(req: Request) {
                     },
                     { upsert: true, new: true }
                 );
+
+                // --- NOUVEAUTÉ : Peupler directement la collection Lesson pour éviter l'appel API Youtube en Front ---
+                try {
+                    const Course = (await import('@/models/Course')).default;
+                    const Lesson = (await import('@/models/Lesson')).default;
+
+                    // Chercher le cours correspondant (ex: '6e' au lieu de '6ème')
+                    const gradeAlternatives = 
+                        detectedGrade === '6ème' ? ['6e', '6ème'] :
+                        detectedGrade === '5ème' ? ['5e', '5ème'] :
+                        detectedGrade === '4ème' ? ['4e', '4ème'] :
+                        detectedGrade === '3ème' ? ['3e', '3ème'] :
+                        detectedGrade === 'Seconde' ? ['2nde', 'seconde', 'Seconde'] :
+                        detectedGrade === 'Première' ? ['1ère', 'première', 'Première'] :
+                        detectedGrade === 'Terminale' ? ['terminale', 'tle', 'Terminale'] : [detectedGrade];
+                    
+                    const subjectAlternatives = 
+                        detectedSubject === 'Mathématiques' ? ['Mathématiques', 'maths', 'mathématiques'] :
+                        detectedSubject === 'Informatique' ? ['Informatique', 'info', 'informatique'] : [detectedSubject];
+
+                    const course = await Course.findOne({
+                        grade_level: { $in: gradeAlternatives },
+                        subject: { $in: subjectAlternatives }
+                    });
+
+                    if (course) {
+                        const pItems = await youtube.playlistItems.list({
+                            playlistId: id,
+                            part: ['snippet', 'contentDetails'],
+                            maxResults: 50
+                        });
+                        
+                        const videos = pItems.data.items || [];
+                        if (videos.length > 0) {
+                            // Nettoyer les anciennes leçons vidéos pour ce cours si on re-synchronise
+                            await Lesson.deleteMany({ courseId: course._id });
+
+                            const lessonsToInsert = videos.map((v, i) => ({
+                                courseId: course._id,
+                                title: v.snippet?.title || `Vidéo ${i+1}`,
+                                videoUrl: `https://www.youtube.com/watch?v=${v.contentDetails?.videoId}`,
+                                pdfUrl: '',
+                                order: i + 1,
+                                isFreePreview: i === 0,
+                            }));
+
+                            await Lesson.insertMany(lessonsToInsert);
+                        }
+                    }
+                } catch (err: any) {
+                    console.error("Erreur insertion leçons BDD lors du sync YouTube:", err.message);
+                }
+
                 count++;
             }
 
