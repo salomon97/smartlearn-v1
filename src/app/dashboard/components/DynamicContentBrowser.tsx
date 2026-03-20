@@ -22,7 +22,7 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
     useEffect(() => {
         async function fetchMappings() {
             try {
-                const res = await fetch("/api/user/content");
+                const res = await fetch(`/api/user/content?t=${Date.now()}`);
                 const data = await res.json();
                 if (res.ok) {
                     setMappings(data.mappings);
@@ -52,16 +52,16 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
 
                 let url = "";
                 if (selectedType === "videos") {
-                    // Logique YouTube (à implémenter si on ajoute des playlists au mapping)
+                    // Logique YouTube
                     if (mapping.playlistId) {
-                        url = `/api/user/content/youtube?playlistId=${mapping.playlistId}`;
+                        url = `/api/user/content/youtube?playlistId=${mapping.playlistId}&t=${Date.now()}`;
                     } else {
                         setItems([]);
                         return;
                     }
                 } else {
                     // Logique Drive
-                    url = `/api/user/content/drive?folderId=${mapping.folderId}`;
+                    url = `/api/user/content/drive?folderId=${mapping.folderId}&t=${Date.now()}`;
                 }
 
                 if (url) {
