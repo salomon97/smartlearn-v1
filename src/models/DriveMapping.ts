@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, models } from 'mongoose';
 export interface IDriveMapping extends Document {
     grade_level: string;     // e.g. '6e', '1ère_C', 'TleTI'
     subject: string;         // 'Mathématiques' or 'Informatique'
-    contentType: 'chapters' | 'evaluations' | 'annales_officiels' | 'annales_blancs' | 'library_manuals' | 'library_ref' | 'root';
+    contentType: 'chapters' | 'evaluations' | 'annales_officiels' | 'annales_blancs' | 'library_manuals' | 'library_ref' | 'root' | 'videos';
     folderId: string;        // ID Google Drive
     path: string;            // Chemin relatif pour debug
     playlistId?: string;     // ID Playlist YouTube (optionnel)
@@ -18,7 +18,7 @@ const DriveMappingSchema = new Schema<IDriveMapping>(
         contentType: { 
             type: String, 
             required: true, 
-            enum: ['chapters', 'evaluations', 'annales_officiels', 'annales_blancs', 'library_manuals', 'library_ref', 'root'] 
+            enum: ['chapters', 'evaluations', 'annales_officiels', 'annales_blancs', 'library_manuals', 'library_ref', 'root', 'videos'] 
         },
         folderId: { type: String, required: true },
         path: { type: String },
