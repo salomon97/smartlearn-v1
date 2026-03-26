@@ -72,7 +72,7 @@ export async function POST(req: Request) {
                                         title: targetTitle,
                                         description: `Vidéos de cours SmartLearn pour : ${targetTitle}`
                                     },
-                                    status: { privacyStatus: 'public' }
+                                    status: { privacyStatus: 'unlisted' }
                                 }
                             });
 
