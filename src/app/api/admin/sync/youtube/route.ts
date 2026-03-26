@@ -36,93 +36,124 @@ export async function POST(req: Request) {
         });
 
         const playlists = response.data.items || [];
-        let count = 0;
+        
+        // --- NOUVEAUTÉ : Analyse des playlists manquantes par rapport au curriculum ---
+        const targetGrades = ['6ème', '5ème', '4ème', '3ème', 'Seconde', 'Première', 'Terminale'];
+        const targetSubjects = ['Mathématiques', 'Informatique'];
+        
+        const existingMappings = await DriveMapping.find({ contentType: 'videos' });
+        const existingPairs = new Set(existingMappings.map(m => `${m.grade_level}-${m.subject}`));
 
-        for (const playlist of playlists) {
-            const title = playlist.snippet?.title?.toLowerCase() || "";
-            const id = playlist.id!;
+        for (const grade of targetGrades) {
+            for (const subject of targetSubjects) {
+                const pairKey = `${grade}-${subject}`;
+                
+                // Si la playlist n'est pas déjà mappée en BDD
+                if (!existingPairs.has(pairKey)) {
+                    // On vérifie si elle existe déjà sur YouTube (par son nom)
+                    const targetTitle = `${subject} - ${grade}`;
+                    const foundOnYoutube = playlists.find(p => p.snippet?.title === targetTitle);
 
-            let detectedGrade = "";
-            let detectedSubject = "";
+                    if (foundOnYoutube) {
+                        // On lie simplement la playlist existante
+                        await DriveMapping.findOneAndUpdate(
+                            { grade_level: grade, subject: subject, contentType: 'videos' },
+                            { playlistId: foundOnYoutube.id, path: `YouTube Playlist: ${targetTitle}` },
+                            { upsert: true }
+                        );
+                        console.log(`✅ Playlist liée (existante sur YT) : ${targetTitle}`);
+                    } else {
+                        // CRÉATION de la playlist sur YouTube
+                        try {
+                            const newPlaylist = await youtube.playlists.insert({
+                                part: ['snippet', 'status'],
+                                requestBody: {
+                                    snippet: {
+                                        title: targetTitle,
+                                        description: `Vidéos de cours SmartLearn pour : ${targetTitle}`
+                                    },
+                                    status: { privacyStatus: 'public' }
+                                }
+                            });
 
-            // Simple title matching
-            for (const [key, val] of Object.entries(GRADE_MAP)) {
-                if (title.includes(key.toLowerCase())) detectedGrade = val;
-            }
-            for (const [key, val] of Object.entries(SUBJECT_MAP)) {
-                if (title.includes(key.toLowerCase())) detectedSubject = val;
-            }
-
-            if (detectedGrade && detectedSubject) {
-                // Créer ou mettre à jour un mapping DÉDIÉ aux vidéos
-                await DriveMapping.findOneAndUpdate(
-                    { 
-                        grade_level: detectedGrade, 
-                        subject: detectedSubject, 
-                        contentType: 'videos' 
-                    },
-                    { 
-                        playlistId: id,
-                        path: `YouTube Playlist: ${playlist.snippet?.title}`
-                    },
-                    { upsert: true, new: true }
-                );
-
-                // --- NOUVEAUTÉ : Peupler directement la collection Lesson pour éviter l'appel API Youtube en Front ---
-                try {
-                    const Course = (await import('@/models/Course')).default;
-                    const Lesson = (await import('@/models/Lesson')).default;
-
-                    // Chercher le cours correspondant (ex: '6e' au lieu de '6ème')
-                    const gradeAlternatives = 
-                        detectedGrade === '6ème' ? ['6e', '6ème'] :
-                        detectedGrade === '5ème' ? ['5e', '5ème'] :
-                        detectedGrade === '4ème' ? ['4e', '4ème'] :
-                        detectedGrade === '3ème' ? ['3e', '3ème'] :
-                        detectedGrade === 'Seconde' ? ['2nde', 'seconde', 'Seconde'] :
-                        detectedGrade === 'Première' ? ['1ère', 'première', 'Première'] :
-                        detectedGrade === 'Terminale' ? ['terminale', 'tle', 'Terminale'] : [detectedGrade];
-                    
-                    const subjectAlternatives = 
-                        detectedSubject === 'Mathématiques' ? ['Mathématiques', 'maths', 'mathématiques'] :
-                        detectedSubject === 'Informatique' ? ['Informatique', 'info', 'informatique'] : [detectedSubject];
-
-                    const course = await Course.findOne({
-                        grade_level: { $in: gradeAlternatives },
-                        subject: { $in: subjectAlternatives }
-                    });
-
-                    if (course) {
-                        const pItems = await youtube.playlistItems.list({
-                            playlistId: id,
-                            part: ['snippet', 'contentDetails'],
-                            maxResults: 50
-                        });
-                        
-                        const videos = pItems.data.items || [];
-                        if (videos.length > 0) {
-                            // Nettoyer les anciennes leçons vidéos pour ce cours si on re-synchronise
-                            await Lesson.deleteMany({ courseId: course._id });
-
-                            const lessonsToInsert = videos.map((v, i) => ({
-                                courseId: course._id,
-                                title: v.snippet?.title || `Vidéo ${i+1}`,
-                                videoUrl: `https://www.youtube.com/watch?v=${v.contentDetails?.videoId}`,
-                                pdfUrl: '',
-                                order: i + 1,
-                                isFreePreview: i === 0,
-                            }));
-
-                            await Lesson.insertMany(lessonsToInsert);
+                            if (newPlaylist.data.id) {
+                                await DriveMapping.findOneAndUpdate(
+                                    { grade_level: grade, subject: subject, contentType: 'videos' },
+                                    { playlistId: newPlaylist.data.id, path: `YouTube Playlist (Auto): ${targetTitle}` },
+                                    { upsert: true }
+                                );
+                                // Ajouter à la liste locale pour le traitement des vidéos juste après
+                                playlists.push(newPlaylist.data);
+                                console.log(`🚀 Playlist CRÉÉE automatiquement : ${targetTitle}`);
+                            }
+                        } catch (createErr: any) {
+                            console.error(`❌ Erreur création playlist ${targetTitle}:`, createErr.message);
                         }
                     }
-                } catch (err: any) {
-                    console.error("Erreur insertion leçons BDD lors du sync YouTube:", err.message);
                 }
-
-                count++;
             }
+        }
 
+        let count = 0;
+        // Re-récupérer tous les mappings pour inclure les nouveaux créés
+        const finalMappings = await DriveMapping.find({ contentType: 'videos' });
+
+        for (const mapping of finalMappings) {
+            const id = mapping.playlistId;
+            if (!id) continue;
+
+            const detectedGrade = mapping.grade_level;
+            const detectedSubject = mapping.subject;
+
+            // --- Peupler directement la collection Lesson pour éviter l'appel API Youtube en Front ---
+            try {
+                const Course = (await import('@/models/Course')).default;
+                const Lesson = (await import('@/models/Lesson')).default;
+
+                // Chercher le cours correspondant
+                const gradeAlternatives = 
+                    detectedGrade === '6ème' ? ['6e', '6ème'] :
+                    detectedGrade === '5ème' ? ['5e', '5ème'] :
+                    detectedGrade === '4ème' ? ['4e', '4ème'] :
+                    detectedGrade === '3ème' ? ['3e', '3ème'] :
+                    detectedGrade === 'Seconde' ? ['2nde', 'seconde', 'Seconde'] :
+                    detectedGrade === 'Première' ? ['1ère', 'première', 'Première'] :
+                    detectedGrade === 'Terminale' ? ['terminale', 'tle', 'Terminale'] : [detectedGrade];
+                
+                const subjectAlternatives = 
+                    detectedSubject === 'Mathématiques' ? ['Mathématiques', 'maths', 'mathématiques'] :
+                    detectedSubject === 'Informatique' ? ['Informatique', 'info', 'informatique'] : [detectedSubject];
+
+                const course = await Course.findOne({
+                    grade_level: { $in: gradeAlternatives },
+                    subject: { $in: subjectAlternatives }
+                });
+
+                if (course) {
+                    const pItems = await youtube.playlistItems.list({
+                        playlistId: id,
+                        part: ['snippet', 'contentDetails'],
+                        maxResults: 50
+                    });
+                    
+                    const videos = pItems.data.items || [];
+                    if (videos.length > 0) {
+                        await Lesson.deleteMany({ courseId: course._id });
+                        const lessonsToInsert = videos.map((v, i) => ({
+                            courseId: course._id,
+                            title: v.snippet?.title || `Vidéo ${i+1}`,
+                            videoUrl: `https://www.youtube.com/watch?v=${v.contentDetails?.videoId}`,
+                            pdfUrl: '',
+                            order: i + 1,
+                            isFreePreview: i === 0,
+                        }));
+                        await Lesson.insertMany(lessonsToInsert);
+                    }
+                }
+            } catch (err: any) {
+                console.error("Erreur insertion leçons BDD lors du sync YouTube:", err.message);
+            }
+            count++;
         }
 
         return NextResponse.json({ success: true, count });

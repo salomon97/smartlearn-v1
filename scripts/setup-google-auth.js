@@ -5,7 +5,7 @@ const path = require('path');
 
 const SCOPES = [
     'https://www.googleapis.com/auth/drive.readonly',
-    'https://www.googleapis.com/auth/youtube.readonly'
+    'https://www.googleapis.com/auth/youtube'
 ];
 
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
