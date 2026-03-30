@@ -9,7 +9,7 @@ import { getGoogleAuth } from '@/lib/googleAuth';
 // Naming Mapper for Grade Levels & Subjects (YouTube Titles)
 const GRADE_MAP: Record<string, string> = {
     '6e': '6ème', '6ème': '6ème', '5e': '5ème', '5ème': '5ème', '4e': '4ème', '4ème': '4ème', '3e': '3ème', '3ème': '3ème',
-    '2nde': 'Seconde', '1ère': 'Première', 'terminale': 'Terminale', 'tle': 'Terminale'
+    '2nde': '2nde', '1ère': '1ère', 'terminale': 'Terminale', 'tle': 'Terminale'
 };
 
 const SUBJECT_MAP: Record<string, string> = {
@@ -38,7 +38,12 @@ export async function POST(req: Request) {
         const playlists = response.data.items || [];
         
         // --- NOUVEAUTÉ : Analyse des playlists manquantes par rapport au curriculum ---
-        const targetGrades = ['6ème', '5ème', '4ème', '3ème', 'Seconde', 'Première', 'Terminale'];
+        const targetGrades = [
+            '6ème', '5ème', '4ème', '3ème',
+            '2nde A', '2nde C', '2nde E', '2nde TI',
+            '1ère A', '1ère C', '1ère D', '1ère E', '1ère TI',
+            'Terminale A', 'Terminale C', 'Terminale D', 'Terminale E', 'Terminale TI'
+        ];
         const targetSubjects = ['Mathématiques', 'Informatique'];
         
         const existingMappings = await DriveMapping.find({ contentType: 'videos' });
@@ -116,9 +121,9 @@ export async function POST(req: Request) {
                     detectedGrade === '5ème' ? ['5e', '5ème'] :
                     detectedGrade === '4ème' ? ['4e', '4ème'] :
                     detectedGrade === '3ème' ? ['3e', '3ème'] :
-                    detectedGrade === 'Seconde' ? ['2nde', 'seconde', 'Seconde'] :
-                    detectedGrade === 'Première' ? ['1ère', 'première', 'Première'] :
-                    detectedGrade === 'Terminale' ? ['terminale', 'tle', 'Terminale'] : [detectedGrade];
+                    detectedGrade.startsWith('2nde') ? ['2nde', 'seconde', detectedGrade] :
+                    detectedGrade.startsWith('1ère') ? ['1ère', 'première', detectedGrade] :
+                    detectedGrade.startsWith('Terminale') ? ['terminale', 'tle', detectedGrade] : [detectedGrade];
                 
                 const subjectAlternatives = 
                     detectedSubject === 'Mathématiques' ? ['Mathématiques', 'maths', 'mathématiques'] :

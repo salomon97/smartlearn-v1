@@ -59,7 +59,7 @@ export const programs: Program[] = [
       'Maîtriser le dénombrement'
     ],
     modules: ['Équations 2nd degré', 'Dérivation', 'Logarithmes', 'Intégrales simples'],
-    gradeLevels: ['Seconde A', 'Première A', 'Terminale A'],
+    gradeLevels: ['2nde A', '1ère A', 'Terminale A'],
     icon: '🖋️',
     color: 'from-purple-600 to-pink-500'
   },
@@ -76,7 +76,7 @@ export const programs: Program[] = [
       'Analyser des fonctions avancées'
     ],
     modules: ['Vecteurs', 'Homothéties', 'Suites', 'Similitudes', 'Géométrie espace'],
-    gradeLevels: ['Seconde C/D', 'Première C/D', 'Terminale C/D'],
+    gradeLevels: ['2nde C', '1ère C', '1ère D', '1ère E', 'Terminale C', 'Terminale D', 'Terminale E'],
     icon: '🔬',
     color: 'from-emerald-600 to-teal-500'
   },
@@ -93,7 +93,7 @@ export const programs: Program[] = [
       'Comprendre les structures itératives'
     ],
     modules: ['C/Python', 'Sécurité Informatique', 'Multimédia', 'Structures itératives', 'Réseaux IP'],
-    gradeLevels: ['Seconde C/D', 'Première C/D', 'Terminale C/D'],
+    gradeLevels: ['2nde C', '1ère C', '1ère D', '1ère E', 'Terminale C', 'Terminale D', 'Terminale E'],
     icon: '⚙️',
     color: 'from-blue-700 to-indigo-600'
   },
@@ -110,7 +110,7 @@ export const programs: Program[] = [
       'Assurer la maintenance avancée'
     ],
     modules: ['SQL/PHP/JS', 'Algorithmique procédurale', 'HTML/CSS', 'Espaces vectoriels', 'Administration Réseau'],
-    gradeLevels: ['Première TI', 'Terminale TI'],
+    gradeLevels: ['2nde TI', '1ère TI', 'Terminale TI'],
     icon: '🚀',
     color: 'from-brand-orange to-red-500'
   }

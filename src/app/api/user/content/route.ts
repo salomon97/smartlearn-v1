@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from '@/lib/mongoose';
-import DriveMapping from '@/models/DriveMapping';
+import ContentMapping from '@/models/ContentMapping';
 import User from '@/models/User';
 
 export async function GET(req: Request) {
@@ -35,8 +35,7 @@ export async function GET(req: Request) {
         }
 
         // 2. Récupérer tous les mappings pour cette classe
-        // On inclut aussi les mappings 'TOUTES' (ex: manuels scolaires généraux)
-        const contentMappings = await DriveMapping.find({
+        const contentMappings = await ContentMapping.find({
             grade_level: { $in: [user.grade_level, 'TOUTES'] }
         }).sort({ subject: 1, contentType: 1 });
 
