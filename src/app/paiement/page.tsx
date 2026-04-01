@@ -187,7 +187,7 @@ function CheckoutContent() {
                         </p>
 
                         <a
-                            href={CHARIOW_LINK}
+                            href={session?.user && (session.user as any).id ? `${CHARIOW_LINK}?custom_data=${(session.user as any).id}` : CHARIOW_LINK}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full py-4 px-6 rounded-xl bg-[var(--primary-dark)] text-white font-bold text-lg hover:bg-[var(--primary-dark)]/90 transition-all transform hover:-translate-y-1 shadow-lg shadow-[var(--primary-dark)]/30 flex items-center justify-center gap-3 text-center"
