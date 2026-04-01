@@ -31,7 +31,10 @@ export async function GET(req: Request) {
                 cleanPath = cleanPath.substring(0, cleanPath.length - 1);
             }
 
-            const response = await fetch(`https://storage.bunnycdn.com/${zoneName}/${cleanPath}/`, {
+            // Encodage strict pour les accents et caractères spéciaux (ex: 6ème)
+            const encodedPath = cleanPath.split('/').map((segment: string) => encodeURIComponent(segment)).join('/');
+
+            const response = await fetch(`https://storage.bunnycdn.com/${zoneName}/${encodedPath}/`, {
                 headers: {
                     'AccessKey': password as string,
                     'accept': 'application/json'
@@ -46,13 +49,16 @@ export async function GET(req: Request) {
             
             const files = data
                 .filter((item: any) => !item.IsDirectory)
-                .map((item: any) => ({
-                    id: item.Guid || item.ObjectName,
-                    name: item.ObjectName,
-                    // URL publique vers le fichier (pour l'iFrame ou le PDF Viewer)
-                    cdnUrl: `https://${process.env.BUNNY_STORAGE_HOSTNAME}/${cleanPath}/${item.ObjectName}`,
-                    contentType: 'file'
-                }));
+                .map((item: any) => {
+                    const encodedFilePath = `${encodedPath}/${encodeURIComponent(item.ObjectName)}`;
+                    return {
+                        id: item.Guid || item.ObjectName,
+                        name: item.ObjectName,
+                        // URL publique vers le fichier (pour l'iFrame ou le PDF Viewer)
+                        cdnUrl: `https://${process.env.BUNNY_STORAGE_HOSTNAME}/${encodedFilePath}`,
+                        contentType: 'file'
+                    };
+                });
 
             return NextResponse.json({ items: files });
         }
