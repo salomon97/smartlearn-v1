@@ -34,15 +34,22 @@ export async function GET(req: Request) {
             // Encodage strict pour les accents et caractères spéciaux (ex: 6ème)
             const encodedPath = cleanPath.split('/').map((segment: string) => encodeURIComponent(segment)).join('/');
 
-            const response = await fetch(`https://storage.bunnycdn.com/${zoneName}/${encodedPath}/`, {
+            const fetchUrl = `https://storage.bunnycdn.com/${zoneName}/${encodedPath}/`;
+            const response = await fetch(fetchUrl, {
                 headers: {
-                    'AccessKey': password as string,
+                    'AccessKey': password || '',
                     'accept': 'application/json'
                 }
             });
 
             if (!response.ok) {
-                 return NextResponse.json({ message: "Dossier introuvable sur Bunny.net" }, { status: 404 });
+                // DEBUG: Provide exactly what Vercel sees
+                console.error(`[Bunny Error] Status: ${response.status}, URL: ${fetchUrl}, ENV_ZONE: ${!!zoneName}, ENV_PASS: ${!!password}`);
+                
+                return NextResponse.json({ 
+                    message: "Dossier introuvable sur Bunny.net", 
+                    error: `Bunny Http ${response.status}. Zone config: ${!!zoneName}, URL: ${fetchUrl}` 
+                }, { status: 404 });
             }
 
             const data = await response.json();
