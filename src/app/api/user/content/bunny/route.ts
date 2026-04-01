@@ -75,7 +75,7 @@ export async function GET(req: Request) {
              const libraryId = process.env.BUNNY_STREAM_LIBRARY_ID;
              const apiKey = process.env.BUNNY_API_KEY; 
 
-             const response = await fetch(`https://video.bunnycdn.com/library/${libraryId}/videos?collectionId=${collectionId}`, {
+             const response = await fetch(`https://video.bunnycdn.com/library/${libraryId}/videos?collection=${collectionId}`, {
                  headers: {
                      'AccessKey': apiKey as string,
                      'accept': 'application/json'
