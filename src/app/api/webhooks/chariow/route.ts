@@ -17,12 +17,32 @@ export async function POST(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
         
-        // Obtenir le corps de la requête envoyée par Chariow
+        // 1. Connexion à la base de données
+        const mongooseInstance = await connectToDatabase();
+
+        // 2. Obtenir le corps de la requête envoyée par Chariow
         const body = await req.json().catch(() => ({}));
 
         console.log('🔔 [WEBHOOK CHARIOW] Nouveau Pulse reçu :', JSON.stringify(body, null, 2));
 
-        // Chariow envoie souvent les données dans un champ 'data'
+        // 3. Enregistrer la requête brute pour le diagnostic (TRÈS IMPORTANT)
+        // Cela nous permettra de voir exactement ce que Chariow envoie si l'activation échoue.
+        try {
+            const db = (mongooseInstance as any).connection.db;
+            await db.collection('webhook_logs').insertOne({
+                receivedAt: new Date(),
+                method: 'POST',
+                url: req.url,
+                body: body,
+                query: Object.fromEntries(searchParams.entries()),
+                headers: Object.fromEntries(req.headers.entries())
+            });
+            console.log('📝 [WEBHOOK] Log enregistré dans la collection webhook_logs');
+        } catch (logErr) {
+            console.error('❌ Erreur lors de l\'enregistrement du log Webhook :', logErr);
+        }
+
+        // 4. Analyser les données
         const data = body.data || body;
 
         // On cherche l'ID de l'utilisateur (custom_data) dans plusieurs endroits possibles
