@@ -2,37 +2,46 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
 
+export async function GET(req: Request) {
+    const { searchParams } = new URL(req.url);
+    const purchase = searchParams.get('purchase');
+
+    console.log('🔔 [REDIRECT CHARIOW] Retour utilisateur après achat :', purchase);
+
+    // Rediriger vers la page de paiement avec success=true pour déclencher le polling
+    // du côté client qui vérifiera l'activation effective du compte VIP.
+    return NextResponse.redirect(new URL('/paiement?success=true', req.url));
+}
+
 export async function POST(req: Request) {
     try {
+        const { searchParams } = new URL(req.url);
+        
         // Obtenir le corps de la requête envoyée par Chariow
-        const body = await req.json();
+        const body = await req.json().catch(() => ({}));
 
         console.log('🔔 [WEBHOOK CHARIOW] Nouveau Pulse reçu :', JSON.stringify(body, null, 2));
-
-        // Note : En production, nous devrions vérifier la signature secrète ici.
-        // Comme elle n'est pas encore visible, nous laissons passer pour les tests.
 
         // Chariow envoie souvent les données dans un champ 'data'
         const data = body.data || body;
 
-        // Identifier si c'est bien une vente réussie
-        // L'événement s'appelle généralement 'sale.successful' ou similaire
-        // Pour être sûr, on accepte le test tant qu'il y a un custom field
-
-        // -------------------------------------------------------------
-        // LOGIQUE D'AFFILIATION & D'ACTIVATION VIP
-        // -------------------------------------------------------------
-
-        // Sur Chariow, on va passer l'ID de notre utilisateur dans un champ personnalisé (custom_field ou metadata)
-        // Par exemple: https://...mychariow.shop/... ?custom_data=ID_DE_L_USER
-        const customData = data.custom_data || data.metadata?.custom_data || null;
+        // On cherche l'ID de l'utilisateur (custom_data) dans plusieurs endroits possibles
+        const customData = data.custom_data || 
+                          data.metadata?.custom_data || 
+                          searchParams.get('custom_data') || 
+                          null;
 
         if (!customData) {
-            console.log('⚠️ [WEBHOOK] Aucun custom_data (ID utilisateur) trouvé. Ceci est peut-être juste un test Pulse.');
-            return NextResponse.json({ message: 'Webhook reçu, mais pas de custom_data', success: true });
+            console.log('⚠️ [WEBHOOK] Aucun custom_data (ID utilisateur) trouvé. On vérifie les métadonnées...');
+            // Parfois c'est dans metadata directement
+            if (body.metadata && body.metadata.custom_data) {
+                console.log('✅ Trouvé dans body.metadata.custom_data');
+            } else {
+                return NextResponse.json({ message: 'Webhook reçu, mais pas de custom_data', success: true });
+            }
         }
 
-        const userId = customData;
+        const userId = customData || body.metadata?.custom_data;
 
         // 1. Connexion à la base de données
         await connectToDatabase();
