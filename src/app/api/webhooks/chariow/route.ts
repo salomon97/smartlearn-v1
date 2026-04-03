@@ -44,6 +44,7 @@ export async function POST(req: Request) {
 
         // 4. Analyser les données
         const data = body.data || body;
+        const customerEmail = data.customer?.email;
 
         // On cherche l'ID de l'utilisateur (custom_data) dans plusieurs endroits possibles
         const customData = data.custom_data || 
@@ -51,26 +52,26 @@ export async function POST(req: Request) {
                           searchParams.get('custom_data') || 
                           null;
 
-        if (!customData) {
-            console.log('⚠️ [WEBHOOK] Aucun custom_data (ID utilisateur) trouvé. On vérifie les métadonnées...');
-            // Parfois c'est dans metadata directement
-            if (body.metadata && body.metadata.custom_data) {
-                console.log('✅ Trouvé dans body.metadata.custom_data');
-            } else {
-                return NextResponse.json({ message: 'Webhook reçu, mais pas de custom_data', success: true });
-            }
-        }
-
         const userId = customData || body.metadata?.custom_data;
 
         // 1. Connexion à la base de données
         await connectToDatabase();
 
+        let user = null;
+
         // 2. Trouver l'utilisateur qui a payé
-        const user = await User.findById(userId);
+        if (userId) {
+            user = await User.findById(userId);
+        }
+
+        // Si l'utilisateur n'est pas trouvé par ID, on essaie l'email renvoyé par Chariow
+        if (!user && customerEmail) {
+            console.log(`⚠️ [WEBHOOK] ID non trouvé ou invalide. Recherche de l'utilisateur par e-mail : ${customerEmail}`);
+            user = await User.findOne({ email: { $regex: new RegExp(`^${customerEmail}$`, 'i') } });
+        }
 
         if (!user) {
-            console.log(`❌ [WEBHOOK] Utilisateur non trouvé avec l'ID: ${userId}`);
+            console.log(`❌ [WEBHOOK] Utilisateur non trouvé (ID: ${userId}, Email: ${customerEmail})`);
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
