@@ -14,7 +14,7 @@ const generateOTP = () => {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password, grade_level, role } = body;
+        const { name, email, password, grade_level, role, parrainId } = body;
 
         // Validation stricte
         if (!name || !email || !password) {
@@ -83,6 +83,7 @@ export async function POST(request: Request) {
             isPremium: false,
             isVerified: false,
             codeAffiliation: newCodeAffiliation,
+            parrainId: parrainId || undefined,
             registrationIp: ip
         });
 

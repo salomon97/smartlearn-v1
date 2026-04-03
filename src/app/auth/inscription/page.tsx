@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { classesDisponibles } from "@/lib/constants";
@@ -13,8 +13,18 @@ export default function RegisterPage() {
         password: "",
         confirmPassword: "",
         role: "student",
-        grade_level: classesDisponibles[0]
+        grade_level: classesDisponibles[0],
+        parrainId: ""
     });
+
+    // Capture du lien d'affiliation (?ref=...)
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const ref = params.get("ref");
+        if (ref) {
+            setFormData(prev => ({ ...prev, parrainId: ref }));
+        }
+    }, []);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
