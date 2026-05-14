@@ -1,0 +1,4 @@
+# Portfolio statique — aucune compilation.
+[build]
+  command = "echo static"
+  publish = "."

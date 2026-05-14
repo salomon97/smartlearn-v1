@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Salomon Foe — Développeur Full-Stack & Créatif Tech</title>
+<meta name="description" content="Salomon Foe — Développeur full-stack et créatif tech. Conception et déploiement de plateformes web, applications et solutions digitales modernes. Fondateur de SmartLearn." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --navy:#102A43; --navy-2:#1B3A57; --teal:#0F8B7E; --teal-d:#0B6B61;
+    --ink:#1F2933; --grey:#6B7280; --grey-l:#9AA3AF;
+    --bg:#F7F8FA; --card:#FFFFFF; --rule:#E4E7EB; --light:#EAF3F2;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  .kicker{
+    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--teal-d);margin-bottom:14px;
+  }
+  h2.sec{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-.01em;margin-bottom:8px;}
+  .sec-sub{color:var(--grey);font-size:15px;margin-bottom:38px;max-width:560px;}
+  section{padding:78px 0;}
+
+  /* ── NAV ── */
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(247,248,250,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;}
+  .brand{font-weight:800;color:var(--navy);font-size:17px;letter-spacing:-.01em;}
+  .brand span{color:var(--teal);}
+  .nav-links{display:flex;gap:30px;}
+  .nav-links a{font-size:14px;font-weight:500;color:var(--grey);transition:color .15s;}
+  .nav-links a:hover{color:var(--teal-d);}
+  .nav-cta{
+    font-size:13px;font-weight:600;color:#fff;background:var(--navy);
+    padding:9px 18px;border-radius:8px;transition:background .15s;
+  }
+  .nav-cta:hover{background:var(--teal-d);}
+
+  /* ── HERO ── */
+  .hero{padding:84px 0 70px;}
+  .hero-grid{display:grid;grid-template-columns:1.45fr .85fr;gap:54px;align-items:center;}
+  .hero h1{font-size:46px;line-height:1.1;font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:14px;}
+  .hero h1 .accent{color:var(--teal);}
+  .hero .role{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:18px;}
+  .hero p.lead{font-size:16px;color:var(--grey);max-width:520px;margin-bottom:30px;}
+  .btns{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-size:14px;font-weight:600;padding:13px 24px;border-radius:9px;transition:.15s;
+    display:inline-block;
+  }
+  .btn-primary{background:var(--teal);color:#fff;}
+  .btn-primary:hover{background:var(--teal-d);}
+  .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--rule);}
+  .btn-ghost:hover{border-color:var(--navy);}
+  .photo-card{
+    position:relative;border-radius:18px;overflow:hidden;
+    box-shadow:0 22px 50px -16px rgba(16,42,67,.32);
+    border:1px solid var(--rule);
+  }
+  .photo-card img{width:100%;display:block;}
+  .photo-badge{
+    position:absolute;left:14px;bottom:14px;background:rgba(16,42,67,.92);
+    color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;
+    backdrop-filter:blur(4px);
+  }
+  .photo-badge b{color:#5FD0C4;}
+
+  /* ── ABOUT ── */
+  .about{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+  .about p{font-size:15.5px;color:var(--ink);margin-bottom:14px;}
+  .about p:last-child{margin-bottom:0;}
+  .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-self:start;}
+  .fact{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:18px 18px;}
+  .fact .n{font-size:22px;font-weight:800;color:var(--navy);}
+  .fact .l{font-size:12.5px;color:var(--grey);margin-top:2px;}
+
+  /* ── PROJECTS ── */
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+  .card{
+    background:var(--card);border:1px solid var(--rule);border-radius:14px;
+    padding:26px 24px;transition:transform .16s,box-shadow .16s;
+    display:flex;flex-direction:column;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -18px rgba(16,42,67,.28);}
+  .card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .card h3{font-size:18px;font-weight:700;color:var(--navy);}
+  .status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em;}
+  .s-live{background:#E3F4EC;color:#1B7A4B;}
+  .s-dev{background:#FFF3DC;color:#9A6B12;}
+  .s-concept{background:var(--light);color:var(--teal-d);}
+  .s-past{background:#EEF0F2;color:var(--grey);}
+  .card .desc{font-size:14px;color:var(--grey);margin:8px 0 16px;flex:1;}
+  .tech{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
+  .tech span{
+    font-size:11.5px;font-weight:600;color:var(--teal-d);background:var(--light);
+    padding:4px 10px;border-radius:6px;
+  }
+  .card .link{font-size:13px;font-weight:600;color:var(--teal-d);}
+  .card .link.muted{color:var(--grey-l);}
+
+  /* ── SKILLS ── */
+  .skills{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+  .skill-col h4{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
+  .skill-col ul{list-style:none;}
+  .skill-col li{font-size:14px;color:var(--ink);padding:5px 0;border-bottom:1px solid var(--rule);}
+  .skill-col li:last-child{border-bottom:none;}
+
+  /* ── SERVICES ── */
+  .serv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .serv{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:24px 22px;}
+  .serv .ic{
+    width:38px;height:38px;border-radius:9px;background:var(--light);color:var(--teal-d);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;
+  }
+  .serv h4{font-size:15.5px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .serv p{font-size:13.5px;color:var(--grey);}
+
+  /* ── CONTACT ── */
+  .contact{background:var(--navy);color:#fff;}
+  .contact h2.sec{color:#fff;}
+  .contact .sec-sub{color:#9FB3C8;}
+  .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:680px;}
+  .c-item{
+    display:flex;flex-direction:column;gap:2px;background:var(--navy-2);
+    border:1px solid #2C4257;border-radius:12px;padding:16px 18px;transition:border-color .15s;
+  }
+  .c-item:hover{border-color:#5FD0C4;}
+  .c-item .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5FD0C4;}
+  .c-item .val{font-size:14.5px;font-weight:500;color:#fff;word-break:break-word;}
+
+  footer{background:var(--navy);color:#7E93A8;font-size:12.5px;padding:26px 0;border-top:1px solid #2C4257;text-align:center;}
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:860px){
+    .nav-links{display:none;}
+    .hero-grid{grid-template-columns:1fr;gap:38px;}
+    .photo-card{max-width:300px;}
+    .hero h1{font-size:36px;}
+    .about-grid,.proj-grid,.skill-grid,.serv-grid,.contact-grid{grid-template-columns:1fr;}
+    .facts{grid-template-columns:1fr 1fr;}
+    section{padding:58px 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">Salomon <span>Foe</span></div>
+    <nav class="nav-links">
+      <a href="#projets">Projets</a>
+      <a href="#competences">Compétences</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta">Me contacter</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="kicker">Développeur Full-Stack &amp; Créatif Tech</div>
+      <h1>Je conçois et déploie des <span class="accent">produits digitaux</span> de bout en bout.</h1>
+      <div class="role">Sites &amp; plateformes web · Applications mobiles · Solutions SaaS</div>
+      <p class="lead">
+        Développeur full-stack basé à Douala. J'accompagne startups, institutions et
+        porteurs de projets — du cadrage à la mise en ligne. Fondateur de SmartLearn,
+        une plateforme EdTech en production.
+      </p>
+      <div class="btns">
+        <a href="#projets" class="btn btn-primary">Voir mes projets</a>
+        <a href="#contact" class="btn btn-ghost">Travailler avec moi</a>
+      </div>
+    </div>
+    <div class="photo-card">
+      <img src="salomon.jpg" alt="Salomon Foe" />
+      <div class="photo-badge">Disponible · <b>Freelance &amp; Remote</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="apropos">
+  <div class="wrap">
+    <div class="kicker">À propos</div>
+    <h2 class="sec">Un profil qui couvre toute la chaîne</h2>
+    <div class="about-grid">
+      <div>
+        <p>
+          Je suis développeur full-stack et créatif tech. Ma particularité : je porte un
+          produit du début à la fin — conception, expérience utilisateur, développement,
+          intégration de paiement et déploiement.
+        </p>
+        <p>
+          En tant que fondateur de SmartLearn, j'ai conçu et mis en production une
+          plateforme EdTech complète, et j'architecture actuellement un SaaS multi-tenant
+          pensé pour les environnements à faible connectivité. Autonome et structuré, je
+          livre seul un produit utilisable.
+        </p>
+        <p>
+          Formation : Master 1 en Génie Logiciel (Université de Yaoundé I) et Licence en
+          Informatique (Université de Douala).
+        </p>
+      </div>
+      <div class="facts">
+        <div class="fact"><div class="n">Full-cycle</div><div class="l">Design → code → mise en ligne</div></div>
+        <div class="fact"><div class="n">SmartLearn</div><div class="l">Plateforme EdTech en production</div></div>
+        <div class="fact"><div class="n">Web · Mobile</div><div class="l">Next.js, React, Flutter, Node.js</div></div>
+        <div class="fact"><div class="n">Douala · Remote</div><div class="l">Missions locales &amp; à distance</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projets">
+  <div class="wrap">
+    <div class="kicker">Projets</div>
+    <h2 class="sec">Sélection de réalisations</h2>
+    <p class="sec-sub">Des produits réels, conçus et développés de bout en bout.</p>
+    <div class="proj-grid">
+
+      <div class="card">
+        <div class="top">
+          <h3>SmartLearn edu</h3>
+          <span class="status s-live">En production</span>
+        </div>
+        <p class="desc">
+          Plateforme d'apprentissage en ligne : authentification, intégration de paiement
+          Mobile Money, gestion de contenus et catalogue de 50+ cours en Mathématiques et
+          Informatique alignés sur le programme MINESEC.
+        </p>
+        <div class="tech"><span>Next.js</span><span>React</span><span>Tailwind</span><span>MongoDB</span></div>
+        <a class="link" href="https://smartlearn-edu.org" target="_blank" rel="noopener">Voir le site en ligne →</a>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <h3>SmartLearn School</h3>
+          <span class="status s-dev">En développement</span>
+        </div>
+        <p class="desc">
+          SaaS multi-tenant de gestion scolaire pensé offline-first : modèle de données
+          isolé par établissement, synchronisation hors-ligne et paiement Mobile Money
+          intégré, pour les zones à faible connectivité.
+        </p>
+        <div class="tech"><span>Node.js</span><span>MongoDB</span><span>PWA</span><span>Multi-tenant</span></div>
+        <a class="link muted">Étude de cas à venir</a>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <h3>EduTrack</h3>
+          <span class="status s-concept">Présenté — JSI 2026</span>
+        </div>
+        <p class="desc">
+          Conception d'une application de suivi académique (notes, absences, alertes
+          parents, génération de bulletins PDF) : analyse terrain, wireframes UX et
+          spécifications techniques.
+        </p>
+        <div class="tech"><span>Flutter</span><span>Dart</span><span>UX</span><span>Spécifications</span></div>
+        <a class="link muted">Projet de conception produit</a>
+      </div>
+
+      <div class="card">
+        <div class="top">
+          <h3>Site institutionnel — BUHT</h3>
+          <span class="status s-past">2021 — 2023</span>
+        </div>
+        <p class="desc">
+          Développement et maintenance du site institutionnel, gestion de la présence
+          digitale (réseaux sociaux, WhatsApp Business) et production de communications
+          événementielles.
+        </p>
+        <div class="tech"><span>Web</span><span>HTML/CSS</span><span>Présence digitale</span></div>
+        <a class="link muted">Mission passée</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills" id="competences">
+  <div class="wrap">
+    <div class="kicker">Compétences</div>
+    <h2 class="sec">Stack &amp; savoir-faire</h2>
+    <p class="sec-sub">Des outils modernes, maîtrisés sur des projets réels.</p>
+    <div class="skill-grid">
+      <div class="skill-col">
+        <h4>Frontend &amp; Mobile</h4>
+        <ul>
+          <li>Next.js · React</li>
+          <li>Tailwind CSS · HTML/CSS</li>
+          <li>JavaScript</li>
+          <li>Flutter · Dart</li>
+          <li>Progressive Web Apps</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Backend &amp; Architecture</h4>
+        <ul>
+          <li>Node.js</li>
+          <li>MongoDB · PostgreSQL · SQLite</li>
+          <li>SaaS multi-tenant</li>
+          <li>Offline-first &amp; synchronisation</li>
+          <li>Intégration de paiement (Mobile Money)</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Produit &amp; Outils</h4>
+        <ul>
+          <li>UI/UX · Figma</li>
+          <li>Spécifications &amp; recherche terrain</li>
+          <li>Automatisation de workflows (n8n)</li>
+          <li>Intégration d'IA (Claude)</li>
+          <li>Git · déploiement (Vercel)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="wrap">
+    <div class="kicker">Services</div>
+    <h2 class="sec">Comment je peux vous aider</h2>
+    <p class="sec-sub">Des prestations claires, du besoin au produit livré.</p>
+    <div class="serv-grid">
+      <div class="serv">
+        <div class="ic">&#9632;</div>
+        <h4>Sites &amp; plateformes web</h4>
+        <p>Sites vitrines, applications web et plateformes SaaS modernes, rapides et responsives.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">&#9650;</div>
+        <h4>Applications mobiles &amp; PWA</h4>
+        <p>Applications multiplateformes en Flutter et Progressive Web Apps installables.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">&#9679;</div>
+        <h4>Intégration de paiement</h4>
+        <p>Mise en place de tunnels de paiement, dont Mobile Money (MTN, Orange).</p>
+      </div>
+      <div class="serv">
+        <div class="ic">&#9670;</div>
+        <h4>UI/UX &amp; identité produit</h4>
+        <p>Conception d'interfaces claires et cohérentes, du wireframe au design final.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">&#9711;</div>
+        <h4>Automatisation &amp; IA</h4>
+        <p>Automatisation de workflows et intégration d'outils d'IA pour gagner du temps.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">&#9633;</div>
+        <h4>Accompagnement produit</h4>
+        <p>Du cadrage à la mise en ligne : je vous accompagne sur toute la chaîne.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="kicker" style="color:#5FD0C4;">Contact</div>
+    <h2 class="sec">Parlons de votre projet</h2>
+    <p class="sec-sub">Disponible pour des missions freelance, locales ou à distance.</p>
+    <div class="contact-grid">
+      <a class="c-item" href="mailto:salomonfoe97@smartlearn-edu.org">
+        <span class="lbl">Email</span>
+        <span class="val">salomonfoe97@smartlearn-edu.org</span>
+      </a>
+      <a class="c-item" href="tel:+237691276334">
+        <span class="lbl">Téléphone</span>
+        <span class="val">+237 691 276 334</span>
+      </a>
+      <a class="c-item" href="https://smartlearn-edu.org" target="_blank" rel="noopener">
+        <span class="lbl">Site</span>
+        <span class="val">smartlearn-edu.org</span>
+      </a>
+      <a class="c-item" href="https://linkedin.com/in/salomon-foe" target="_blank" rel="noopener">
+        <span class="lbl">LinkedIn</span>
+        <span class="val">linkedin.com/in/salomon-foe</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Salomon Foe — Développeur Full-Stack &amp; Créatif Tech · Douala, Cameroun
+</footer>
+
+</body>
+</html>
