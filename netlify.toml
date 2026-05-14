@@ -1,0 +1,7 @@
+# Déploiement du portfolio statique (HTML/CSS) — ce n'est PAS une app Next.js.
+# Ce fichier indique à Netlify de publier le dossier portfolio tel quel,
+# sans étape de compilation.
+[build]
+  base = "portfolio"
+  command = "echo 'Site statique — aucune compilation necessaire'"
+  publish = "."
