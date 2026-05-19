@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Générateur du document Stratégie Commerciale Complète GVEO — Bootstrap Edition
+Générateur du document Stratégie Commerciale Complète GVEO
 """
 
 from reportlab.lib.pagesizes import A4
@@ -156,7 +156,7 @@ def build_cover(c, doc):
     c.setFont("Helvetica-Bold", 22)
     c.drawString(MARGIN_L, PAGE_H * 0.62 - 3.2 * cm, "Strategie Commerciale Complete")
     c.setFont("Helvetica-Bold", 18)
-    c.drawString(MARGIN_L, PAGE_H * 0.62 - 4.1 * cm, "Edition Bootstrap — Zero Revenue")
+    c.drawString(MARGIN_L, PAGE_H * 0.62 - 4.1 * cm, "Plan de Lancement Commercial")
 
     c.setFillColor(C_TEAL_LIGHT)
     c.setFont("Helvetica", 11)
@@ -412,7 +412,7 @@ def build_story(styles):
         ("1.", "Strategie Commerciale Globale", "3"),
         ("2.", "Ciblage Geographique et Sectoriel", "4"),
         ("3.", "Strategie Reseaux Sociaux (8 canaux)", "5"),
-        ("4.", "Budgets Bootstrap — Lancement & Operations", "7"),
+        ("4.", "Budgets — Lancement & Operations", "7"),
         ("5.", "Plan de Prospection Terrain", "8"),
         ("6.", "KPIs et Indicateurs de Performance", "9"),
         ("7.", "Calendrier d'Execution — 6 Mois", "10"),
@@ -678,12 +678,12 @@ def build_story(styles):
 
     story.append(PageBreak())
 
-    # ── SECTION 4 : BUDGETS BOOTSTRAP ───────────────────────────────────────────
-    section_header(story, "04", "Budgets Bootstrap — Lancement & Operations", styles)
-    alert_box(story, "Contexte Zero Revenue — Edition Economique", [
-        "Ces budgets sont calcules pour une entreprise sans revenue actuel.",
-        "Priorite absolue : canaux gratuits/organiques. Les depenses payantes n'interviennent qu'en Phase 2.",
-        "Tout ce qui peut etre fait en interne le sera en interne. Sous-traitance minimale.",
+    # ── SECTION 4 : BUDGETS LANCEMENT ───────────────────────────────────────────
+    section_header(story, "04", "Budgets — Lancement & Operations", styles)
+    alert_box(story, "Contexte de Lancement — Investissement Optimise", [
+        "Ces budgets sont calibres pour une phase de lancement avec des ressources controlees.",
+        "Priorite absolue : canaux organiques a fort impact. Les depenses payantes n'interviennent qu'en Phase 2.",
+        "Tout ce qui peut etre realise en interne le sera en interne. Sous-traitance minimale.",
     ], styles, C_ORANGE)
 
     story.append(Paragraph("Budget Lancement (Unique — Mois 0)", styles['h2']))
@@ -921,7 +921,7 @@ def build_story(styles):
     section_header(story, "08", "Priorisation Strategique", styles)
     story.append(Paragraph(
         "La matrice de priorisation classe chaque action selon son impact commercial "
-        "vs son cout en temps/argent. En mode bootstrap, on execute d'abord les actions "
+        "vs son cout en temps/argent. En phase de lancement, on execute d'abord les actions "
         "a fort impact et faible cout.",
         styles['body']
     ))
@@ -946,11 +946,11 @@ def build_story(styles):
         col_widths=[5 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm, 3 * cm]
     )
 
-    info_box(story, "Regle d'Or Bootstrap", [
-        "Faites d'abord ce qui est GRATUIT et a FORT IMPACT : terrain + LinkedIn + WhatsApp",
-        "Mesurez les resultats a chaque fin de mois avant d'investir de l'argent",
-        "N'investissez en publicite payante que lorsque vous avez valide le message qui convertit en organique",
-        "Un euro investi en prospection terrain rapporte plus qu'un euro en pub au stade actuel",
+    info_box(story, "Regle d'Or Commerciale", [
+        "Faites d'abord ce qui est a FORT IMPACT : terrain + LinkedIn + WhatsApp",
+        "Mesurez les resultats a chaque fin de mois avant d'intensifier les investissements",
+        "N'activez la publicite payante que lorsque le message qui convertit est valide en organique",
+        "Un franc investi en prospection terrain rapporte plus qu'un franc en publicite au stade de lancement",
     ], styles)
     story.append(PageBreak())
 
@@ -1008,7 +1008,7 @@ def build_story(styles):
     # ── SECTION 10 : PLAN OPERATIONNEL & ROI ────────────────────────────────────
     section_header(story, "10", "Plan Operationnel et ROI", styles)
     story.append(Paragraph(
-        "Projection financiere realiste sur 6 mois en mode bootstrap, avec scenarios "
+        "Projection financiere realiste sur 6 mois pour la phase de lancement, avec scenarios "
         "pessimiste, realiste et optimiste.",
         styles['body']
     ))
@@ -1075,7 +1075,7 @@ def build_story(styles):
     section_header(story, "12", "Strategie Low-Budget vers Scale", styles)
     story.append(Paragraph(
         "La trajectoire de croissance d'une startup zero-revenue est bien documentee. "
-        "Voici le chemin de GVEO de la phase bootstrap vers la croissance acceleree.",
+        "Voici le chemin de GVEO de la phase de lancement vers la croissance acceleree.",
         styles['body']
     ))
     sp(story, 6)
@@ -1307,10 +1307,10 @@ def build_story(styles):
     ))
     sp(story, 8)
 
-    info_box(story, "Les 3 Commandements Bootstrap GVEO", [
+    info_box(story, "Les 3 Principes Fondateurs de la Strategie GVEO", [
         "1. TERRAIN D'ABORD : chaque jour sans prospecter est un jour perdu. Minimum 10 contacts/jour.",
         "2. MESURER TOUT : un KPI non mesure ne s'ameliore pas. Reporting quotidien = discipline.",
-        "3. CLIENT = PARTENAIRE : chaque client satisfait est le meilleur commercial de GVEO.",
+        "3. CLIENT = PARTENAIRE : chaque client satisfait est le meilleur ambassadeur de GVEO.",
     ], styles, bg=HexColor("#f0fdf4"), border=C_GREEN)
 
     return story
@@ -1328,7 +1328,7 @@ def main():
         bottomMargin=MARGIN_B + 10 * mm,
         title="GVEO — Strategie Commerciale Complete",
         author="BUHT Sarl",
-        subject="Strategie Commerciale Bootstrap",
+        subject="Strategie Commerciale Complete",
     )
 
     styles = make_styles()
