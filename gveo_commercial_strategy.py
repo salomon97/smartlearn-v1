@@ -424,6 +424,7 @@ def build_story(styles):
         ("13.", "Pipeline Commercial Professionnel", "16"),
         ("14.", "Reporting et Tableaux de Bord", "17"),
         ("15.", "Approche Realiste Marche Africain", "18"),
+        ("16.", "Plan de Remuneration — Responsable Commercial", "19"),
     ]
 
     toc_rows = [[
@@ -559,17 +560,51 @@ def build_story(styles):
     # ── SECTION 3 : RESEAUX SOCIAUX ─────────────────────────────────────────────
     section_header(story, "03", "Strategie Reseaux Sociaux — 8 Canaux", styles)
     story.append(Paragraph(
-        "Strategie de contenu multi-canal adaptee au budget zero, avec priorite absolue "
-        "sur les plateformes a fort ROI organique pour le B2B africain.",
+        "Une presence digitale professionnelle sur les reseaux sociaux necessite un investissement "
+        "reel en gestion de contenu, creation visuelle, production video et publicite ciblee. "
+        "Voici les tarifs du marche pour chaque canal et le budget mensuel complet.",
         styles['body']
     ))
     sp(story, 6)
+
+    story.append(Paragraph("Budget Mensuel Reseaux Sociaux — Tarifs Reels du Marche", styles['h2']))
+    budget_table(story,
+        ["Canal", "Poste de Depense", "Tarif Mensuel (FCFA)"],
+        [
+            ["LinkedIn", "Community Manager + creation contenu + sponsorisation posts", "250 000"],
+            ["LinkedIn Ads", "Campagnes publicitaires Decision Makers (CPC ~1 500 F/clic)", "200 000"],
+            ["Facebook / Instagram", "Community Manager + production visuels (Canva/Adobe)", "150 000"],
+            ["Facebook & Insta Ads", "Boost posts + campagnes acquisition cibles Douala/Yaounde", "150 000"],
+            ["YouTube", "Production 4 videos/mois (cameraman + monteur freelance)", "200 000"],
+            ["YouTube Ads", "Promotion videos aupres decideurs (pre-roll, in-stream)", "75 000"],
+            ["TikTok", "Creation + montage 20 videos/mois (format court)", "100 000"],
+            ["TikTok Ads", "Campagnes boosting visibilite entrepreneurs camerounais", "60 000"],
+            ["X (Twitter)", "Gestion compte + publicite sponsorisee ciblage B2B", "75 000"],
+            ["WhatsApp Business API", "Abonnement API officielle + envois automatises", "35 000"],
+            ["Email Marketing", "Plateforme Brevo/Mailchimp (jusqu'a 50 000 contacts)", "25 000"],
+            ["Outils creation", "Canva Pro + Adobe Creative Cloud (un poste)", "45 000"],
+            ["Community Manager", "Freelance senior (coordination tous canaux, reporting)", "200 000"],
+        ],
+        ["TOTAL MENSUEL SOCIAL MEDIA", "", "1 565 000 FCFA"],
+        styles,
+        col_widths=[4 * cm, 8 * cm, 4.5 * cm]
+    )
+
+    alert_box(story, "Ce que signifie ce budget en pratique", [
+        "1 565 000 F/mois = prix d'une presence sociale professionnelle et competitive.",
+        "En Phase 1, prioriser LinkedIn + WhatsApp + Email = ~510 000 F/mois (minimum viable).",
+        "Ne pas investir dans la pub avant d'avoir valide le contenu qui engage organiquement.",
+        "Un community manager a 200 000 F/mois vaut mieux que 10 outils a 20 000 F chacun.",
+    ], styles, C_TEAL)
+
+    sp(story, 6)
+    story.append(Paragraph("Strategie de Contenu par Canal", styles['h2']))
 
     channels = [
         {
             "name": "LinkedIn — Canal Prioritaire B2B",
             "color": HexColor("#0077b5"),
-            "freq": "5 posts/semaine",
+            "freq": "5 posts/semaine | Budget minimal : 250 000 F/mois",
             "audience": "Directeurs, DG, DAF, Responsables logistique",
             "types": [
                 "Lundi : Probleme metier (ex: 'Combien vous coute 1 vehicule fantome ?')",
@@ -582,86 +617,73 @@ def build_story(styles):
         {
             "name": "WhatsApp Business — Canal Conversion",
             "color": HexColor("#25d366"),
-            "freq": "Quotidien (reponse < 2h)",
+            "freq": "Quotidien (reponse < 2h) | Budget : 35 000 F/mois (API)",
             "audience": "Prospects chauds, clients actifs, partenaires",
             "types": [
-                "Catalogue produit : offres Starter/Essentiel avec visuels",
+                "Catalogue produit : offres Starter/Essentiel avec visuels professionnels",
                 "Broadcast hebdo : tip metier (max 1/semaine pour ne pas spammer)",
                 "Groupe clients pilotes : feedback, annonces nouvelles fonctions",
                 "Lien direct depuis LinkedIn et Instagram pour prise de contact",
             ]
         },
         {
-            "name": "Facebook — Notoriete & Communaute Locale",
+            "name": "Facebook / Instagram — Notoriete & Communaute",
             "color": HexColor("#1877f2"),
-            "freq": "3 posts/semaine",
-            "audience": "PME locales, groupes professionnels camerounais",
+            "freq": "5 posts/semaine | Budget : 300 000 F/mois (gestion + ads)",
+            "audience": "PME locales, decideurs 25-45 ans, groupes professionnels",
             "types": [
-                "Page pro GVEO : visuels produit, temoignages, offres",
-                "Presence dans groupes : 'Entrepreneurs Cameroun', 'Transport Cameroun'",
-                "Evenements : annonces webinaires, formations",
-                "Boost payant cible (budget : 5 000–10 000 F/semaine Phase 2)",
+                "Visuels produit professionnels, temoignages clients, offres",
+                "Presence active dans groupes : 'Entrepreneurs Cameroun', 'Transport CMR'",
+                "Reels/Stories : demos produit, coulisses equipe, webinaires",
+                "Campagnes publicite ciblees : DG et responsables logistique Douala/Yaounde",
             ]
         },
         {
             "name": "YouTube — Education & SEO Long Terme",
             "color": HexColor("#ff0000"),
-            "freq": "1 video/semaine (15–20 min)",
+            "freq": "1 video/semaine | Budget : 275 000 F/mois (prod + ads)",
             "audience": "Utilisateurs, decideurs recherchant solutions flotte",
             "types": [
-                "Tutoriels : 'Comment configurer un vehicule dans GVEO'",
-                "Comparatifs : 'Excel vs GVEO pour gerer sa flotte'",
-                "Demos live : modules maintenance, carburant, statistiques",
-                "Webinaires enregistres : sessions Q&A avec prospects",
+                "Tutoriels : 'Comment configurer un vehicule dans GVEO' (tournage pro)",
+                "Comparatifs : 'Excel vs GVEO pour gerer sa flotte' (infographie animee)",
+                "Demos live : modules maintenance, carburant, statistiques en situation reelle",
+                "Promotion via YouTube Ads : ciblage mots-cles 'gestion flotte Cameroun'",
             ]
         },
         {
-            "name": "Instagram — Marque & Visuels",
-            "color": HexColor("#e4405f"),
-            "freq": "3 posts/semaine + Stories quotidiennes",
-            "audience": "Jeunes entrepreneurs, startups, decideurs 25-40 ans",
+            "name": "TikTok — Croissance Organique + Publicite",
+            "color": HexColor("#010101"),
+            "freq": "1 video/jour | Budget : 160 000 F/mois (prod + ads)",
+            "audience": "Entrepreneurs 20-35 ans, dirigeants de PME",
             "types": [
-                "Infographies : statistiques flotte, couts moyens Afrique",
-                "Behind the scenes : equipe, developpement, evenements",
-                "Stories : sondages, Q&A, teaser nouvelles features",
-                "Reels : demo rapide 60s d'une fonctionnalite",
+                "Format Probleme/Solution : 'Saviez-vous que...' + demo GVEO (60 sec)",
+                "Jour dans la vie d'un gestionnaire de flotte (contenu authentique)",
+                "Tips rapides : optimiser carburant, maintenance preventive, reporting",
+                "TikTok Ads : boosting videos performantes aupres entrepreneurs camerounais",
             ]
         },
         {
             "name": "X (Twitter) — Veille & Networking",
             "color": C_SLATE,
-            "freq": "2–3 tweets/jour",
+            "freq": "2–3 posts/jour | Budget : 75 000 F/mois",
             "audience": "Tech community, journalistes, investisseurs africains",
             "types": [
-                "Partage d'articles sectoriels avec commentaire personnel",
-                "Thread hebdo : insight metier gestion de flotte",
-                "Engagement : repondre aux conversations #StartupAfrique #Flotte",
-                "Annonces produit : nouvelles features, mises a jour",
-            ]
-        },
-        {
-            "name": "TikTok — Croissance Organique Rapide",
-            "color": HexColor("#010101"),
-            "freq": "1 video/jour (60–90 sec)",
-            "audience": "Entrepreneurs 20-35 ans, etudiants en gestion",
-            "types": [
-                "Probleme/Solution : format 'Saviez-vous que...' + demo GVEO",
-                "Jour dans la vie d'un gestionnaire de flotte",
-                "Tips rapides : optimiser carburant, maintenance preventive",
-                "Reactions : commenter des news transport africain",
+                "Partage d'articles sectoriels avec analyse et commentaire personnel",
+                "Thread hebdo : insight metier sur la gestion de flotte en Afrique",
+                "Engagement sur conversations #StartupAfrique #Logistique #Cameroun",
+                "Publicite X Ads ciblee : profils B2B decision makers",
             ]
         },
         {
             "name": "Email Marketing — Nurturing & Fidelisation",
             "color": C_TEAL,
-            "freq": "1 newsletter/semaine + sequences automatisees",
+            "freq": "1 newsletter/semaine + sequences | Budget : 25 000 F/mois",
             "audience": "Leads, prospects en essai gratuit, clients actifs",
             "types": [
-                "Sequence bienvenue (J0, J3, J7, J14, J30) pour nouveaux inscrits",
-                "Newsletter hebdo : tips, nouvelles features, cas client",
-                "Email de relance : inactifs apres 7 jours sans connexion",
-                "Upsell : proposition upgrade Essentiel → Enterprise au mois 5",
-                "Outil suggere : Brevo (gratuit jusqu'a 300 emails/jour)",
+                "Sequence bienvenue automatisee (J0, J3, J7, J14, J30) pour nouveaux inscrits",
+                "Newsletter hebdo : tips, nouvelles features, temoignages clients",
+                "Email de relance : inactifs apres 7 jours sans connexion (trigger auto)",
+                "Campagne upsell : proposition upgrade Essentiel → Enterprise au mois 5",
             ]
         },
     ]
@@ -669,7 +691,7 @@ def build_story(styles):
     for ch in channels:
         story.append(Paragraph(ch["name"], styles['h2']))
         story.append(Paragraph(
-            f'<b>Frequence :</b> {ch["freq"]} | <b>Cible :</b> {ch["audience"]}',
+            f'<b>Frequence & Budget :</b> {ch["freq"]} | <b>Cible :</b> {ch["audience"]}',
             styles['body_sm']
         ))
         for item in ch["types"]:
@@ -680,23 +702,25 @@ def build_story(styles):
 
     # ── SECTION 4 : BUDGETS LANCEMENT ───────────────────────────────────────────
     section_header(story, "04", "Budgets — Lancement & Operations", styles)
-    alert_box(story, "Contexte de Lancement — Investissement Optimise", [
-        "Ces budgets sont calibres pour une phase de lancement avec des ressources controlees.",
-        "Priorite absolue : canaux organiques a fort impact. Les depenses payantes n'interviennent qu'en Phase 2.",
-        "Tout ce qui peut etre realise en interne le sera en interne. Sous-traitance minimale.",
-    ], styles, C_ORANGE)
+    alert_box(story, "Cadrage Budgetaire — Investissement Reel de Lancement", [
+        "Ces budgets refletent les tarifs reels du marche camerounais pour un lancement professionnel.",
+        "Phase 1 : priorite prospection terrain + reseaux sociaux essentiels (LinkedIn, WhatsApp, Email).",
+        "Phase 2 : montee en puissance avec publicite payante et production video reguliere.",
+    ], styles, C_TEAL)
 
     story.append(Paragraph("Budget Lancement (Unique — Mois 0)", styles['h2']))
     budget_table(story,
         ["Poste", "Details", "Cout (FCFA)"],
         [
-            ["Domaine & Hebergement", "1 an domaine + hosting VPS basique", "15 000"],
-            ["Identite visuelle", "Logo, charte (Canva Pro 1 mois ou freelance junior)", "10 000"],
-            ["Photo/Video pro", "1 session shooting produit/equipe", "15 000"],
-            ["Materiel de prospection", "Cartes de visite (100 ex), flyers A5 (200 ex)", "10 000"],
-            ["Telephonie pro", "SIM dediee + abonnement WhatsApp Business", "5 000"],
+            ["Domaine & Hebergement", "1 an domaine .com + VPS 4Go RAM (OVH ou Hetzner)", "65 000"],
+            ["Identite visuelle complete", "Logo, charte graphique, templates reseaux — graphiste pro", "150 000"],
+            ["Site vitrine / Landing page", "Page de presentation produit + formulaire de contact", "120 000"],
+            ["Production photo/video initiale", "Shooting equipe + video de presentation produit (2 min)", "120 000"],
+            ["Materiel de prospection", "Brochures A4 (500 ex), cartes de visite (250 ex), kakemono", "75 000"],
+            ["Telephonie & connectivite", "SIM pro dediee + WhatsApp Business API (setup)", "45 000"],
+            ["Outils de base 1 an", "Canva Pro annuel + CRM HubSpot Starter", "80 000"],
         ],
-        ["TOTAL LANCEMENT", "", "55 000 FCFA"],
+        ["TOTAL LANCEMENT", "", "655 000 FCFA"],
         styles,
         col_widths=[5 * cm, 7.5 * cm, 4 * cm]
     )
@@ -705,15 +729,18 @@ def build_story(styles):
     budget_table(story,
         ["Poste", "Details", "Cout/Mois (FCFA)"],
         [
-            ["Transport prospection", "Deplacements terrain Douala (moto/taxi)", "20 000"],
-            ["Contenu digital", "Canva Pro + outils creation (si pas forfait annuel)", "5 000"],
-            ["Publicite cibelee", "Phase 1 = ZERO (100% organique)", "0"],
-            ["Outils CRM/Email", "Brevo gratuit + Notion free tier", "0"],
-            ["Evenements/Networking", "1 event professionnel/mois (inscription)", "15 000"],
-            ["Divers (imprevu)", "Reserve 5% budget", "10 000"],
-            ["Remuneration commerciale", "Commission sur ventes (% CA) ou forfait minimal", "35 000"],
+            ["Remuneration commerciale", "Salaire fixe Responsable Commercial", "250 000"],
+            ["Community Manager (freelance)", "Gestion LinkedIn + Instagram + WhatsApp (3 canaux)", "150 000"],
+            ["Production contenu visuel", "Infographies, visuels posts, templates (Adobe/Canva)", "45 000"],
+            ["LinkedIn Ads (Phase 1 reduit)", "Sponsorisation 5 posts/mois aupres Decision Makers", "100 000"],
+            ["Facebook/Instagram Ads", "Boost posts ciblage PME Douala-Yaounde", "75 000"],
+            ["Email marketing (Brevo Starter)", "Jusqu'a 20 000 contacts, sequences automatisees", "25 000"],
+            ["WhatsApp Business API", "Abonnement mensuel envois automatises", "35 000"],
+            ["Transport prospection terrain", "Deplacements Douala (vehicule + carburant)", "60 000"],
+            ["Evenements / Networking", "1 evenement pro ou salon sectoriel par mois", "40 000"],
+            ["Reserve / Imprevu (10%)", "Fonds de roulement commercial", "78 000"],
         ],
-        ["TOTAL PHASE 1/MOIS", "", "85 000 FCFA"],
+        ["TOTAL PHASE 1/MOIS", "", "858 000 FCFA"],
         styles,
         col_widths=[5 * cm, 7.5 * cm, 4 * cm]
     )
@@ -722,16 +749,21 @@ def build_story(styles):
     budget_table(story,
         ["Poste", "Details", "Cout/Mois (FCFA)"],
         [
-            ["Transport prospection", "Intensification terrain + Yaounde", "35 000"],
-            ["Publicite Facebook/Instagram", "Boost posts cibles PME Douala", "25 000"],
-            ["Publicite LinkedIn", "Campagne Decision Makers (compte personnel)", "20 000"],
-            ["Contenu video", "1 video YouTube pro/mois (montage)", "20 000"],
-            ["Evenements", "1 webinaire gratuit ou presence salon", "20 000"],
-            ["Outils premium", "CRM, outils analytics (si CA le justifie)", "15 000"],
-            ["Remuneration commerciale", "Fixe + commission progressive", "75 000"],
-            ["Reserve/Imprevu", "10% budget", "28 000"],
+            ["Remuneration commerciale", "Fixe + commissions sur portefeuille clients", "350 000"],
+            ["Community Manager senior", "Coordination tous canaux + reporting hebdo", "200 000"],
+            ["Production video YouTube/TikTok", "4 videos/mois : cameraman + monteur freelance", "200 000"],
+            ["LinkedIn Ads", "Campagnes Decision Makers + Lead Gen Forms", "200 000"],
+            ["Facebook/Instagram Ads", "Campagnes acquisition + retargeting visiteurs site", "150 000"],
+            ["YouTube Ads", "Pre-roll + in-stream sur mots-cles flotte/logistique", "75 000"],
+            ["TikTok Ads", "Boosting videos entrepreneurs Cameroun/Afrique Centrale", "60 000"],
+            ["Email marketing (Brevo Business)", "Jusqu'a 100 000 contacts + automation avancee", "45 000"],
+            ["WhatsApp Business API", "Abonnement + campagnes broadcast ciblees", "35 000"],
+            ["CRM & outils analytics", "HubSpot Professional ou equivalent", "75 000"],
+            ["Transport + Expansion Yaounde", "Prospection bi-mensuelle Yaounde", "90 000"],
+            ["Evenements & salons", "Presence salon transport, BTP, logistique", "80 000"],
+            ["Reserve / Imprevu (10%)", "Fonds de roulement", "156 000"],
         ],
-        ["TOTAL PHASE 2/MOIS", "", "238 000 FCFA"],
+        ["TOTAL PHASE 2/MOIS", "", "1 716 000 FCFA"],
         styles,
         col_widths=[5 * cm, 7.5 * cm, 4 * cm]
     )
@@ -740,24 +772,24 @@ def build_story(styles):
     budget_table(story,
         ["Periode", "Cout", "Cumul"],
         [
-            ["Lancement (M0)", "55 000 F", "55 000 F"],
-            ["Phase 1 — M1", "85 000 F", "140 000 F"],
-            ["Phase 1 — M2", "85 000 F", "225 000 F"],
-            ["Phase 1 — M3", "85 000 F", "310 000 F"],
-            ["Phase 2 — M4", "238 000 F", "548 000 F"],
-            ["Phase 2 — M5", "238 000 F", "786 000 F"],
-            ["Phase 2 — M6", "238 000 F", "1 024 000 F"],
+            ["Lancement (M0)", "655 000 F", "655 000 F"],
+            ["Phase 1 — M1", "858 000 F", "1 513 000 F"],
+            ["Phase 1 — M2", "858 000 F", "2 371 000 F"],
+            ["Phase 1 — M3", "858 000 F", "3 229 000 F"],
+            ["Phase 2 — M4", "1 716 000 F", "4 945 000 F"],
+            ["Phase 2 — M5", "1 716 000 F", "6 661 000 F"],
+            ["Phase 2 — M6", "1 716 000 F", "8 377 000 F"],
         ],
-        ["INVESTISSEMENT TOTAL 6 MOIS", "~1 024 000 FCFA", "soit ~1 562 EUR"],
+        ["INVESTISSEMENT TOTAL 6 MOIS", "~8 377 000 FCFA", "soit ~12 770 EUR"],
         styles,
         col_widths=[5 * cm, 5 * cm, 6.5 * cm]
     )
 
     info_box(story, "Point de rentabilite", [
-        "Avec 7 clients Essentiel (15 000 F/mois) = 105 000 F/mois — couvre Phase 1",
-        "Avec 3 clients Essentiel + 1 Enterprise (50 000 F) = 95 000 F — couvre Phase 1",
-        "Break-even Phase 2 : ~16 clients Essentiel ou mix equivalent",
-        "Objectif M6 : 25–30 clients actifs → CA mensuel 300 000–450 000 F",
+        "Phase 1 (858 000 F/mois) : atteint avec ~57 clients Essentiel OU 15 contrats Enterprise",
+        "Phase 2 (1 716 000 F/mois) : atteint avec 40 clients Essentiel + 10 clients Enterprise",
+        "Break-even realiste : entre M10 et M14 selon vitesse d'acquisition",
+        "Objectif M6 : 30–40 clients actifs → CA mensuel 600 000–900 000 F",
     ], styles)
     story.append(PageBreak())
 
@@ -1018,17 +1050,17 @@ def build_story(styles):
     data_table(story,
         ["Scenario", "M3 Clients", "M3 CA/mois", "M6 Clients", "M6 CA/mois", "ROI 6 mois"],
         [
-            ["Pessimiste", "4 clients", "50 000 F", "12 clients", "168 000 F", "-856 000 F"],
-            ["Realiste", "8 clients", "104 000 F", "25 clients", "325 000 F", "-374 000 F"],
-            ["Optimiste", "15 clients", "195 000 F", "40 clients", "540 000 F", "+76 000 F"],
+            ["Pessimiste", "8 clients", "104 000 F", "20 clients", "280 000 F", "-6 997 000 F"],
+            ["Realiste", "15 clients", "195 000 F", "35 clients", "490 000 F", "-5 337 000 F"],
+            ["Optimiste", "25 clients", "330 000 F", "55 clients", "780 000 F", "-3 517 000 F"],
         ], styles,
         col_widths=[3 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm, 3.5 * cm]
     )
 
     story.append(Paragraph(
-        "Note : Le scenario realiste genere un deficit de ~374 000 F sur 6 mois. "
-        "Ce deficit doit etre couvert par les fonds propres de BUHT Sarl ou par une avance de l'associe. "
-        "Break-even complet prevu entre M8 et M10.",
+        "Note : L'investissement de lancement est significatif et normal pour une presence professionnelle. "
+        "L'ecart est couvert par les fonds propres de BUHT Sarl ou une levee de fonds initiale. "
+        "Break-even complet prevu entre M12 et M18 selon la vitesse d'acquisition.",
         styles['body_sm']
     ))
     sp(story, 6)
@@ -1056,26 +1088,26 @@ def build_story(styles):
     data_table(story,
         ["Rang", "Canal/Action", "Cout Mensuel", "Impact Estime", "Ratio I/C"],
         [
-            ["#1", "Prospection terrain (temps)", "0 F + transport", "5-8 clients/mois", "MAXIMAL"],
-            ["#2", "LinkedIn organique (temps)", "0 F", "20-50 leads/mois", "MAXIMAL"],
-            ["#3", "WhatsApp Business", "0 F", "Conversion +40%", "MAXIMAL"],
-            ["#4", "Email sequences (Brevo)", "0 F", "Nurturing auto", "TRES FORT"],
-            ["#5", "Webinaire mensuel (Zoom free)", "0 F", "5-15 leads qualifies", "TRES FORT"],
-            ["#6", "Transport prospection", "20 000 F", "Acces 100+ prospects", "FORT"],
-            ["#7", "Materiel (cartes/flyers)", "5 000 F/mois", "Credibilite +", "MOYEN"],
-            ["#8", "Pub Facebook/Instagram", "25 000 F/mois", "Notoriete locale", "MOYEN"],
-            ["#9", "Pub LinkedIn", "20 000 F/mois", "Decision makers B2B", "FORT (Phase 2)"],
-            ["#10", "Video YouTube", "20 000 F/mois", "SEO long terme", "MOYEN-LONG"],
+            ["#1", "Prospection terrain", "60 000 F (transport)", "5-8 clients/mois", "MAXIMAL"],
+            ["#2", "LinkedIn organique + ads", "250 000–450 000 F", "20-50 leads/mois", "MAXIMAL"],
+            ["#3", "WhatsApp Business API", "35 000 F/mois", "Conversion +40%", "TRES FORT"],
+            ["#4", "Community Manager", "150 000–200 000 F", "Presence constante", "TRES FORT"],
+            ["#5", "Email marketing (Brevo)", "25 000 F/mois", "Nurturing automatise", "FORT"],
+            ["#6", "Facebook/Instagram Ads", "150 000–300 000 F", "Notoriete locale", "FORT"],
+            ["#7", "Production video (YouTube)", "200 000–275 000 F", "SEO + credibilite", "FORT (long terme)"],
+            ["#8", "Materiel de prospection", "10 000–20 000 F/mois", "Credibilite terrain", "MOYEN"],
+            ["#9", "TikTok Ads", "60 000–100 000 F", "Audience entrepren.", "MOYEN"],
+            ["#10", "CRM & analytics pro", "50 000–75 000 F", "Pilotage efficace", "MOYEN"],
         ], styles,
         col_widths=[1.5 * cm, 5 * cm, 3.5 * cm, 3.5 * cm, 3 * cm]
     )
     story.append(PageBreak())
 
     # ── SECTION 12 : LOW-BUDGET → SCALE ─────────────────────────────────────────
-    section_header(story, "12", "Strategie Low-Budget vers Scale", styles)
+    section_header(story, "12", "Strategie de Lancement vers Scale", styles)
     story.append(Paragraph(
-        "La trajectoire de croissance d'une startup zero-revenue est bien documentee. "
-        "Voici le chemin de GVEO de la phase de lancement vers la croissance acceleree.",
+        "La trajectoire de croissance d'une startup en phase de lancement est bien documentee. "
+        "Voici le chemin de GVEO de la phase initiale vers la croissance acceleree.",
         styles['body']
     ))
     sp(story, 6)
@@ -1158,7 +1190,7 @@ def build_story(styles):
         col_widths=[2.5 * cm, 4.5 * cm, 4.5 * cm, 5 * cm - 0.5 * cm]
     )
 
-    story.append(Paragraph("Outils CRM Recommandes (Zero Budget)", styles['h2']))
+    story.append(Paragraph("Outils CRM Recommandes", styles['h2']))
     crm_tools = [
         ["Notion (gratuit)", "Tableau Kanban pipeline. Simple, visuel, accessible mobile."],
         ["Google Sheets", "Si l'equipe prefere tableur. Template pipeline disponible."],
@@ -1312,6 +1344,104 @@ def build_story(styles):
         "2. MESURER TOUT : un KPI non mesure ne s'ameliore pas. Reporting quotidien = discipline.",
         "3. CLIENT = PARTENAIRE : chaque client satisfait est le meilleur ambassadeur de GVEO.",
     ], styles, bg=HexColor("#f0fdf4"), border=C_GREEN)
+
+    story.append(PageBreak())
+
+    # ── SECTION 16 : PLAN DE REMUNERATION ────────────────────────────────────────
+    section_header(story, "16", "Plan de Remuneration — Responsable Commercial", styles)
+    story.append(Paragraph(
+        "Ce plan de remuneration est concu pour le poste de Responsable Commercial GVEO. "
+        "Il combine un salaire fixe competitif, un variable motive sur les resultats, "
+        "et des perspectives d'evolution claires a mesure que le portefeuille clients croit.",
+        styles['body']
+    ))
+    sp(story, 6)
+
+    info_box(story, "Intitule du Poste", [
+        "<b>Poste :</b> Responsable Commercial / Business Developer — GVEO",
+        "<b>Rattachement :</b> Direction Generale — BUHT Sarl",
+        "<b>Perimetre :</b> Acquisition clients, gestion portefeuille, strategie reseaux sociaux",
+        "<b>Zone :</b> Douala (Phase 1) | Yaounde + expansion (Phase 2)",
+    ], styles)
+
+    story.append(Paragraph("Structure de Remuneration — Composante Fixe", styles['h2']))
+    budget_table(story,
+        ["Periode", "Salaire Fixe Brut Mensuel", "Justification"],
+        [
+            ["Phase 1 — M1 a M6", "250 000 FCFA", "Base de lancement, portefeuille en construction"],
+            ["Phase 2 — M7 a M12", "350 000 FCFA", "Portefeuille consolide, objectifs M6 atteints"],
+            ["Phase 3 — M13+", "500 000 FCFA", "Directeur Commercial si CA > 2 000 000 F/mois"],
+        ],
+        None,
+        styles,
+        col_widths=[4 * cm, 5.5 * cm, 7 * cm]
+    )
+
+    story.append(Paragraph("Structure de Remuneration — Composante Variable", styles['h2']))
+    data_table(story,
+        ["Type de Variable", "Taux / Montant", "Base de Calcul", "Exemple Concret"],
+        [
+            ["Commission acquisition", "15% du 1er mois", "Valeur contrat signe", "1 client Essentiel (15 000 F) → 2 250 F"],
+            ["Commission portefeuille", "5% CA mensuel", "CA total clients actifs", "20 clients Essentiel → 15 000 F/mois"],
+            ["Bonus Enterprise", "50 000 F (fixe)", "Par contrat Enterprise signe", "2 contrats = 100 000 F bonus"],
+            ["Bonus trimestriel 100%", "75 000 F", "Objectifs atteints a 100%", "Verse en fin de trimestre"],
+            ["Bonus trimestriel 120%+", "150 000 F", "Depassement des objectifs", "Performance exceptionnelle"],
+            ["Bonus referral", "25 000 F", "Par client introduit qui signe", "Reseau et bouche a oreille"],
+        ], styles,
+        col_widths=[4 * cm, 3 * cm, 4 * cm, 5.5 * cm]
+    )
+
+    story.append(Paragraph("Avantages & Frais Professionnels", styles['h2']))
+    data_table(story,
+        ["Avantage", "Montant Mensuel", "Modalites"],
+        [
+            ["Indemnite transport", "50 000 FCFA", "Carburant + entretien vehicule prospection"],
+            ["Forfait telephone & data", "25 000 FCFA", "Ligne pro dediee + forfait internet"],
+            ["Materiel commercial", "Fourni", "Laptop, tablette demo, cartes de visite, brochures"],
+            ["Frais de representation", "30 000 FCFA", "Dejeuners clients, evenements pro, networking"],
+            ["Formation & developpement", "Pris en charge", "Formations vente, certifications sectorielles"],
+        ], styles,
+        col_widths=[5 * cm, 4 * cm, 7.5 * cm]
+    )
+
+    story.append(Paragraph("Simulation de Remuneration Totale", styles['h2']))
+    budget_table(story,
+        ["Scenario", "Clients M6", "CA Portefeuille", "Fixe", "Variable", "Avantages", "TOTAL BRUT"],
+        [
+            ["Minimal", "10 clients", "148 000 F", "250 000 F", "~22 000 F", "105 000 F", "377 000 F"],
+            ["Realiste", "25 clients", "348 000 F", "250 000 F", "~42 000 F", "105 000 F", "397 000 F"],
+            ["Excellent", "40 clients", "568 000 F", "350 000 F", "~78 000 F", "105 000 F", "533 000 F"],
+            ["Exceptionnel", "60 clients+", "900 000+ F", "350 000 F", "~120 000 F", "105 000 F", "575 000 F+"],
+        ],
+        None,
+        styles,
+        col_widths=[2.5 * cm, 2.5 * cm, 3 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm, 3 * cm]
+    )
+
+    story.append(Paragraph("Perspectives d'Evolution", styles['h2']))
+    evolution = [
+        ["M12 — Directeur Commercial",
+         "Si CA mensuel > 2 000 000 F et equipe de 2+ commerciaux sous supervision. "
+         "Salaire : 500 000 F + bonus strategiques."],
+        ["M18 — Associe Operationnel",
+         "Negociation d'une participation au capital (5–10%) en echange de l'apport commercial "
+         "et du reseau clients constitue. A definir avec la direction."],
+        ["M24 — Directeur General Adjoint",
+         "Si GVEO atteint 200+ clients et expansion regionale (CI, Senegal). "
+         "Package executive : 800 000 F + participation benefices."],
+    ]
+    for e in evolution:
+        story.append(Paragraph(f'<b>{e[0]}</b>', styles['h3']))
+        story.append(Paragraph(e[1], styles['body']))
+        sp(story, 4)
+
+    alert_box(story, "Conditions de Declenchement du Variable", [
+        "Le variable est verse mensuellement sur la base des contrats actifs et encaisses.",
+        "Aucune commission sur contrats non payes ou en litige.",
+        "Le bonus trimestriel est verse le mois suivant la fin du trimestre evalue.",
+        "En cas de churn client sur le portefeuille direct : -50% commission ce mois.",
+        "Tout contrat Enterprise necessite la validation de la direction avant signature.",
+    ], styles, C_ORANGE)
 
     return story
 
