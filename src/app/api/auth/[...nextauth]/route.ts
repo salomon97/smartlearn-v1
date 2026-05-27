@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
+import AdminToken from "@/models/AdminToken";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -13,31 +14,38 @@ export const authOptions = {
                 email: { label: "Email", type: "email", placeholder: "eleve@smartlearn.com" },
                 password: { label: "Mot de passe", type: "password" },
                 magicLinkEmail: { label: "Magic Link Email", type: "text" },
-                magicLinkVerificationSecret: { label: "Magic Link Secret", type: "text" }
+                magicLinkToken: { label: "Magic Link Token", type: "text" }
             },
             async authorize(credentials) {
                 await connectToDatabase();
 
                 // === LOGIQUE 1 : MAGIC LINK (ADMIN UNIQUEMENT) ===
-                if (credentials?.magicLinkEmail && credentials?.magicLinkVerificationSecret) {
-                    console.log("[NextAuth] Magic Link attempt for:", credentials.magicLinkEmail);
-                    
-                    // Vérifier que le secret transmis par notre propre serveur (/verify) est le bon
-                    const expectedSecret = process.env.NEXTAUTH_SECRET || "smartlearn-super-secret-key-pour-le-mvp";
-                    
-                    if (credentials.magicLinkVerificationSecret !== expectedSecret) {
-                        console.log("[NextAuth] Secret mismatch");
-                        throw new Error("Authentification Magic Link rejetée (Secret invalide).");
+                if (credentials?.magicLinkEmail && credentials?.magicLinkToken) {
+                    // Correspondance exacte avec la casse stockée par /request-link (le lien email
+                    // transporte adminUser.email tel quel) — évite toute désynchronisation de casse.
+                    const email = credentials.magicLinkEmail;
+
+                    // La preuve de légitimité est le jeton à usage unique (généré par /request-link
+                    // et envoyé par email), JAMAIS un secret partagé statique. On le valide et on le
+                    // consomme ici, au moment exact où la session est créée.
+                    const tokenRecord = await AdminToken.findOne({ email });
+                    if (!tokenRecord) {
+                        throw new Error("Authentification Magic Link rejetée (lien expiré ou déjà utilisé).");
                     }
 
-                    const adminUser = await User.findOne({ email: credentials.magicLinkEmail.toLowerCase(), role: 'admin' });
-                    
+                    const tokenValid = await bcrypt.compare(credentials.magicLinkToken, tokenRecord.token);
+                    if (!tokenValid || tokenRecord.expiresAt < new Date()) {
+                        await AdminToken.deleteOne({ _id: tokenRecord._id });
+                        throw new Error("Authentification Magic Link rejetée (lien invalide ou expiré).");
+                    }
+
+                    // Usage unique strict : on détruit le jeton dès qu'il sert.
+                    await AdminToken.deleteOne({ _id: tokenRecord._id });
+
+                    const adminUser = await User.findOne({ email, role: 'admin' });
                     if (!adminUser) {
-                        console.log("[NextAuth] Admin user not found:", credentials.magicLinkEmail);
                         throw new Error("Authentification Magic Link rejetée (Admin introuvable).");
                     }
-
-                    console.log("[NextAuth] Success for:", adminUser.email);
 
                     // Générer la session admin
                     const sessionId = crypto.randomUUID();
@@ -130,7 +138,7 @@ export const authOptions = {
     pages: {
         signIn: '/auth/connexion',
     },
-    secret: process.env.NEXTAUTH_SECRET || "smartlearn-super-secret-key-pour-le-mvp",
+    secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);

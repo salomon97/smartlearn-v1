@@ -1,6 +1,26 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
+import crypto from 'crypto';
+
+function verifyChariowSignature(rawBody: string, signature: string | null): boolean {
+    const secret = process.env.CHARIOW_WEBHOOK_SECRET;
+    if (!secret) {
+        console.error('❌ [WEBHOOK] CHARIOW_WEBHOOK_SECRET non défini — vérification ignorée');
+        return false;
+    }
+    if (!signature) return false;
+
+    const expected = crypto.createHmac('sha256', secret).update(rawBody, 'utf8').digest('hex');
+    // Chariow peut préfixer avec "sha256="
+    const received = signature.startsWith('sha256=') ? signature.slice(7) : signature;
+
+    try {
+        return crypto.timingSafeEqual(Buffer.from(received, 'hex'), Buffer.from(expected, 'hex'));
+    } catch {
+        return false;
+    }
+}
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
@@ -16,17 +36,27 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
-        
-        // 1. Connexion à la base de données
-        const mongooseInstance = await connectToDatabase();
 
-        // 2. Obtenir le corps de la requête envoyée par Chariow
-        const body = await req.json().catch(() => ({}));
+        // 1. Lire le corps brut (nécessaire pour vérifier la signature HMAC)
+        const rawBody = await req.text();
+
+        // 2. Vérifier la signature Chariow AVANT tout traitement
+        const signature = req.headers.get('x-chariow-signature');
+        if (!verifyChariowSignature(rawBody, signature)) {
+            console.warn('🚫 [WEBHOOK] Signature invalide ou absente — requête rejetée');
+            return NextResponse.json({ message: 'Signature invalide' }, { status: 401 });
+        }
+
+        // 3. Parser le corps maintenant que la signature est validée
+        let body: Record<string, any> = {};
+        try { body = JSON.parse(rawBody); } catch { body = {}; }
+
+        // 4. Connexion à la base de données
+        const mongooseInstance = await connectToDatabase();
 
         console.log('🔔 [WEBHOOK CHARIOW] Nouveau Pulse reçu :', JSON.stringify(body, null, 2));
 
-        // 3. Enregistrer la requête brute pour le diagnostic (TRÈS IMPORTANT)
-        // Cela nous permettra de voir exactement ce que Chariow envoie si l'activation échoue.
+        // 5. Enregistrer la requête brute pour le diagnostic
         try {
             const db = (mongooseInstance as any).connection.db;
             await db.collection('webhook_logs').insertOne({
@@ -35,39 +65,34 @@ export async function POST(req: Request) {
                 url: req.url,
                 body: body,
                 query: Object.fromEntries(searchParams.entries()),
-                headers: Object.fromEntries(req.headers.entries())
             });
             console.log('📝 [WEBHOOK] Log enregistré dans la collection webhook_logs');
         } catch (logErr) {
             console.error('❌ Erreur lors de l\'enregistrement du log Webhook :', logErr);
         }
 
-        // 4. Analyser les données
+        // 6. Analyser les données
         const data = body.data || body;
         const customerEmail = data.customer?.email;
 
-        // On cherche l'ID de l'utilisateur (custom_data) dans plusieurs endroits possibles
-        const customData = data.custom_data || 
-                          data.metadata?.custom_data || 
-                          searchParams.get('custom_data') || 
+        const customData = data.custom_data ||
+                          data.metadata?.custom_data ||
+                          searchParams.get('custom_data') ||
                           null;
 
         const userId = customData || body.metadata?.custom_data;
 
-        // 1. Connexion à la base de données
-        await connectToDatabase();
-
         let user = null;
 
-        // 2. Trouver l'utilisateur qui a payé
+        // 7. Trouver l'utilisateur qui a payé
         if (userId) {
-            user = await User.findById(userId);
+            user = await User.findById(userId).catch(() => null);
         }
 
-        // Si l'utilisateur n'est pas trouvé par ID, on essaie l'email renvoyé par Chariow
+        // Fallback par email — comparaison exacte insensible à la casse (sans $regex)
         if (!user && customerEmail) {
-            console.log(`⚠️ [WEBHOOK] ID non trouvé ou invalide. Recherche de l'utilisateur par e-mail : ${customerEmail}`);
-            user = await User.findOne({ email: { $regex: new RegExp(`^${customerEmail}$`, 'i') } });
+            console.log(`⚠️ [WEBHOOK] ID non trouvé. Recherche par e-mail : ${customerEmail}`);
+            user = await User.findOne({ email: customerEmail.toLowerCase().trim() });
         }
 
         if (!user) {

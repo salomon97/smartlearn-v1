@@ -3,6 +3,16 @@ import connectToDatabase from '@/lib/mongoose';
 import AdminToken from '@/models/AdminToken';
 import bcrypt from 'bcryptjs';
 
+// Échappe les valeurs injectées dans un attribut HTML (défense en profondeur anti-XSS réfléchi).
+function escapeHtmlAttr(value: string): string {
+    return value
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 // Cette route est appelée quand l'Admin clique sur le lien dans son email.
 // Elle doit vérifier le token et, si valide, déclencher NextAuth d'une manière ou d'une autre.
 // Pour NextAuth, on va utiliser une redirection avec un paramètre sécurisé vers /api/auth/callback/credentials
@@ -26,20 +36,24 @@ export async function GET(req: Request) {
             return NextResponse.redirect(new URL('/?error=Lien_Expire_Ou_Invalide', req.url));
         }
 
-        // 2. Vérifier que le jeton brut correspond au hash stocké
+        // 2. Vérifier que le jeton brut correspond au hash stocké ET qu'il n'est pas expiré
         const isValid = await bcrypt.compare(token, tokenRecord.token);
 
-        if (!isValid) {
+        if (!isValid || tokenRecord.expiresAt < new Date()) {
             return NextResponse.redirect(new URL('/?error=Lien_Invalide', req.url));
         }
 
-        // 3. Le lien est valide. On le détruit immédiatement pour qu'il soit à usage INIQUE.
-        await AdminToken.findByIdAndDelete(tokenRecord._id);
+        // NB : on NE détruit PAS le jeton ici. Il est consommé (re-validé puis supprimé) par
+        // NextAuth dans authorize(), au moment exact de la création de session. La preuve de
+        // connexion est donc le jeton à usage unique lui-même, jamais un secret partagé.
 
         // 4. Connecter l'utilisateur. 
         // L'astuce avec NextAuth "Credentials" est qu'il faut faire un POST. 
         // Depuis un GET (le clic email), on ne peut pas faire de POST direct côté client sans JavaScript.
         // On va renvoyer une page HTML très basique qui fait un auto-submit d'un formulaire POST caché vers NextAuth.
+
+        const safeEmail = escapeHtmlAttr(email);
+        const safeToken = escapeHtmlAttr(token);
 
         const htmlForm = `
             <!DOCTYPE html>
@@ -61,9 +75,9 @@ export async function GET(req: Request) {
                     <form id="autoLoginForm" action="/api/auth/callback/credentials" method="POST" style="display: none;">
                         <input type="hidden" name="csrfToken" id="csrfToken" value="" />
                         <!-- On informe notre Provider "Credentials" personnalisé que c'est une connexion MagicLink -->
-                        <input type="hidden" name="magicLinkEmail" value="${email}" />
-                        <!-- Jeton d'autorisation spécial (secret interne) pour que NextAuth sache que ça vient de cette vérification validée -->
-                        <input type="hidden" name="magicLinkVerificationSecret" value="${process.env.NEXTAUTH_SECRET}" />
+                        <input type="hidden" name="magicLinkEmail" value="${safeEmail}" />
+                        <!-- Jeton à usage unique (déjà validé ci-dessus). NextAuth le re-valide et le consomme. -->
+                        <input type="hidden" name="magicLinkToken" value="${safeToken}" />
                         <!-- Redirection vers le tableau de bord admin après succès -->
                         <input type="hidden" name="callbackUrl" value="/admin" />
                     </form>

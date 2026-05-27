@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import Course from "@/models/Course";
 
@@ -28,10 +30,13 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
     try {
-        await connectToDatabase();
+        // Création de cours réservée aux administrateurs.
+        const session = await getServerSession(authOptions);
+        if (!session || (session.user as any)?.role !== 'admin') {
+            return NextResponse.json({ error: "Accès réservé aux administrateurs." }, { status: 403 });
+        }
 
-        // In a real app we would check if user is admin here
-        // using getServerSession(authOptions)
+        await connectToDatabase();
 
         const body = await request.json();
         const { title, description, grade_level, imageUrl } = body;
