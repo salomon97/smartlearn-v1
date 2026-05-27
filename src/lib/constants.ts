@@ -18,3 +18,10 @@ export const classesDisponibles = [
     "Terminale E",
     "Terminale TI"
 ];
+
+// Code du plan par défaut (rétro-compatibilité de l'ancien custom_data = userId seul).
+export const DEFAULT_PLAN_CODE = 'vip_avie';
+
+// Délimiteur encodant userId + planCode dans le custom_data Chariow.
+// Un code de plan ne doit JAMAIS contenir cette séquence.
+export const CUSTOM_DATA_DELIMITER = '__';
