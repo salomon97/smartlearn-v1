@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
-import Transaction from "@/models/Transaction";
+import { computeBalances } from "@/lib/balances";
 
 /**
  * GET /api/user/affiliate-stats
@@ -31,14 +31,14 @@ export async function GET() {
         // Nombre de filleuls devenus Premium
         const conversions = await User.countDocuments({ parrainId: userId, isPremium: true });
 
-        // Lire les balances depuis le modèle utilisateur
-        const user = await User.findById(userId).select("balance_pending balance_available").lean();
+        // Soldes calculés depuis Transaction + WithdrawalHistory (source de vérité unique).
+        const { pending, available } = await computeBalances(userId);
 
         return NextResponse.json({
             referrals,
             conversions,
-            earnings_pending: (user as any)?.balance_pending || 0,
-            earnings_available: (user as any)?.balance_available || 0,
+            earnings_pending: pending,
+            earnings_available: available,
         });
 
     } catch (error) {

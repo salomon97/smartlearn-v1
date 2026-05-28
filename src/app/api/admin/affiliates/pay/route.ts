@@ -4,6 +4,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
 import WithdrawalHistory from '@/models/WithdrawalHistory';
+import { computeBalances } from '@/lib/balances';
 
 export async function POST(req: Request) {
     try {
@@ -28,28 +29,29 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: "Affilié introuvable" }, { status: 404 });
         }
 
-        if ((affiliate.balance_available || 0) < 1000) {
+        // Disponible calculé (cleared − retraits pending/paid).
+        const { available } = await computeBalances(affiliate._id.toString());
+
+        if (available < 1000) {
             return NextResponse.json({ message: "Le solde disponible est insuffisant (< 1000 FCFA)." }, { status: 400 });
         }
 
-        // Réinitialiser le solde disponible (on considère qu'il a été payé en totalité via Mobile Money)
-        const payoutAmount = affiliate.balance_available;
-        affiliate.balance_available = 0;
-        await affiliate.save();
-
-        // Créer un historique des retraits
+        // "Payer" = tracer une WithdrawalHistory 'paid' du disponible. Plus de champ à
+        // réinitialiser : le disponible calculé retombe à 0 grâce à cette écriture.
+        // (accountNumber est requis par le schéma : versement direct admin, pas de numéro saisi.)
         await WithdrawalHistory.create({
             affiliateId: affiliate._id,
             affiliateName: affiliate.name,
             affiliateEmail: affiliate.email,
-            amount: payoutAmount,
+            amount: available,
+            accountNumber: "Versement direct (admin)",
             paymentMethod: "Mobile Money",
             status: "paid"
         });
 
-        return NextResponse.json({ 
-            message: `Paiement de ${payoutAmount} FCFA enregistré avec succès.`, 
-            success: true 
+        return NextResponse.json({
+            message: `Paiement de ${available} FCFA enregistré avec succès.`,
+            success: true
         });
 
     } catch (error) {

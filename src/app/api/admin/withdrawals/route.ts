@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import WithdrawalHistory from "@/models/WithdrawalHistory";
-import User from "@/models/User";
 
 // GET /api/admin/withdrawals : Liste toutes les demandes (filtre possible sur le statut)
 export async function GET(req: Request) {
@@ -57,15 +56,10 @@ export async function PATCH(req: Request) {
             withdrawal.status = "paid";
             await withdrawal.save();
         } else if (status === "failed") {
-            // Si rejeté, on rend l'argent à l'affilié
+            // Aucun remboursement : un retrait "failed" est exclu du calcul du disponible,
+            // donc l'argent "revient" automatiquement (computeBalances).
             withdrawal.status = "failed";
             await withdrawal.save();
-
-            const user = await User.findById(withdrawal.affiliateId);
-            if (user) {
-                user.balance_available = (user.balance_available || 0) + withdrawal.amount;
-                await user.save();
-            }
         }
 
         return NextResponse.json({ success: true, message: `Demande marquée comme ${status === 'paid' ? 'payée' : 'rejetée'}.` });

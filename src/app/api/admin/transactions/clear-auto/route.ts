@@ -3,7 +3,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from '@/lib/mongoose';
 import Transaction from '@/models/Transaction';
-import User from '@/models/User';
 
 /**
  * POST /api/admin/transactions/clear-auto
@@ -19,55 +18,21 @@ export async function POST(req: Request) {
 
         await connectToDatabase();
 
-        // 1. Trouver toutes les transactions 'pending' dont la date de clearing est dépassée
+        // Soldes calculés à la lecture : libérer = passer les transactions éligibles à 'cleared'.
+        // Aucun transfert de solde à faire (la commission bascule de pending→available toute seule).
         const now = new Date();
-        const pendingTransactions = await Transaction.find({
-            status: 'pending',
-            clearingDate: { $lte: now }
-        });
+        const result = await Transaction.updateMany(
+            { status: 'pending', clearingDate: { $lte: now } },
+            { $set: { status: 'cleared' } }
+        );
 
-        if (pendingTransactions.length === 0) {
-            return NextResponse.json({ 
-                message: "Aucune transaction à libérer pour le moment.", 
-                count: 0 
-            });
-        }
-
-        let processedCount = 0;
-
-        // 2. Traiter chaque transaction
-        for (const transaction of pendingTransactions) {
-            if (transaction.parrainId && transaction.commission > 0) {
-                const parrain = await User.findById(transaction.parrainId);
-                if (parrain) {
-                    // S'assurer que les soldes ne sont pas undefined
-                    if (parrain.balance_pending === undefined) parrain.balance_pending = 0;
-                    if (parrain.balance_available === undefined) parrain.balance_available = 0;
-
-                    // Transférer du pending vers le disponible
-                    const amountToClear = transaction.commission;
-                    
-                    if (parrain.balance_pending >= amountToClear) {
-                        parrain.balance_pending -= amountToClear;
-                    } else {
-                        parrain.balance_pending = 0;
-                    }
-                    
-                    parrain.balance_available += amountToClear;
-                    await parrain.save();
-                }
-            }
-
-            // Marquer la transaction comme 'cleared'
-            transaction.status = 'cleared';
-            await transaction.save();
-            processedCount++;
-        }
-
-        return NextResponse.json({ 
-            message: `${processedCount} transaction(s) libérée(s) avec succès.`, 
+        const count = result.modifiedCount ?? 0;
+        return NextResponse.json({
+            message: count === 0
+                ? "Aucune transaction à libérer pour le moment."
+                : `${count} transaction(s) libérée(s) avec succès.`,
             success: true,
-            count: processedCount
+            count
         });
 
     } catch (error) {

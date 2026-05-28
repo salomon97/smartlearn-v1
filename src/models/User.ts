@@ -11,8 +11,6 @@ export interface IUser extends Document {
     sessionId?: string;
     isVerified: boolean;
     image?: string;
-    balance_pending?: number;
-    balance_available?: number;
     commission_rate?: number;
     parrainId?: string;
     codeAffiliation?: string;
@@ -35,8 +33,6 @@ const UserSchema = new Schema<IUser>(
         sessionId: { type: String },
         isVerified: { type: Boolean, default: false },
         image: { type: String }, // URL de la photo de profil
-        balance_pending: { type: Number, default: 0 },   // L'argent bloqué pour 72h
-        balance_available: { type: Number, default: 0 }, // L'argent retirable
         commission_rate: { type: Number, default: 10 }, // Le pourcentage (10%)
         parrainId: { type: String },
         codeAffiliation: { type: String },

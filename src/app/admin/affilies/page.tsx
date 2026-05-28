@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
+import { computeBalances } from "@/lib/balances";
 import AffiliatesList from "./components/AffiliatesList";
 
 export default async function AdminAffiliatesPage() {
@@ -13,12 +14,17 @@ export default async function AdminAffiliatesPage() {
                                .sort({ createdAt: -1 })
                                .lean();
                                
-    const affiliates = affiliatesRaw.map((a: any) => ({
-        ...a, 
-        _id: a._id.toString(),
-        balance_available: a.balance_available || 0,
-        balance_pending: a.balance_pending || 0
-    }));
+    const affiliates = await Promise.all(
+        affiliatesRaw.map(async (a: any) => {
+            const { pending, available } = await computeBalances(a._id.toString());
+            return {
+                ...a,
+                _id: a._id.toString(),
+                balance_available: available,
+                balance_pending: pending,
+            };
+        })
+    );
 
     // Calculs rapides
     const totalPending = affiliates.reduce((acc, curr) => acc + (curr.balance_pending || 0), 0);

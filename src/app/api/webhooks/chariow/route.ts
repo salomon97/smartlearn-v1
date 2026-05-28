@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
+import Plan from '@/models/Plan';
+import { parseCustomData } from '@/lib/chariow';
+import { DEFAULT_PLAN_CODE } from '@/lib/constants';
 import crypto from 'crypto';
 
 function verifyChariowSignature(rawBody: string, signature: string | null): boolean {
@@ -75,12 +78,13 @@ export async function POST(req: Request) {
         const data = body.data || body;
         const customerEmail = data.customer?.email;
 
-        const customData = data.custom_data ||
+        const rawCustomData = data.custom_data ||
                           data.metadata?.custom_data ||
                           searchParams.get('custom_data') ||
+                          body.metadata?.custom_data ||
                           null;
 
-        const userId = customData || body.metadata?.custom_data;
+        const { userId, planCode } = parseCustomData(rawCustomData);
 
         let user = null;
 
@@ -100,7 +104,15 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
-        // 3. Activer le compte VIP
+        // Résoudre le plan (planCode du custom_data, sinon plan par défaut = rétro-compat).
+        const plan = await Plan.findOne({ code: planCode || DEFAULT_PLAN_CODE });
+        if (!plan) {
+            console.error(`❌ [WEBHOOK] Plan introuvable (code: ${planCode || DEFAULT_PLAN_CODE}).`);
+            return NextResponse.json({ message: 'Plan introuvable' }, { status: 500 });
+        }
+        const amountPaid = plan.price; // Montant autoritaire (jamais deviné du payload)
+
+        // 8. Activer le compte VIP
         if (!user.isPremium && user.role !== 'admin') {
             user.isPremium = true;
             await user.save();
@@ -109,8 +121,7 @@ export async function POST(req: Request) {
             console.log(`ℹ️ [WEBHOOK] L'utilisateur ${user.email} est déjà VIP ou admin.`);
         }
 
-        // 4. Gérer l'affiliation et la création de la transaction avec délai de 72h
-        const amountPaid = 2000; // Prix fixe du Pass VIP pour l'instant
+        // 9. Gérer l'affiliation et la création de la transaction avec délai de 72h
         let parrainDoc = null;
         let commissionAmount = 0;
 
@@ -127,25 +138,20 @@ export async function POST(req: Request) {
                     console.log(`🚫 [FRAUDE] Tentative d'auto-affiliation détectée pour ${user.email} (Parrain: ${parrainDoc.email}). Commission annulée.`);
                     commissionAmount = 0; // Pas de commission si c'est la même personne
                 } else {
-                    // S'assurer que les champs existent (pour les anciens comptes)
-                    if (parrainDoc.balance_pending === undefined) parrainDoc.balance_pending = 0;
-                    if (parrainDoc.commission_rate === undefined) parrainDoc.commission_rate = 10;
+                    // Calculer la commission selon le taux de l'affilié (défaut 10%).
+                    const rate = parrainDoc.commission_rate ?? 10;
+                    commissionAmount = (amountPaid * rate) / 100;
 
-                    // Calculer la commission dynamiquement basée sur le taux de l'affilié
-                    commissionAmount = (amountPaid * parrainDoc.commission_rate) / 100;
-
-                    // Ajouter la commission en ATTENTE (balance_pending)
-                    parrainDoc.balance_pending += commissionAmount;
-
-                    await parrainDoc.save();
-                    console.log(`💸 [WEBHOOK] Commission EN ATTENTE de ${commissionAmount} FCFA ajoutée au parrain ${parrainDoc.email}`);
+                    // Plus de mutation de solde : la commission EN ATTENTE est portée par la
+                    // Transaction (status 'pending') et recalculée à la lecture (computeBalances).
+                    console.log(`💸 [WEBHOOK] Commission EN ATTENTE de ${commissionAmount} FCFA enregistrée (Transaction pending) pour ${parrainDoc.email}`);
                 }
             } else {
                 console.log(`⚠️ [WEBHOOK] Le parrain (ID: ${user.parrainId}) n'a pas été trouvé pour l'affiliation.`);
             }
         }
 
-        // 5. Créer la Transaction pour garder une trace stricte (et libérer les fonds plus tard)
+        // 10. Créer la Transaction pour garder une trace stricte (et libérer les fonds plus tard)
         const clearingDate = new Date();
         clearingDate.setDate(clearingDate.getDate() + 3); // +72 heures (3 jours)
 
@@ -157,8 +163,9 @@ export async function POST(req: Request) {
             parrainId: user.parrainId || null,
             amount: amountPaid,
             commission: commissionAmount,
-            status: commissionAmount === 0 && user.parrainId ? 'fraud_suspected' : 'pending', 
+            status: commissionAmount === 0 && user.parrainId ? 'fraud_suspected' : 'pending',
             paymentMethod: 'Chariow',
+            planCode: plan.code,
             referenceId: data.id || null, // ID de la vente venant de Chariow (si dispo)
             clearingDate: clearingDate,
             metadata: {
@@ -167,7 +174,7 @@ export async function POST(req: Request) {
                 fraudReason: (commissionAmount === 0 && user.parrainId) ? "Même IP ou Email détecté (Auto-Affiliation)" : null
             }
         });
-        
+
         console.log(`📝 [WEBHOOK] Transaction enregistrée. Libération prévue le : ${clearingDate.toLocaleDateString()}`);
 
         return NextResponse.json({ message: 'Paiement traité avec succès', success: true });
