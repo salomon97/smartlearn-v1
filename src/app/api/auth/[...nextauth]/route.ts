@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import AdminToken from "@/models/AdminToken";
+import { trackEvent } from "@/lib/retention";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -94,6 +95,9 @@ export const authOptions = {
                 const sessionId = crypto.randomUUID();
                 user.sessionId = sessionId;
                 await user.save();
+
+                // Instrumentation rétention (best-effort, non bloquant)
+                await trackEvent(user._id.toString(), 'login');
 
                 return {
                     id: user._id.toString(),

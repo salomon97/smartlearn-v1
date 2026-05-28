@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, Activity, LogOut } from "lucide-react";
 import { signOut } from "next-auth/react";
 
 
@@ -15,6 +15,7 @@ export default function AdminNavigation() {
         { href: "/admin", label: "Vue Globale", icon: <LayoutDashboard size={20} /> },
         { href: "/admin/finances", label: "Finances & Retraits", icon: <CreditCard size={20} /> },
         { href: "/admin/eleves", label: "Gestion des Élèves", icon: <Users size={20} /> },
+        { href: "/admin/retention", label: "Rétention", icon: <Activity size={20} /> },
         { href: "/admin/affilies", label: "Affiliations", icon: <Handshake size={20} /> },
         { href: "/admin/cours", label: "Contenu Pédagogique", icon: <BookOpen size={20} /> },
         { href: "/admin/sync", label: "Synchronisation", icon: <RefreshCw size={20} /> },
