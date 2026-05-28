@@ -6,8 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
 
-const CHARIOW_LINK = "https://wttjdkki.mychariow.shop/prd_pihhbz";
-const PRIX_ACCES_A_VIE = 2000;
+type Plan = {
+    _id: string;
+    code: string;
+    name: string;
+    price: number;
+    chariowUrl: string;
+};
 
 function CheckoutContent() {
     const { data: session, status } = useSession();
@@ -17,6 +22,8 @@ function CheckoutContent() {
 
     const [checking, setChecking] = useState(true);
     const [isVerified, setIsVerified] = useState(false);
+    const [plans, setPlans] = useState<Plan[]>([]);
+    const [plansLoading, setPlansLoading] = useState(true);
 
     useEffect(() => {
         if (status === "unauthenticated") {
@@ -29,6 +36,23 @@ function CheckoutContent() {
             router.push("/dashboard");
         }
     }, [session, router, paymentSuccess]);
+
+    // Charger les plans actifs depuis l'API (fin des constantes hardcodées)
+    useEffect(() => {
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await fetch("/api/plans");
+                const data = await res.json();
+                if (!cancelled && Array.isArray(data)) setPlans(data);
+            } catch (error) {
+                console.error("Erreur chargement des plans :", error);
+            } finally {
+                if (!cancelled) setPlansLoading(false);
+            }
+        })();
+        return () => { cancelled = true; };
+    }, []);
 
     // Polling pour vérifier le statut de paiement
     useEffect(() => {
@@ -108,6 +132,12 @@ function CheckoutContent() {
         );
     }
 
+    const userId = (session?.user as any)?.id as string | undefined;
+    const buildCheckoutUrl = (plan: Plan) =>
+        userId
+            ? `${plan.chariowUrl}?custom_data=${encodeURIComponent(`${userId}__${plan.code}`)}`
+            : plan.chariowUrl;
+
     return (
         <div className="min-h-screen bg-[var(--background)] py-12 px-4">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
@@ -117,19 +147,14 @@ function CheckoutContent() {
                     <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-6">Valider l&apos;Accès Premium</h1>
 
                     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-6">
-                        <div className="flex items-start justify-between mb-6 pb-6 border-b border-gray-100">
-                            <div>
-                                <h2 className="text-xl font-bold text-[var(--primary-dark)] mb-2">Accès Illimité - À Vie</h2>
-                                <p className="text-gray-500 font-medium text-sm">
-                                    Programme complet pour la classe :{" "}
-                                    <span className="text-[var(--primary-gold-hover)] font-bold">
-                                        {session?.user?.grade_level || "Votre Classe"}
-                                    </span>
-                                </p>
-                            </div>
-                            <div className="text-2xl font-black text-right">
-                                {PRIX_ACCES_A_VIE} <span className="text-sm text-gray-400">FCFA</span>
-                            </div>
+                        <div className="mb-6 pb-6 border-b border-gray-100">
+                            <h2 className="text-xl font-bold text-[var(--primary-dark)] mb-2">Accès au programme</h2>
+                            <p className="text-gray-500 font-medium text-sm">
+                                Programme complet pour la classe :{" "}
+                                <span className="text-[var(--primary-gold-hover)] font-bold">
+                                    {session?.user?.grade_level || "Votre Classe"}
+                                </span>
+                            </p>
                         </div>
 
                         <ul className="space-y-4 text-gray-600 mb-8">
@@ -178,25 +203,40 @@ function CheckoutContent() {
                     </div>
                 </div>
 
-                {/* Bouton Chariow (Droite) */}
+                {/* Choix du plan + bouton Chariow (Droite) */}
                 <div className="w-full md:w-96 flex flex-col gap-6">
                     <div className="bg-white rounded-3xl shadow-lg shadow-[var(--primary-dark)]/5 border-2 border-[var(--primary-dark)]/5 p-8 sticky top-24">
-                        <h3 className="text-lg font-bold text-gray-900 mb-2">Tout est prêt !</h3>
-                        <p className="text-sm text-gray-500 mb-6">
-                            Cliquez ci-dessous pour être redirigé vers notre plateforme de paiement sécurisée Chariow. Après le paiement, votre compte sera activé.
-                        </p>
+                        <h3 className="text-lg font-bold text-gray-900 mb-4">Choisissez votre accès</h3>
 
-                        <a
-                            href={session?.user && (session.user as any).id ? `${CHARIOW_LINK}?custom_data=${(session.user as any).id}` : CHARIOW_LINK}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-4 px-6 rounded-xl bg-[var(--primary-dark)] text-white font-bold text-lg hover:bg-[var(--primary-dark)]/90 transition-all transform hover:-translate-y-1 shadow-lg shadow-[var(--primary-dark)]/30 flex items-center justify-center gap-3 text-center"
-                        >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                            </svg>
-                            Payer {PRIX_ACCES_A_VIE} FCFA sur Chariow
-                        </a>
+                        {plansLoading ? (
+                            <p className="text-sm text-gray-500">Chargement des offres...</p>
+                        ) : plans.length === 0 ? (
+                            <p className="text-sm text-red-500">Aucune offre disponible pour le moment. Réessayez plus tard.</p>
+                        ) : (
+                            <div className="flex flex-col gap-4">
+                                {plans.map((plan) => (
+                                    <div key={plan._id} className="border border-gray-100 rounded-2xl p-4">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="font-bold text-gray-900">{plan.name}</span>
+                                            <span className="text-xl font-black">
+                                                {plan.price} <span className="text-xs text-gray-400">FCFA</span>
+                                            </span>
+                                        </div>
+                                        <a
+                                            href={buildCheckoutUrl(plan)}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="w-full py-3 px-6 rounded-xl bg-[var(--primary-dark)] text-white font-bold hover:bg-[var(--primary-dark)]/90 transition-all flex items-center justify-center gap-2 text-center"
+                                        >
+                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg>
+                                            Payer {plan.price} FCFA
+                                        </a>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
 
                         <p className="text-xs text-gray-400 text-center mt-4">
                             Vous serez redirigé vers Chariow, une plateforme de paiement sécurisée. Votre accès VIP sera activé après confirmation du paiement.

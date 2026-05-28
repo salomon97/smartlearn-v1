@@ -3,6 +3,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
+import { computeBalances } from "@/lib/balances";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
 
 export default async function ProfilePage() {
@@ -31,7 +32,13 @@ export default async function ProfilePage() {
         dbUser.codeAffiliation = newCode;
     }
 
-    const { name, email, role, grade_level, isPremium, isVerified, codeAffiliation, balance_pending = 0, balance_available = 0, commission_rate = 10, image } = dbUser as any;
+    const { name, email, role, grade_level, isPremium, isVerified, codeAffiliation, commission_rate = 10, image } = dbUser as any;
+
+    // Soldes calculés (source de vérité unique) ; 0 pour les non-affiliés.
+    const { pending: balance_pending, available: balance_available } =
+        role === 'affiliate'
+            ? await computeBalances(String(dbUser._id))
+            : { pending: 0, available: 0 };
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in zoom-in duration-500">
             <div>

@@ -4,6 +4,7 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import Transaction from "@/models/Transaction";
 import WithdrawalHistory from "@/models/WithdrawalHistory";
+import { computeBalances } from "@/lib/balances";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Users, CreditCard, Banknote } from "lucide-react";
@@ -24,6 +25,9 @@ export default async function AffiliateDetailsPage({ params }: { params: { id: s
     if (!affiliate || affiliate.role !== 'affiliate') {
         redirect('/admin/affilies');
     }
+
+    // Soldes calculés (source de vérité unique).
+    const { pending: balancePending, available: balanceAvailable } = await computeBalances(params.id);
 
     // 2. Récupérer les filleuls (élèves inscrits via ce code promo)
     // Note: Pour l'instant on se base sur `referredBy` si ça existe dans ton User model.
@@ -69,7 +73,7 @@ export default async function AffiliateDetailsPage({ params }: { params: { id: s
                         <Banknote className="w-4 h-4" /> Solde Disponible
                     </div>
                     <div className="text-3xl font-black text-emerald-600">
-                        {affiliate.balance_available || 0} <span className="text-base text-emerald-600/50">FCFA</span>
+                        {balanceAvailable} <span className="text-base text-emerald-600/50">FCFA</span>
                     </div>
                 </div>
 
@@ -79,7 +83,7 @@ export default async function AffiliateDetailsPage({ params }: { params: { id: s
                         <Banknote className="w-4 h-4" /> En Attente (72h)
                     </div>
                     <div className="text-3xl font-black text-amber-600">
-                        {affiliate.balance_pending || 0} <span className="text-base text-amber-600/50">FCFA</span>
+                        {balancePending} <span className="text-base text-amber-600/50">FCFA</span>
                     </div>
                 </div>
 

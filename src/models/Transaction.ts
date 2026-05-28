@@ -8,6 +8,7 @@ export interface ITransaction extends Document {
     status: 'pending' | 'cleared' | 'failed' | 'fraud_suspected';
     paymentMethod: string;
     referenceId?: string; // e.g. transaction ID from Chariow
+    planCode?: string; // code du Plan acheté (traçabilité)
     clearingDate: Date; // Date + 72h
     metadata?: {
         buyerIp?: string;
@@ -27,6 +28,7 @@ const TransactionSchema = new Schema<ITransaction>(
         status: { type: String, enum: ['pending', 'cleared', 'failed', 'fraud_suspected'], default: 'pending' },
         paymentMethod: { type: String, default: 'Chariow' },
         referenceId: { type: String },
+        planCode: { type: String },
         clearingDate: { type: Date, required: true },
         metadata: { type: Schema.Types.Mixed },
     },
