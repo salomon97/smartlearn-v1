@@ -4,6 +4,7 @@ import User from '@/models/User';
 import Plan from '@/models/Plan';
 import { parseCustomData } from '@/lib/chariow';
 import { DEFAULT_PLAN_CODE } from '@/lib/constants';
+import { trackEvent } from '@/lib/retention';
 import crypto from 'crypto';
 
 function verifyChariowSignature(rawBody: string, signature: string | null): boolean {
@@ -176,6 +177,9 @@ export async function POST(req: Request) {
         });
 
         console.log(`📝 [WEBHOOK] Transaction enregistrée. Libération prévue le : ${clearingDate.toLocaleDateString()}`);
+
+        // Instrumentation rétention (best-effort)
+        await trackEvent(user._id.toString(), 'payment_succeeded', { value: amountPaid });
 
         return NextResponse.json({ message: 'Paiement traité avec succès', success: true });
 

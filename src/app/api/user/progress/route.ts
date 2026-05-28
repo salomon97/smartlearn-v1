@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from "@/lib/mongoose";
 import UserProgress from "@/models/UserProgress";
+import { trackEvent } from "@/lib/retention";
 
 export async function GET(req: NextRequest) {
     try {
@@ -76,6 +77,9 @@ export async function POST(req: NextRequest) {
             },
             { upsert: true, new: true }
         );
+
+        // Instrumentation rétention (best-effort)
+        await trackEvent(userId, isCompleted ? 'lesson_completed' : 'lesson_started', { courseId, lessonId });
 
         return NextResponse.json({ success: true, progress });
     } catch (error) {
