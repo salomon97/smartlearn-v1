@@ -6,6 +6,7 @@ import ReengagementLog from '@/models/ReengagementLog';
 import User from '@/models/User';
 import { sendEmail } from '@/lib/email';
 import { computeHealthScore, HealthStatus } from '@/lib/retention-core';
+import { isSyntheticEmail } from '@/lib/constants';
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -153,12 +154,17 @@ export async function sendReengagement(
   let provider = 'log';
   let delivered = false;
 
-  if (channel === 'email' && user?.email && process.env.SMTP_USER) {
+  const synthetic = isSyntheticEmail(user?.email);
+
+  if (channel === 'email' && user?.email && process.env.SMTP_USER && !synthetic) {
     const res = await sendEmail({ to: user.email, subject: tpl.subject, html: tpl.html });
     provider = 'nodemailer';
     delivered = !!res.success;
   } else {
-    console.log(`[retention] (log-only) relance étape ${step} → user ${userId} : ${tpl.subject}`);
+    // Adresse synthétique (inscription manuelle terrain) ou SMTP absent → on n'envoie pas,
+    // mais on journalise pour que le dashboard reflète la relance "logique".
+    if (synthetic) provider = 'skipped_synthetic';
+    console.log(`[retention] (log-only) relance étape ${step} → user ${userId}${synthetic ? ' [synthetic]' : ''} : ${tpl.subject}`);
   }
 
   await ReengagementLog.create({

@@ -14,7 +14,7 @@ const generateOTP = () => {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { name, email, password, grade_level, role, parrainId } = body;
+        const { name, email, password, grade_level, role, parrainId, phone } = body;
 
         // Validation stricte
         if (!name || !email || !password) {
@@ -29,6 +29,14 @@ export async function POST(request: Request) {
 
         if (password.length < 8) {
             return NextResponse.json({ error: "Le mot de passe doit contenir au moins 8 caractères." }, { status: 400 });
+        }
+
+        if (!phone) {
+            return NextResponse.json({ error: "Le numéro de téléphone est obligatoire." }, { status: 400 });
+        }
+        const phoneNormalized = String(phone).replace(/[\s-]/g, '');
+        if (!/^[+]?[0-9]{8,15}$/.test(phoneNormalized)) {
+            return NextResponse.json({ error: "Numéro de téléphone invalide." }, { status: 400 });
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -84,7 +92,8 @@ export async function POST(request: Request) {
             isVerified: false,
             codeAffiliation: newCodeAffiliation,
             parrainId: parrainId || undefined,
-            registrationIp: ip
+            registrationIp: ip,
+            phone: phoneNormalized,
         });
 
         // Générer et enregistrer le code

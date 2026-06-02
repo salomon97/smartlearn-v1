@@ -8,6 +8,7 @@ export interface IUser extends Document {
     role: 'student' | 'affiliate' | 'admin';
     grade_level?: string;
     school?: string;
+    phone?: string; // Numéro de téléphone (Cameroun +237…) — canal SMS futur
     sessionId?: string;
     isVerified: boolean;
     image?: string;
@@ -30,6 +31,7 @@ const UserSchema = new Schema<IUser>(
         role: { type: String, enum: ['student', 'affiliate', 'admin'], default: 'student' },
         grade_level: { type: String }, // Optionnel car les affiliés n'ont pas de classe
         school: { type: String },      // Établissement (ex: Collège Laval)
+        phone: { type: String },       // Téléphone (+237…) — requis pour les nouvelles inscriptions
         sessionId: { type: String },
         isVerified: { type: Boolean, default: false },
         image: { type: String }, // URL de la photo de profil
