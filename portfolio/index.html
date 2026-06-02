@@ -3,11 +3,43 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Salomon Foe — Développeur Full-Stack & Créatif Tech</title>
-<meta name="description" content="Salomon Foe — Développeur full-stack et créatif tech. Conception et déploiement de plateformes web, applications et solutions digitales modernes. Fondateur de SmartLearn." />
+<title>Salomon Foe — Fondateur SmartLearn · Enseignant · Concepteur de stratégies et de systèmes</title>
+<meta name="description" content="Salomon Foe — Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, concepteur de stratégies éducatives et de systèmes (CRM, plateformes EdTech). Je conçois et déploie des solutions éducatives numériques — de la stratégie à l'exécution." />
+<meta name="author" content="Salomon Foe" />
+<meta name="keywords" content="SmartLearn, EdTech, Cameroun, Douala, fondateur, enseignant mathématiques, enseignant informatique, conception de stratégies, conception de CRM, Next.js, plateforme éducative, Mobile Money, Chariow" />
+<meta property="og:title" content="Salomon Foe — Fondateur SmartLearn · Enseignant · Concepteur" />
+<meta property="og:description" content="Fondateur EdTech, enseignant de Mathématiques et d'Informatique, concepteur de stratégies et de systèmes. De la classe au produit, de la stratégie à l'exécution." />
+<meta property="og:type" content="profile" />
+<meta property="og:image" content="salomon.jpg" />
+<meta property="og:locale" content="fr_FR" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Salomon Foe — Fondateur SmartLearn · Enseignant · Concepteur" />
+<meta name="twitter:description" content="Fondateur EdTech, enseignant Maths/Info, concepteur de stratégies & de systèmes." />
+<meta name="twitter:image" content="salomon.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Salomon Foe",
+  "url": "https://salomon97.github.io/smartlearn-v1/",
+  "image": "https://salomon97.github.io/smartlearn-v1/salomon.jpg",
+  "jobTitle": "Fondateur SmartLearn · Enseignant · Concepteur de stratégies et de systèmes",
+  "description": "Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, concepteur de stratégies éducatives et de systèmes (CRM, plateformes EdTech).",
+  "address": { "@type": "PostalAddress", "addressLocality": "Douala", "addressCountry": "CM" },
+  "email": "mailto:salomonfoe97@smartlearn-edu.org",
+  "telephone": "+237691276334",
+  "sameAs": [
+    "https://smartlearn-edu.org",
+    "https://www.linkedin.com/in/salomon-foe-939266198"
+  ],
+  "knowsAbout": ["EdTech", "Conception de stratégies", "Conception de CRM",
+    "Mathématiques", "Informatique", "Plateformes SaaS", "Mobile Money",
+    "Next.js", "Innovation pédagogique"]
+}
+</script>
 <style>
   :root{
     --navy:#102A43; --navy-2:#1B3A57; --teal:#0F8B7E; --teal-d:#0B6B61;
@@ -29,8 +61,9 @@
     color:var(--teal-d);margin-bottom:14px;
   }
   h2.sec{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-.01em;margin-bottom:8px;}
-  .sec-sub{color:var(--grey);font-size:15px;margin-bottom:38px;max-width:560px;}
-  section{padding:78px 0;}
+  h3.sub{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .sec-sub{color:var(--grey);font-size:15px;margin-bottom:38px;max-width:620px;}
+  section{padding:74px 0;}
 
   /* ── NAV ── */
   header{
@@ -40,8 +73,8 @@
   .nav{display:flex;align-items:center;justify-content:space-between;height:64px;}
   .brand{font-weight:800;color:var(--navy);font-size:17px;letter-spacing:-.01em;}
   .brand span{color:var(--teal);}
-  .nav-links{display:flex;gap:30px;}
-  .nav-links a{font-size:14px;font-weight:500;color:var(--grey);transition:color .15s;}
+  .nav-links{display:flex;gap:24px;}
+  .nav-links a{font-size:13.5px;font-weight:500;color:var(--grey);transition:color .15s;}
   .nav-links a:hover{color:var(--teal-d);}
   .nav-cta{
     font-size:13px;font-weight:600;color:#fff;background:var(--navy);
@@ -50,12 +83,17 @@
   .nav-cta:hover{background:var(--teal-d);}
 
   /* ── HERO ── */
-  .hero{padding:84px 0 70px;}
-  .hero-grid{display:grid;grid-template-columns:1.45fr .85fr;gap:54px;align-items:center;}
-  .hero h1{font-size:46px;line-height:1.1;font-weight:800;color:var(--navy);letter-spacing:-.02em;margin-bottom:14px;}
-  .hero h1 .accent{color:var(--teal);}
-  .hero .role{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:18px;}
-  .hero p.lead{font-size:16px;color:var(--grey);max-width:520px;margin-bottom:30px;}
+  .hero{padding:78px 0 60px;}
+  .hero-grid{display:grid;grid-template-columns:1.5fr .9fr;gap:54px;align-items:center;}
+  .hero h1{font-family:'Newsreader',Georgia,serif;font-size:42px;line-height:1.15;font-weight:500;color:var(--navy);letter-spacing:-.01em;margin-bottom:18px;}
+  .hero h1 .accent{color:var(--teal);font-style:italic;}
+  .hero .role{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:18px;}
+  .hero p.lead{font-size:15.5px;color:var(--grey);max-width:540px;margin-bottom:24px;}
+  .facets{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;}
+  .facets span{
+    font-size:11.5px;font-weight:600;color:var(--teal-d);background:var(--light);
+    padding:5px 11px;border-radius:14px;
+  }
   .btns{display:flex;gap:14px;flex-wrap:wrap;}
   .btn{
     font-size:14px;font-weight:600;padding:13px 24px;border-radius:9px;transition:.15s;
@@ -80,13 +118,38 @@
 
   /* ── ABOUT ── */
   .about{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+  .about-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:48px;}
   .about p{font-size:15.5px;color:var(--ink);margin-bottom:14px;}
   .about p:last-child{margin-bottom:0;}
   .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-self:start;}
-  .fact{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:18px 18px;}
-  .fact .n{font-size:22px;font-weight:800;color:var(--navy);}
-  .fact .l{font-size:12.5px;color:var(--grey);margin-top:2px;}
+  .fact{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:16px 16px;}
+  .fact .n{font-size:18px;font-weight:800;color:var(--navy);line-height:1.2;}
+  .fact .l{font-size:12.5px;color:var(--grey);margin-top:4px;}
+
+  /* ── DOMAINES (NEW) ── */
+  .dom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .dom{
+    background:var(--card);border:1px solid var(--rule);border-radius:14px;
+    padding:24px 22px;transition:transform .16s,box-shadow .16s;
+  }
+  .dom:hover{transform:translateY(-3px);box-shadow:0 16px 34px -18px rgba(16,42,67,.28);}
+  .dom .ic{
+    width:38px;height:38px;border-radius:9px;background:var(--light);color:var(--teal-d);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;
+  }
+  .dom h3{font-size:15.5px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .dom p{font-size:13.5px;color:var(--grey);margin-bottom:10px;}
+  .dom ul{list-style:none;}
+  .dom li{font-size:12.5px;color:var(--ink);padding:3px 0;padding-left:16px;position:relative;}
+  .dom li::before{content:"›";color:var(--teal);font-weight:700;position:absolute;left:0;top:1px;}
+
+  /* ── STRATÉGIE & PÉDAGOGIE — split rows ── */
+  .split{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
+  .split-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+  .split-col p{font-size:15px;color:var(--ink);margin-bottom:12px;}
+  .split-col ul{list-style:none;margin-top:8px;}
+  .split-col li{font-size:13.5px;color:var(--ink);padding:6px 0;border-bottom:1px solid var(--rule);}
+  .split-col li:last-child{border-bottom:none;}
 
   /* ── PROJECTS ── */
   .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
@@ -96,11 +159,12 @@
     display:flex;flex-direction:column;
   }
   .card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -18px rgba(16,42,67,.28);}
-  .card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:10px;}
   .card h3{font-size:18px;font-weight:700;color:var(--navy);}
-  .status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em;}
+  .status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em;white-space:nowrap;}
   .s-live{background:#E3F4EC;color:#1B7A4B;}
   .s-dev{background:#FFF3DC;color:#9A6B12;}
+  .s-design{background:#EEF0FA;color:#3D4DAB;}
   .s-concept{background:var(--light);color:var(--teal-d);}
   .s-past{background:#EEF0F2;color:var(--grey);}
   .card .desc{font-size:14px;color:var(--grey);margin:8px 0 16px;flex:1;}
@@ -117,7 +181,7 @@
   .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
   .skill-col h4{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
   .skill-col ul{list-style:none;}
-  .skill-col li{font-size:14px;color:var(--ink);padding:5px 0;border-bottom:1px solid var(--rule);}
+  .skill-col li{font-size:13.5px;color:var(--ink);padding:5px 0;border-bottom:1px solid var(--rule);}
   .skill-col li:last-child{border-bottom:none;}
 
   /* ── SERVICES ── */
@@ -127,7 +191,7 @@
     width:38px;height:38px;border-radius:9px;background:var(--light);color:var(--teal-d);
     display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;
   }
-  .serv h4{font-size:15.5px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .serv h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;}
   .serv p{font-size:13.5px;color:var(--grey);}
 
   /* ── CONTACT ── */
@@ -141,7 +205,7 @@
   }
   .c-item:hover{border-color:#5FD0C4;}
   .c-item .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5FD0C4;}
-  .c-item .val{font-size:14.5px;font-weight:500;color:#fff;word-break:break-word;}
+  .c-item .val{font-size:14px;font-weight:500;color:#fff;word-break:break-word;}
 
   footer{background:var(--navy);color:#7E93A8;font-size:12.5px;padding:26px 0;border-top:1px solid #2C4257;text-align:center;}
 
@@ -150,10 +214,10 @@
     .nav-links{display:none;}
     .hero-grid{grid-template-columns:1fr;gap:38px;}
     .photo-card{max-width:300px;}
-    .hero h1{font-size:36px;}
-    .about-grid,.proj-grid,.skill-grid,.serv-grid,.contact-grid{grid-template-columns:1fr;}
+    .hero h1{font-size:34px;}
+    .about-grid,.proj-grid,.skill-grid,.serv-grid,.contact-grid,.dom-grid,.split-grid{grid-template-columns:1fr;}
     .facts{grid-template-columns:1fr 1fr;}
-    section{padding:58px 0;}
+    section{padding:56px 0;}
   }
 </style>
 </head>
@@ -163,7 +227,10 @@
   <div class="wrap nav">
     <div class="brand">Salomon <span>Foe</span></div>
     <nav class="nav-links">
+      <a href="#domaines">Domaines</a>
       <a href="#projets">Projets</a>
+      <a href="#strategie">Stratégie</a>
+      <a href="#pedagogie">Pédagogie</a>
       <a href="#competences">Compétences</a>
       <a href="#services">Services</a>
       <a href="#contact">Contact</a>
@@ -176,22 +243,30 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="kicker">Développeur Full-Stack &amp; Créatif Tech</div>
-      <h1>Je conçois et déploie des <span class="accent">produits digitaux</span> de bout en bout.</h1>
-      <div class="role">Sites &amp; plateformes web · Applications mobiles · Solutions SaaS</div>
+      <div class="kicker">Fondateur · Enseignant · Concepteur</div>
+      <h1>De la <span class="accent">salle de classe</span> au produit, de la <span class="accent">stratégie</span> à l'exécution.</h1>
+      <div class="role">Fondateur SmartLearn · Enseignant de Mathématiques &amp; d'Informatique · Concepteur de stratégies &amp; de systèmes</div>
       <p class="lead">
-        Développeur full-stack basé à Douala. J'accompagne startups, institutions et
-        porteurs de projets — du cadrage à la mise en ligne. Fondateur de SmartLearn,
-        une plateforme EdTech en production.
+        Je conçois et déploie des solutions éducatives numériques. J'unis trois métiers
+        rarement réunis : la pédagogie (transmettre), la stratégie (comprendre et
+        décider) et l'ingénierie produit (concevoir et construire).
       </p>
+      <div class="facets">
+        <span>Fondateur EdTech</span>
+        <span>Maths &amp; Informatique</span>
+        <span>Stratégie</span>
+        <span>Conception de CRM</span>
+        <span>Plateformes SaaS</span>
+        <span>Mobile Money</span>
+      </div>
       <div class="btns">
         <a href="#projets" class="btn btn-primary">Voir mes projets</a>
         <a href="#contact" class="btn btn-ghost">Travailler avec moi</a>
       </div>
     </div>
     <div class="photo-card">
-      <img src="salomon.jpg" alt="Salomon Foe" />
-      <div class="photo-badge">Disponible · <b>Freelance &amp; Remote</b></div>
+      <img src="salomon.jpg" alt="Salomon Foe — Fondateur SmartLearn" />
+      <div class="photo-badge">Disponible · <b>Conseil &amp; missions</b></div>
     </div>
   </div>
 </section>
@@ -200,41 +275,134 @@
 <section class="about" id="apropos">
   <div class="wrap">
     <div class="kicker">À propos</div>
-    <h2 class="sec">Un profil qui couvre toute la chaîne</h2>
+    <h2 class="sec">Un profil qui relie pédagogie, stratégie et ingénierie</h2>
     <div class="about-grid">
       <div>
         <p>
-          Je suis développeur full-stack et créatif tech. Ma particularité : je porte un
-          produit du début à la fin — conception, expérience utilisateur, développement,
-          intégration de paiement et déploiement.
+          Je suis fondateur de <b>SmartLearn</b>, plateforme éducative en ligne, enseignant
+          de <b>Mathématiques et d'Informatique</b>, et concepteur de <b>stratégies et de
+          systèmes</b> (CRM, plateformes EdTech, architectures SaaS). Je porte un produit
+          de bout en bout — comprendre le problème éducatif, le formaliser, en concevoir
+          la stratégie, l'architecturer et le construire.
         </p>
         <p>
-          En tant que fondateur de SmartLearn, j'ai conçu et mis en production une
-          plateforme EdTech complète, et j'architecture actuellement un SaaS multi-tenant
-          pensé pour les environnements à faible connectivité. Autonome et structuré, je
-          livre seul un produit utilisable.
+          Mon parcours est hybride par construction : enseignant qui code, fondateur qui
+          enseigne, ingénieur qui pense produit et marché. J'ai conçu et mis en
+          production SmartLearn (50+ cours alignés sur le programme MINESEC), j'architecture
+          actuellement <b>SmartLearn School</b> (SaaS de gestion scolaire offline-first
+          avec paiement Mobile Money) et <b>SmartLearn CRM</b> (système de pilotage de
+          l'engagement et de la rétention).
         </p>
         <p>
-          Formation : Master 1 en Génie Logiciel (Université de Yaoundé I) et Licence en
-          Informatique (Université de Douala).
+          Formation : Master 1 en Génie Logiciel (Université de Yaoundé I), Licence en
+          Informatique (Université de Douala). Basé à Douala, disponible aussi à distance
+          pour le conseil, l'accompagnement stratégique et les missions techniques.
         </p>
       </div>
       <div class="facts">
-        <div class="fact"><div class="n">Full-cycle</div><div class="l">Design → code → mise en ligne</div></div>
+        <div class="fact"><div class="n">Full-cycle</div><div class="l">Stratégie · design · code · mise en ligne</div></div>
         <div class="fact"><div class="n">SmartLearn</div><div class="l">Plateforme EdTech en production</div></div>
-        <div class="fact"><div class="n">Web · Mobile</div><div class="l">Next.js, React, Flutter, Node.js</div></div>
+        <div class="fact"><div class="n">Maths · Info</div><div class="l">Enseignement &amp; conception pédagogique</div></div>
         <div class="fact"><div class="n">Douala · Remote</div><div class="l">Missions locales &amp; à distance</div></div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- DOMAINES -->
+<section id="domaines">
+  <div class="wrap">
+    <div class="kicker">Mes domaines</div>
+    <h2 class="sec">Six casquettes, un seul fil : l'éducation numérique.</h2>
+    <p class="sec-sub">
+      Une approche systémique de l'EdTech — chaque casquette nourrit les autres.
+    </p>
+    <div class="dom-grid">
+
+      <div class="dom">
+        <div class="ic">●</div>
+        <h3>Fondateur EdTech</h3>
+        <p>Identifier des problèmes éducatifs réels et transformer la vision en produit livré.</p>
+        <ul>
+          <li>Vision &amp; produit</li>
+          <li>Architecture &amp; exécution</li>
+          <li>Modèle économique</li>
+          <li>Mobilisation des ressources</li>
+        </ul>
+      </div>
+
+      <div class="dom">
+        <div class="ic">∑</div>
+        <h3>Enseignant de Mathématiques</h3>
+        <p>Vulgariser les concepts complexes, transmettre une démarche rigoureuse.</p>
+        <ul>
+          <li>Approche par compétences</li>
+          <li>Conception d'exercices &amp; d'évaluations</li>
+          <li>Esprit logique &amp; critique</li>
+          <li>Programme MINESEC, collège au lycée</li>
+        </ul>
+      </div>
+
+      <div class="dom">
+        <div class="ic">&lt;/&gt;</div>
+        <h3>Enseignant d'Informatique</h3>
+        <p>Initier à l'algorithmique, à la programmation et aux outils numériques.</p>
+        <ul>
+          <li>Algorithmique &amp; logique</li>
+          <li>Programmation, résolution de problèmes</li>
+          <li>Outils numériques, bureautique</li>
+          <li>Parcours d'apprentissage structurés</li>
+        </ul>
+      </div>
+
+      <div class="dom">
+        <div class="ic">◆</div>
+        <h3>Concepteur de stratégies</h3>
+        <p>De l'audit au plan d'exécution — transformer une vision en feuille de route.</p>
+        <ul>
+          <li>Audits produit &amp; business</li>
+          <li>Plans d'exécution, roadmaps</li>
+          <li>Objectifs &amp; indicateurs (KPI)</li>
+          <li>Accompagnement à la décision</li>
+        </ul>
+      </div>
+
+      <div class="dom">
+        <div class="ic">▦</div>
+        <h3>Concepteur de CRM</h3>
+        <p>Modéliser la relation client / élève et automatiser les flux qui comptent.</p>
+        <ul>
+          <li>Architecture fonctionnelle</li>
+          <li>Cartographie des parcours utilisateurs</li>
+          <li>Automatisation des workflows</li>
+          <li>Spécifications &amp; données</li>
+        </ul>
+      </div>
+
+      <div class="dom">
+        <div class="ic">◐</div>
+        <h3>EdTech &amp; innovation pédagogique</h3>
+        <p>Combiner pédagogie, données et IA pour des parcours d'apprentissage réellement efficaces.</p>
+        <ul>
+          <li>Conception de contenus éducatifs</li>
+          <li>Apprentissage en ligne &amp; offline-first</li>
+          <li>Mesure de l'engagement &amp; rétention</li>
+          <li>IA appliquée à l'éducation</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- PROJECTS -->
-<section id="projets">
+<section class="about" id="projets">
   <div class="wrap">
     <div class="kicker">Projets</div>
-    <h2 class="sec">Sélection de réalisations</h2>
-    <p class="sec-sub">Des produits réels, conçus et développés de bout en bout.</p>
+    <h2 class="sec">Réalisations concrètes</h2>
+    <p class="sec-sub">
+      Des produits, des systèmes et des stratégies conçus et conduits de bout en bout.
+    </p>
     <div class="proj-grid">
 
       <div class="card">
@@ -244,8 +412,8 @@
         </div>
         <p class="desc">
           Plateforme d'apprentissage en ligne : authentification, intégration de paiement
-          Mobile Money, gestion de contenus et catalogue de 50+ cours en Mathématiques et
-          Informatique alignés sur le programme MINESEC.
+          Mobile Money (MTN, Orange), gestion de contenus et catalogue de 50+ cours en
+          Mathématiques et Informatique alignés sur le programme MINESEC.
         </p>
         <div class="tech"><span>Next.js</span><span>React</span><span>Tailwind</span><span>MongoDB</span></div>
         <a class="link" href="https://smartlearn-edu.org" target="_blank" rel="noopener">Voir le site en ligne →</a>
@@ -267,15 +435,30 @@
 
       <div class="card">
         <div class="top">
+          <h3>SmartLearn CRM</h3>
+          <span class="status s-design">En conception</span>
+        </div>
+        <p class="desc">
+          Système de gestion d'élèves et moteur de rétention pour piloter l'engagement et
+          la réussite sur SmartLearn — modélisation des parcours d'apprentissage,
+          scoring d'engagement, automatisation des relances pédagogiques. Démontre mes
+          compétences en architecture fonctionnelle et en conception de systèmes.
+        </p>
+        <div class="tech"><span>Architecture</span><span>Modélisation</span><span>Automatisation</span><span>Données</span></div>
+        <a class="link muted">Projet en cours — documentation interne</a>
+      </div>
+
+      <div class="card">
+        <div class="top">
           <h3>EduTrack</h3>
           <span class="status s-concept">Présenté — JSI 2026</span>
         </div>
         <p class="desc">
           Conception d'une application de suivi académique (notes, absences, alertes
           parents, génération de bulletins PDF) : analyse terrain, wireframes UX et
-          spécifications techniques.
+          spécifications techniques. Projet fondateur du module SmartLearn School.
         </p>
-        <div class="tech"><span>Flutter</span><span>Dart</span><span>UX</span><span>Spécifications</span></div>
+        <div class="tech"><span>Flutter</span><span>UX</span><span>Spécifications</span></div>
         <a class="link muted">Projet de conception produit</a>
       </div>
 
@@ -293,6 +476,95 @@
         <a class="link muted">Mission passée</a>
       </div>
 
+      <div class="card">
+        <div class="top">
+          <h3>Tutorat &amp; encadrement</h3>
+          <span class="status s-live">2015 — Présent</span>
+        </div>
+        <p class="desc">
+          Cours de soutien en Mathématiques et Informatique du collège au lycée, et
+          tutorat de niveau universitaire en mathématiques. Encadrement de travaux
+          dirigés et pratiques (Collège de la Vallée, 2015-2016).
+        </p>
+        <div class="tech"><span>Maths</span><span>Informatique</span><span>Pédagogie</span></div>
+        <a class="link muted">Suivi individualisé</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STRATÉGIE & SYSTÈMES -->
+<section class="split" id="strategie">
+  <div class="wrap">
+    <div class="kicker">Stratégie &amp; systèmes</div>
+    <h2 class="sec">Au-delà du code — concevoir avant de construire</h2>
+    <p class="sec-sub">
+      Mon premier livrable est rarement du code : c'est une compréhension, une
+      cartographie, une stratégie ou une spécification.
+    </p>
+    <div class="split-grid">
+      <div class="split-col">
+        <h3 class="sub">Conception de stratégies</h3>
+        <p>De l'analyse de marché ou d'organisation à la feuille de route exécutable.</p>
+        <ul>
+          <li>Audit produit, business &amp; technique</li>
+          <li>Stratégie de développement &amp; plan d'action</li>
+          <li>Définition d'objectifs &amp; d'indicateurs (KPI, métriques de rétention)</li>
+          <li>Roadmaps par horizon (court, moyen, long terme)</li>
+          <li>Accompagnement à la prise de décision</li>
+          <li>Suivi &amp; amélioration continue</li>
+        </ul>
+      </div>
+      <div class="split-col">
+        <h3 class="sub">Conception de CRM &amp; de systèmes</h3>
+        <p>Modéliser le métier, organiser les données, automatiser ce qui doit l'être.</p>
+        <ul>
+          <li>Architecture fonctionnelle &amp; modèle de données</li>
+          <li>Cartographie des parcours utilisateurs</li>
+          <li>Modélisation des processus métiers</li>
+          <li>Automatisation des flux de travail</li>
+          <li>Rédaction de spécifications fonctionnelles</li>
+          <li>Conception d'expériences utilisateurs adaptées</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PÉDAGOGIE -->
+<section id="pedagogie">
+  <div class="wrap">
+    <div class="kicker">Pédagogie</div>
+    <h2 class="sec">Transmettre avant d'enseigner</h2>
+    <p class="sec-sub">
+      Une approche centrée sur la compréhension, la rigueur et l'autonomie de l'apprenant.
+    </p>
+    <div class="split-grid">
+      <div class="split-col">
+        <h3 class="sub">Mathématiques</h3>
+        <p>Vulgariser sans diluer. Construire un raisonnement plutôt que mémoriser une formule.</p>
+        <ul>
+          <li>Vulgarisation des concepts complexes</li>
+          <li>Approche par compétences</li>
+          <li>Conception d'exercices et d'évaluations</li>
+          <li>Développement de l'esprit critique et logique</li>
+          <li>Programme MINESEC — collège &amp; lycée, toutes séries</li>
+          <li>Préparation aux examens officiels</li>
+        </ul>
+      </div>
+      <div class="split-col">
+        <h3 class="sub">Informatique</h3>
+        <p>De la machine à la pensée algorithmique — résoudre des problèmes par la programmation.</p>
+        <ul>
+          <li>Initiation aux outils numériques</li>
+          <li>Algorithmique &amp; logique informatique</li>
+          <li>Programmation &amp; résolution de problèmes</li>
+          <li>Conception de parcours d'apprentissage structurés</li>
+          <li>Accompagnement individualisé</li>
+          <li>Création de contenus éducatifs numériques</li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -301,37 +573,73 @@
 <section class="skills" id="competences">
   <div class="wrap">
     <div class="kicker">Compétences</div>
-    <h2 class="sec">Stack &amp; savoir-faire</h2>
-    <p class="sec-sub">Des outils modernes, maîtrisés sur des projets réels.</p>
+    <h2 class="sec">Une palette qui couvre la chaîne complète</h2>
+    <p class="sec-sub">Pédagogie · stratégie · ingénierie · données · IA.</p>
     <div class="skill-grid">
       <div class="skill-col">
-        <h4>Frontend &amp; Mobile</h4>
+        <h4>Stratégie &amp; conception</h4>
         <ul>
-          <li>Next.js · React</li>
-          <li>Tailwind CSS · HTML/CSS</li>
-          <li>JavaScript</li>
-          <li>Flutter · Dart</li>
-          <li>Progressive Web Apps</li>
+          <li>Audit produit / business / technique</li>
+          <li>Plans d'exécution &amp; roadmaps</li>
+          <li>Cartographie de processus</li>
+          <li>Spécifications fonctionnelles</li>
+          <li>Architecture de systèmes (CRM, SaaS)</li>
+          <li>Définition d'indicateurs &amp; mesure</li>
         </ul>
       </div>
       <div class="skill-col">
-        <h4>Backend &amp; Architecture</h4>
+        <h4>Pédagogie</h4>
         <ul>
-          <li>Node.js</li>
-          <li>MongoDB · PostgreSQL · SQLite</li>
-          <li>SaaS multi-tenant</li>
-          <li>Offline-first &amp; synchronisation</li>
-          <li>Intégration de paiement (Mobile Money)</li>
+          <li>Vulgarisation Maths &amp; Info</li>
+          <li>Conception de contenus éducatifs</li>
+          <li>Évaluations &amp; suivi des progrès</li>
+          <li>Approche par compétences</li>
+          <li>Programme MINESEC</li>
+          <li>Tutorat &amp; accompagnement</li>
         </ul>
       </div>
       <div class="skill-col">
-        <h4>Produit &amp; Outils</h4>
+        <h4>Développement</h4>
         <ul>
-          <li>UI/UX · Figma</li>
-          <li>Spécifications &amp; recherche terrain</li>
+          <li>Next.js · React · Tailwind</li>
+          <li>Node.js · MongoDB · PostgreSQL</li>
+          <li>Flutter · Dart · PWA</li>
+          <li>HTML / CSS / JavaScript / TypeScript</li>
+          <li>SaaS multi-tenant · Offline-first</li>
+          <li>Git · CI/CD · Vercel</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Systèmes &amp; intégrations</h4>
+        <ul>
+          <li>Intégration Mobile Money (MTN, Orange)</li>
+          <li>Configuration Chariow</li>
           <li>Automatisation de workflows (n8n)</li>
-          <li>Intégration d'IA (Claude)</li>
-          <li>Git · déploiement (Vercel)</li>
+          <li>Architecture multi-tenant</li>
+          <li>Synchronisation offline</li>
+          <li>Modélisation de données</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>Produit &amp; UX</h4>
+        <ul>
+          <li>Recherche utilisateur</li>
+          <li>Wireframes &amp; UI/UX (Figma)</li>
+          <li>Design system</li>
+          <li>Itération guidée par la donnée</li>
+          <li>Conception d'onboarding</li>
+          <li>Accessibilité &amp; mobile-first</li>
+        </ul>
+      </div>
+      <div class="skill-col">
+        <h4>IA &amp; données</h4>
+        <ul>
+          <li>Intégration de Claude (API)</li>
+          <li>Prompt engineering avancé</li>
+          <li>Automatisation assistée par IA</li>
+          <li>Analytics produit</li>
+          <li>Scoring &amp; segmentation</li>
+          <li>Feedback loops</li>
         </ul>
       </div>
     </div>
@@ -342,38 +650,38 @@
 <section id="services">
   <div class="wrap">
     <div class="kicker">Services</div>
-    <h2 class="sec">Comment je peux vous aider</h2>
-    <p class="sec-sub">Des prestations claires, du besoin au produit livré.</p>
+    <h2 class="sec">Six manières de travailler ensemble</h2>
+    <p class="sec-sub">Du conseil stratégique à la mise en production.</p>
     <div class="serv-grid">
       <div class="serv">
-        <div class="ic">&#9632;</div>
+        <div class="ic">◆</div>
+        <h4>Conseil stratégique</h4>
+        <p>Audits, plans d'action, roadmaps. Je vous aide à clarifier la direction avant de construire.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">▦</div>
+        <h4>Conception de CRM &amp; systèmes</h4>
+        <p>Modélisation des processus, architecture fonctionnelle, spécifications. Concevoir avant de coder.</p>
+      </div>
+      <div class="serv">
+        <div class="ic">■</div>
         <h4>Sites &amp; plateformes web</h4>
-        <p>Sites vitrines, applications web et plateformes SaaS modernes, rapides et responsives.</p>
+        <p>Sites vitrines, applications web et plateformes SaaS modernes, responsives et performantes.</p>
       </div>
       <div class="serv">
-        <div class="ic">&#9650;</div>
-        <h4>Applications mobiles &amp; PWA</h4>
-        <p>Applications multiplateformes en Flutter et Progressive Web Apps installables.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">&#9679;</div>
+        <div class="ic">●</div>
         <h4>Intégration de paiement</h4>
-        <p>Mise en place de tunnels de paiement, dont Mobile Money (MTN, Orange).</p>
+        <p>Mise en place de tunnels de paiement, dont Mobile Money (MTN, Orange) et Chariow.</p>
       </div>
       <div class="serv">
-        <div class="ic">&#9670;</div>
-        <h4>UI/UX &amp; identité produit</h4>
-        <p>Conception d'interfaces claires et cohérentes, du wireframe au design final.</p>
+        <div class="ic">∑</div>
+        <h4>Accompagnement pédagogique</h4>
+        <p>Tutorat Maths &amp; Informatique, conception de contenus éducatifs, parcours structurés.</p>
       </div>
       <div class="serv">
-        <div class="ic">&#9711;</div>
+        <div class="ic">◐</div>
         <h4>Automatisation &amp; IA</h4>
-        <p>Automatisation de workflows et intégration d'outils d'IA pour gagner du temps.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">&#9633;</div>
-        <h4>Accompagnement produit</h4>
-        <p>Du cadrage à la mise en ligne : je vous accompagne sur toute la chaîne.</p>
+        <p>Workflows automatisés, intégration d'outils d'IA, gain de temps mesurable sur les opérations.</p>
       </div>
     </div>
   </div>
@@ -384,7 +692,7 @@
   <div class="wrap">
     <div class="kicker" style="color:#5FD0C4;">Contact</div>
     <h2 class="sec">Parlons de votre projet</h2>
-    <p class="sec-sub">Disponible pour des missions freelance, locales ou à distance.</p>
+    <p class="sec-sub">Disponible pour le conseil, les missions techniques et les collaborations EdTech — Douala et à distance.</p>
     <div class="contact-grid">
       <a class="c-item" href="mailto:salomonfoe97@smartlearn-edu.org">
         <span class="lbl">Email</span>
@@ -407,7 +715,7 @@
 </section>
 
 <footer>
-  © 2026 Salomon Foe — Développeur Full-Stack &amp; Créatif Tech · Douala, Cameroun
+  © 2026 Salomon Foe — Fondateur SmartLearn · Enseignant · Concepteur de stratégies et de systèmes · Douala, Cameroun
 </footer>
 
 </body>
