@@ -14,7 +14,8 @@ export default function RegisterPage() {
         confirmPassword: "",
         role: "student",
         grade_level: classesDisponibles[0],
-        parrainId: ""
+        parrainId: "",
+        phone: ""
     });
 
     // Capture du lien d'affiliation (?ref=...)
@@ -33,6 +34,7 @@ export default function RegisterPage() {
     const isPasswordValid = formData.password.length >= 8;
     const isConfirmPasswordValid = formData.password === formData.confirmPassword;
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+    const isPhoneValid = /^[+]?[0-9]{8,15}$/.test(formData.phone.replace(/[\s-]/g, ''));
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -40,6 +42,11 @@ export default function RegisterPage() {
 
         if (!isEmailValid) {
             setError("L'adresse e-mail est invalide.");
+            return;
+        }
+
+        if (!isPhoneValid) {
+            setError("Le numéro de téléphone est invalide (format attendu : +237 6 XX XX XX XX).");
             return;
         }
 
@@ -124,6 +131,7 @@ export default function RegisterPage() {
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">Classe</label>
                             <select
+                                aria-label="Classe"
                                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary-gold)] focus:ring-2 focus:ring-[var(--primary-gold)]/20 outline-none transition-all bg-white text-gray-900"
                                 value={formData.grade_level}
                                 onChange={(e) => setFormData({ ...formData, grade_level: e.target.value })}
@@ -145,6 +153,21 @@ export default function RegisterPage() {
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-bold text-gray-700 mb-2">Téléphone</label>
+                        <input
+                            type="tel"
+                            required
+                            className={`w-full px-4 py-3 rounded-xl border ${formData.phone && !isPhoneValid ? 'border-red-300' : 'border-gray-200'} focus:border-[var(--primary-gold)] focus:ring-2 focus:ring-[var(--primary-gold)]/20 outline-none transition-all text-gray-900`}
+                            placeholder="+237 6 XX XX XX XX"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        />
+                        {formData.phone && !isPhoneValid && (
+                            <p className="text-xs text-red-500 mt-1">Numéro invalide (8 à 15 chiffres, +237 accepté).</p>
+                        )}
                     </div>
 
                     <div>
@@ -199,7 +222,7 @@ export default function RegisterPage() {
 
                     <button
                         type="submit"
-                        disabled={loading || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid}
+                        disabled={loading || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid}
                         className="w-full py-4 rounded-xl bg-[var(--primary-dark)] text-white font-bold text-lg hover:bg-[var(--primary-dark)]/90 transition-all transform hover:-translate-y-1 shadow-lg shadow-[var(--primary-dark)]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
                         {loading ? "Création en cours..." : "Créer mon compte VIP"}
