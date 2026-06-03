@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await connectToDatabase();
     const plans = await Plan.find({ isActive: true })
-      .select('code name price chariowUrl')
+      .select('code name price chariowUrl period durationDays')
       .sort({ price: 1 })
       .lean();
     return NextResponse.json(plans);

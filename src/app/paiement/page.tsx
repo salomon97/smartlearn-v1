@@ -12,7 +12,22 @@ type Plan = {
     name: string;
     price: number;
     chariowUrl: string;
+    period?: 'monthly' | 'quarterly' | 'annual' | 'lifetime';
+    durationDays?: number;
 };
+
+const PERIOD_LABEL: Record<string, string> = {
+    monthly: '/ mois',
+    quarterly: '/ trimestre',
+    annual: '/ an',
+    lifetime: 'à vie',
+};
+
+// Coût équivalent mensuel = price / (durationDays / 30). Utilisé pour calculer l'économie.
+function monthlyEquivalent(plan: Plan): number | null {
+    if (!plan.durationDays || plan.durationDays <= 0) return null;
+    return plan.price / (plan.durationDays / 30);
+}
 
 function CheckoutContent() {
     const { data: session, status } = useSession();
@@ -32,7 +47,10 @@ function CheckoutContent() {
     }, [status, router]);
 
     useEffect(() => {
-        if (session?.user?.isPremium && !paymentSuccess) {
+        // Seuls les utilisateurs à vie (grandfather) sont redirigés — ils n'ont rien à renouveler.
+        // Les VIP actifs PEUVENT visiter /paiement pour renouveler à l'avance (extension sans perte).
+        // Les expirés et les visiteurs jamais payés voient les 3 plans normalement.
+        if ((session?.user as any)?.premiumStatus === 'lifetime' && !paymentSuccess) {
             router.push("/dashboard");
         }
     }, [session, router, paymentSuccess]);
@@ -212,31 +230,60 @@ function CheckoutContent() {
                             <p className="text-sm text-gray-500">Chargement des offres...</p>
                         ) : plans.length === 0 ? (
                             <p className="text-sm text-red-500">Aucune offre disponible pour le moment. Réessayez plus tard.</p>
-                        ) : (
-                            <div className="flex flex-col gap-4">
-                                {plans.map((plan) => (
-                                    <div key={plan._id} className="border border-gray-100 rounded-2xl p-4">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <span className="font-bold text-gray-900">{plan.name}</span>
-                                            <span className="text-xl font-black">
-                                                {plan.price} <span className="text-xs text-gray-400">FCFA</span>
-                                            </span>
-                                        </div>
-                                        <a
-                                            href={buildCheckoutUrl(plan)}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="w-full py-3 px-6 rounded-xl bg-[var(--primary-dark)] text-white font-bold hover:bg-[var(--primary-dark)]/90 transition-all flex items-center justify-center gap-2 text-center"
-                                        >
-                                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                            </svg>
-                                            Payer {plan.price} FCFA
-                                        </a>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        ) : (() => {
+                            // Référence "mensuel" pour calculer les économies des autres durées
+                            const monthlyPlan = plans.find(p => p.period === 'monthly');
+                            const monthlyRef = monthlyPlan?.price ?? null;
+                            return (
+                                <div className="flex flex-col gap-4">
+                                    {plans.map((plan) => {
+                                        const periodLabel = PERIOD_LABEL[plan.period || 'lifetime'] || '';
+                                        const eqMonthly = monthlyEquivalent(plan);
+                                        const savings = monthlyRef && eqMonthly && plan.period !== 'monthly' && plan.period !== 'lifetime'
+                                            ? Math.round((1 - eqMonthly / monthlyRef) * 100)
+                                            : 0;
+                                        const isBestValue = plan.period === 'annual';
+
+                                        return (
+                                            <div key={plan._id} className={`border rounded-2xl p-4 relative ${isBestValue ? 'border-emerald-400 bg-emerald-50/40' : 'border-gray-100'}`}>
+                                                {isBestValue && (
+                                                    <span className="absolute -top-2 right-3 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                                        Meilleur rapport
+                                                    </span>
+                                                )}
+                                                <div className="flex items-baseline justify-between mb-1">
+                                                    <span className="font-bold text-gray-900">{plan.name}</span>
+                                                    <span className="text-xl font-black">
+                                                        {plan.price.toLocaleString('fr-FR')} <span className="text-xs text-gray-400 font-medium">FCFA {periodLabel}</span>
+                                                    </span>
+                                                </div>
+                                                {eqMonthly && plan.period !== 'monthly' && (
+                                                    <p className="text-[11px] text-gray-500 mb-3">
+                                                        soit {Math.round(eqMonthly).toLocaleString('fr-FR')} FCFA / mois
+                                                        {savings > 0 && (
+                                                            <span className="ml-2 inline-block bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">
+                                                                économie de {savings}%
+                                                            </span>
+                                                        )}
+                                                    </p>
+                                                )}
+                                                <a
+                                                    href={buildCheckoutUrl(plan)}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={`w-full py-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-center text-white ${isBestValue ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[var(--primary-dark)] hover:bg-[var(--primary-dark)]/90'}`}
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                    </svg>
+                                                    Payer {plan.price.toLocaleString('fr-FR')} FCFA
+                                                </a>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })()}
 
                         <p className="text-xs text-gray-400 text-center mt-4">
                             Vous serez redirigé vers Chariow, une plateforme de paiement sécurisée. Votre accès VIP sera activé après confirmation du paiement.
