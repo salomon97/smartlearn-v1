@@ -16,7 +16,7 @@ const PLANS = [
         price: 2500,
         period: 'monthly' as const,
         durationDays: 30,
-        chariowUrl: 'CHANGEME_MONTHLY_CHARIOW_URL',
+        chariowUrl: 'https://wttjdkki.mychariow.shop/prd_k6s1yzmp',
     },
     {
         code: 'vip_quarterly',
@@ -24,7 +24,7 @@ const PLANS = [
         price: 5000,
         period: 'quarterly' as const,
         durationDays: 90,
-        chariowUrl: 'CHANGEME_QUARTERLY_CHARIOW_URL',
+        chariowUrl: 'https://wttjdkki.mychariow.shop/prd_yqlc580e',
     },
     {
         code: 'vip_annual',
@@ -32,7 +32,7 @@ const PLANS = [
         price: 10000,
         period: 'annual' as const,
         durationDays: 365,
-        chariowUrl: 'CHANGEME_ANNUAL_CHARIOW_URL',
+        chariowUrl: 'https://wttjdkki.mychariow.shop/prd_uypgpgkq',
     },
 ];
 
