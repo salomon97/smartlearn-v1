@@ -2,6 +2,9 @@ export const dynamic = 'force-dynamic';
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { NextResponse } from 'next/server';
+import connectToDatabase from "@/lib/mongoose";
+import User from "@/models/User";
+import { computePremiumStatus } from "@/lib/premium-core";
 
 export async function GET(req: Request) {
     try {
@@ -10,10 +13,22 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Non autorisé" }, { status: 401 });
         }
 
-        // Vérification Premium (Anti-fraude)
-        const user = session.user as any;
-        if (!user.isPremium && user.role !== 'admin') {
-            return NextResponse.json({ message: "Accès Premium requis pour voir ce contenu" }, { status: 403 });
+        // Vérification Premium (Anti-fraude) — lecture DB pour que l'expiration prenne effet
+        // immédiatement (vs session potentiellement périmée).
+        await connectToDatabase();
+        const sessionUser = session.user as any;
+        const dbUser = await User.findById(sessionUser.id).select("isPremium premiumUntil role");
+        if (!dbUser) {
+            return NextResponse.json({ message: "Utilisateur introuvable" }, { status: 404 });
+        }
+        const access = computePremiumStatus(dbUser);
+        if (!access.isPremium && dbUser.role !== 'admin') {
+            return NextResponse.json({
+                message: access.status === 'expired'
+                    ? "Abonnement expiré — renouvelez pour reprendre l'accès aux vidéos."
+                    : "Accès Premium requis pour voir ce contenu",
+                status: access.status,
+            }, { status: 403 });
         }
 
         const { searchParams } = new URL(req.url);
@@ -46,10 +61,15 @@ export async function GET(req: Request) {
                 // DEBUG: Provide exactly what Vercel sees
                 console.error(`[Bunny Error] Status: ${response.status}, URL: ${fetchUrl}, ENV_ZONE: ${!!zoneName}, ENV_PASS: ${!!password}`);
                 
+                let errorMessage = "Dossier introuvable sur Bunny.net";
+                if (response.status === 401 || response.status === 403) {
+                    errorMessage = "Erreur d'authentification Bunny (Compte expiré ou clé invalide)";
+                }
+
                 return NextResponse.json({ 
-                    message: "Dossier introuvable sur Bunny.net", 
+                    message: errorMessage, 
                     error: `Bunny Http ${response.status}. Zone config: ${!!zoneName}, URL: ${fetchUrl}` 
-                }, { status: 404 });
+                }, { status: response.status === 401 || response.status === 403 ? response.status : 404 });
             }
 
             const data = await response.json();

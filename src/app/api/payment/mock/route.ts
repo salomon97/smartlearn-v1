@@ -37,9 +37,12 @@ export async function POST(request: Request) {
         });
 
         // 2. Mise à jour de l'utilisateur (Il devient Premium)
+        // Mock = équivalent d'un achat mensuel (30 jours). En prod, le webhook Chariow
+        // calcule l'extension précise depuis plan.durationDays.
+        const DAY_MS = 24 * 60 * 60 * 1000;
         const updatedUser = await User.findByIdAndUpdate(
             session.user.id,
-            { isPremium: true },
+            { isPremium: true, premiumUntil: new Date(Date.now() + 30 * DAY_MS) },
             { new: true }
         );
 
