@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import UserNav from "@/components/UserNav";
+import { Logo } from "@/components/ui/Logo";
 
 
 export default async function Home() {
@@ -10,19 +11,10 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[var(--primary-dark)] text-white">
       {/* Navbar */}
-      <header className="fixed w-full top-0 z-50 bg-[var(--primary-dark)]/80 backdrop-blur-md border-b border-white/10">
+      <header className="fixed w-full top-0 z-50 bg-navy/80 backdrop-blur-md border-b border-white/10">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <Image
-              src="/logo.jpg"
-              alt="SmartLearn Logo"
-              width={50}
-              height={50}
-              className="rounded-full object-cover border border-[var(--primary-gold)]/50"
-            />
-            <span className="text-2xl font-bold tracking-wider text-white">
-              Smart<span className="text-[var(--primary-gold)]">Learn</span>
-            </span>
+          <Link href="/" aria-label="SmartLearn — Accueil" className="transition-opacity hover:opacity-90">
+            <Logo variant="compact" theme="dark" size={36} />
           </Link>
           <UserNav session={session} />
         </div>
