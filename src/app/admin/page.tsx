@@ -18,7 +18,7 @@ export default async function AdminDashboardPage() {
     const totalUsers = await User.countDocuments();
     const totalStudents = await User.countDocuments({ role: 'student' });
     const totalAffiliates = await User.countDocuments({ role: 'affiliate' });
-    // VIP actifs = "a payé" + (à vie OU pas encore expiré). Les expirés sont exclus du KPI.
+    // Premium actifs = "a payé" + (à vie OU pas encore expiré). Les expirés sont exclus du KPI.
     const totalVIPs = await User.countDocuments({
         isPremium: true,
         $or: [
@@ -133,7 +133,7 @@ export default async function AdminDashboardPage() {
                         <Star className="w-6 h-6 fill-current" />
                     </div>
                     <div>
-                        <div className="text-[10px] font-black uppercase tracking-widest text-white/70">Membres VIP</div>
+                        <div className="text-[10px] font-black uppercase tracking-widest text-white/70">Membres Premium</div>
                         <div className="text-xl font-black text-white">{totalVIPs}</div>
                     </div>
                 </div>

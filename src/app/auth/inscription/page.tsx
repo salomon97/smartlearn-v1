@@ -225,7 +225,7 @@ export default function RegisterPage() {
                         disabled={loading || !isEmailValid || !isPhoneValid || !isPasswordValid || !isConfirmPasswordValid}
                         className="w-full py-4 rounded-xl bg-[var(--primary-dark)] text-white font-bold text-lg hover:bg-[var(--primary-dark)]/90 transition-all transform hover:-translate-y-1 shadow-lg shadow-[var(--primary-dark)]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
-                        {loading ? "Création en cours..." : "Créer mon compte VIP"}
+                        {loading ? "Création en cours..." : "Créer mon compte Premium"}
                     </button>
                 </form>
 

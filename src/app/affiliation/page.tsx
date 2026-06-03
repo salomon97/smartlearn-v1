@@ -130,7 +130,7 @@ export default function AffiliationPage() {
                 </nav>
                 {isPremium && (
                     <div className="mt-auto bg-gradient-to-r from-[var(--primary-gold)] to-yellow-500 p-4 rounded-xl text-[var(--primary-dark)] text-sm shadow-md font-bold text-center">
-                        Membre VIP Activé ✨
+                        Membre Premium Activé ✨
                     </div>
                 )}
             </aside>
@@ -141,7 +141,7 @@ export default function AffiliationPage() {
                     <h1 className="text-xl font-bold text-gray-900">Programme Ambassadeur</h1>
                     {role === "student" && !isPremium && (
                         <Link href="/paiement" className="px-5 py-2 bg-[var(--primary-gold)] text-[var(--primary-dark)] rounded-full font-bold text-sm shadow-md">
-                            Devenir VIP
+                            Devenir Premium
                         </Link>
                     )}
                 </header>
@@ -153,7 +153,7 @@ export default function AffiliationPage() {
                         <div className="relative z-10 max-w-xl">
                             <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-[var(--primary-gold)] text-sm font-bold mb-4 border border-[var(--primary-gold)]/30 backdrop-blur-sm">Partagez &amp; Gagnez</span>
                             <h2 className="text-3xl font-extrabold mb-4">Parrainez vos amis et encaissez de l&apos;argent.</h2>
-                            <p className="text-gray-300 text-lg">Pour chaque ami qui crée son compte VIP grâce à votre lien, vous gagnez <strong className="text-[var(--primary-gold)]">10% de sa souscription (soit 200 FCFA)</strong>. Recevez vos gains directement sur votre Mobile Money !</p>
+                            <p className="text-gray-300 text-lg">Pour chaque ami qui crée son compte Premium grâce à votre lien, vous gagnez <strong className="text-[var(--primary-gold)]">10% de sa souscription (soit 200 FCFA)</strong>. Recevez vos gains directement sur votre Mobile Money !</p>
 
                         </div>
                         <div className="relative z-10 w-full md:w-auto">
@@ -182,7 +182,7 @@ export default function AffiliationPage() {
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
                             <span className="text-2xl block mb-1">🌟</span>
                             <span className="text-xl font-black">{statsLoading ? "…" : stats.conversions}</span>
-                            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">VIP</p>
+                            <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Premium</p>
                         </div>
                         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
                             <span className="text-2xl block mb-1">⏳</span>

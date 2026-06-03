@@ -1,99 +1,139 @@
 @import "tailwindcss";
 
+/* ═════════════════════════════════════════════════════════════
+   SMARTLEARN — Brand tokens
+   Source de vérité : docs/DESIGN.md
+   Palette : navy (institutionnel) + teal (progression) + orange (action)
+   ═════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  /* ─── Brand ─── */
+  --navy: #0A1628;
+  --navy-deep: #050D1A;
+  --teal: #0FB69C;
+  --teal-dark: #0A8A75;
+  --teal-light: #EAF3F3;
+  --orange: #F97316;
+  --orange-dark: #EA580C;
+  --orange-light: #FFB279;
 
-  /* Couleurs extraites du logo SmartLearn */
-  --primary-dark: #1A3644;
-  /* Le bleu nuit élégant du fond */
-  --primary-gold: #E6B956;
-  /* Le doré du logo et du texte */
-  --primary-gold-hover: #D4A33C;
+  /* ─── Surfaces ─── */
+  --background: #F7F8FA;
+  --foreground: #0F172A;
+  --surface: #FFFFFF;
+  --surface-alt: #EAF3F3;
 
-  --surface: #ffffff;
-  --border: #e2e8f0;
+  /* ─── Semantic ─── */
+  --success: #10B981;
+  --warning: #F59E0B;
+  --error: #EF4444;
+  --info: #3B82F6;
+
+  /* ─── Legacy aliases (migration progressive — voir DESIGN.md §Migration) ─── */
+  --primary-dark: var(--navy);
+  --primary-gold: var(--teal);         /* le gold devient teal — bascule globale */
+  --primary-gold-hover: var(--teal-dark);
+  --border: #E2E8F0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1A3644;
-    /* On utilise le bleu nuit du logo comme fond principal */
-    --foreground: #f8fafc;
-
+    --background: var(--navy);
+    --foreground: #F7F8FA;
     --surface: #122631;
-    /* Un bleu encore plus foncé pour les cartes */
-    --border: #2c4b5c;
+    --border: #2C4B5C;
   }
 }
 
 @theme inline {
+  /* Brand */
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-teal: var(--teal);
+  --color-teal-dark: var(--teal-dark);
+  --color-teal-light: var(--teal-light);
+  --color-orange: var(--orange);
+  --color-orange-dark: var(--orange-dark);
+  --color-orange-light: var(--orange-light);
+
+  /* Surfaces */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-orange: #f97316;
-  --color-brand-orange-dark: #ea580c;
-  --color-brand-orange-light: #fdba74;
+  --color-surface: var(--surface);
+  --color-surface-alt: var(--surface-alt);
+
+  /* Semantic */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Legacy aliases — pour que tout le code existant en bg-brand-orange continue à fonctionner */
+  --color-brand-orange: var(--orange);
+  --color-brand-orange-dark: var(--orange-dark);
+  --color-brand-orange-light: var(--orange-light);
+
+  /* Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+
+  /* Shadows (calibrées pour fond clair, navy à 4-8% d'opacité — discret) */
+  --shadow-sm: 0 1px 2px rgba(10, 22, 40, 0.04);
+  --shadow-md: 0 4px 12px rgba(10, 22, 40, 0.06);
+  --shadow-lg: 0 12px 24px rgba(10, 22, 40, 0.08);
+  --shadow-xl: 0 24px 48px rgba(10, 22, 40, 0.12);
+  --shadow-orange: 0 8px 20px rgba(249, 115, 22, 0.20);
+  --shadow-teal: 0 8px 20px rgba(15, 182, 156, 0.20);
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), sans-serif;
+  font-family: var(--font-geist-sans), 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv11";
 }
 
-/* Fix pour les inputs invisibles en mode sombre */
+/* Heading utility — letter-spacing tight pour le voice premium */
+.font-heading {
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+
+/* Inputs : forcer texte lisible */
 input, select, textarea {
-  color: #0f172a !important; /* Force le texte sombre sur fonds clairs */
+  color: #0F172A;
 }
-
-/* Exception pour les placeholders qui doivent rester discrets */
 input::placeholder, textarea::placeholder {
-  color: #94a3b8 !important;
+  color: #94A3B8;
 }
 
 @layer utilities {
   .animate-marquee {
     animation: marquee 35s linear infinite;
   }
-
   .animate-marquee:hover {
     animation-play-state: paused;
   }
-
   @keyframes marquee {
-    0% {
-      transform: translateX(0%);
-    }
-
-    100% {
-      transform: translateX(-50%);
-    }
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
   }
 }
 
-/* Utilitaires CSS personnalisés pour SmartLearn */
-.text-gold {
-  color: var(--primary-gold);
-}
-
-.bg-gold {
-  background-color: var(--primary-gold);
-}
-
-.bg-dark {
-  background-color: var(--primary-dark);
-}
-
-.border-gold {
-  border-color: var(--primary-gold);
-}
-
-.hover\:bg-gold-hover:hover {
-  background-color: var(--primary-gold-hover);
-}
-
+/* ─── Legacy utility classes : alias vers nouvelle palette ─── */
+/* Préserve l'usage existant de .text-gold, .bg-gold, etc. dans le code legacy. */
+.text-gold { color: var(--teal); }
+.bg-gold { background-color: var(--teal); }
+.bg-dark { background-color: var(--navy); }
+.border-gold { border-color: var(--teal); }
+.hover\:bg-gold-hover:hover { background-color: var(--teal-dark); }
 .gradient-gold {
-  background: linear-gradient(135deg, #F3D98A 0%, #D4A33C 100%);
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

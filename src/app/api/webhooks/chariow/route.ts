@@ -136,7 +136,7 @@ export async function POST(req: Request) {
         }
         const amountPaid = plan.price;
 
-        // 10. Activer / étendre l'accès VIP.
+        // 10. Activer / étendre l'accès Premium.
         //   - isPremium = true (toujours — drapeau "a payé au moins une fois", jamais reset)
         //   - premiumUntil étendu de plan.durationDays JOURS depuis max(now, premiumUntil actuel)
         //     → renouvellement précoce ne perd aucun jour.
@@ -155,7 +155,7 @@ export async function POST(req: Request) {
 
             await user.save();
             const action = wasPremium && user.premiumUntil ? 'Renouvellement' : 'Activation';
-            console.log(`✅ [WEBHOOK] ${action} VIP pour ${user.email} (plan ${plan.code}, expire: ${user.premiumUntil || 'à vie'})`);
+            console.log(`✅ [WEBHOOK] ${action} Premium pour ${user.email} (plan ${plan.code}, expire: ${user.premiumUntil || 'à vie'})`);
         } else {
             console.log(`ℹ️ [WEBHOOK] Utilisateur ${user.email} est admin — accès intact, on enregistre quand même la Transaction.`);
         }

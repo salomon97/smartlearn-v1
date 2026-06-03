@@ -120,7 +120,7 @@ export default async function ProfilePage() {
 
                 {/* Sidebar : Statut & Actions */}
                 <div className="space-y-6">
-                    {/* Carte VIP — affiche le statut effectif et le compte à rebours d'expiration. */}
+                    {/* Carte Premium — affiche le statut effectif et le compte à rebours d'expiration. */}
                     <div className={`p-6 rounded-2xl border backdrop-blur-xl relative overflow-hidden group ${
                         access.isPremium
                             ? 'bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/30'
@@ -148,8 +148,8 @@ export default async function ProfilePage() {
                                 : access.status === 'expired' ? 'text-red-400'
                                 : 'text-white'
                             }`}>
-                                {access.status === 'lifetime' ? 'Membre VIP à vie'
-                                 : access.status === 'active' ? 'Membre VIP'
+                                {access.status === 'lifetime' ? 'Membre Premium à vie'
+                                 : access.status === 'active' ? 'Membre Premium'
                                  : access.status === 'expired' ? 'Abonnement expiré'
                                  : 'Compte Gratuit'}
                             </h3>
@@ -178,13 +178,13 @@ export default async function ProfilePage() {
                             )}
                             {access.status === 'never' && (
                                 <p className="text-sm text-slate-400 mb-6">
-                                    Accédez à plus de contenu en devenant membre VIP.
+                                    Accédez à plus de contenu en devenant membre Premium.
                                 </p>
                             )}
 
                             {access.status === 'never' && role === 'student' && (
                                 <a href="/paiement" className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-light focus:ring-4 focus:ring-brand-orange/20 text-white rounded-xl font-medium transition-all text-sm shadow-lg shadow-brand-orange/20">
-                                    Devenir VIP
+                                    Devenir Premium
                                 </a>
                             )}
                             {access.status === 'expired' && role === 'student' && (

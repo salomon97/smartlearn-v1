@@ -19,7 +19,7 @@ export const sendVerificationEmail = async (to: string, code: string) => {
         <div style="padding: 30px; background-color: #ffffff;">
             <h2 style="color: #333333; margin-top: 0;">Vérification de votre compte</h2>
             <p style="color: #555555; text-height: 1.5; font-size: 16px;">
-                Bonjour et bienvenue sur SmartLearn ! Pour finaliser la création de votre compte VIP, veuillez entrer le code de vérification suivant :
+                Bonjour et bienvenue sur SmartLearn ! Pour finaliser la création de votre compte Premium, veuillez entrer le code de vérification suivant :
             </p>
             <div style="background-color: #F8FAFC; padding: 15px; border-radius: 8px; text-align: center; margin: 25px 0;">
                 <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #0F172A;">${code}</span>

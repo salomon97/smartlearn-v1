@@ -48,7 +48,7 @@ function CheckoutContent() {
 
     useEffect(() => {
         // Seuls les utilisateurs à vie (grandfather) sont redirigés — ils n'ont rien à renouveler.
-        // Les VIP actifs PEUVENT visiter /paiement pour renouveler à l'avance (extension sans perte).
+        // Les Premium actifs PEUVENT visiter /paiement pour renouveler à l'avance (extension sans perte).
         // Les expirés et les visiteurs jamais payés voient les 3 plans normalement.
         if ((session?.user as any)?.premiumStatus === 'lifetime' && !paymentSuccess) {
             router.push("/dashboard");
@@ -132,7 +132,7 @@ function CheckoutContent() {
                                 </svg>
                             </div>
                             <h1 className="text-3xl font-extrabold text-gray-900 mb-3">Paiement reçu !</h1>
-                            <p className="text-gray-500 mb-8 font-medium">Votre accès VIP est maintenant actif. Bienvenue dans l&apos;excellence !</p>
+                            <p className="text-gray-500 mb-8 font-medium">Votre accès Premium est maintenant actif. Bienvenue dans l&apos;excellence !</p>
                             <div className="flex flex-col sm:flex-row gap-3 justify-center">
                                 <Link href="/dashboard" className="px-6 py-3 bg-[var(--primary-dark)] text-white rounded-xl font-bold hover:shadow-lg transition-all">Aller à mon espace</Link>
                             </div>
@@ -286,7 +286,7 @@ function CheckoutContent() {
                         })()}
 
                         <p className="text-xs text-gray-400 text-center mt-4">
-                            Vous serez redirigé vers Chariow, une plateforme de paiement sécurisée. Votre accès VIP sera activé après confirmation du paiement.
+                            Vous serez redirigé vers Chariow, une plateforme de paiement sécurisée. Votre accès Premium sera activé après confirmation du paiement.
                         </p>
 
                         <div className="mt-6 pt-6 border-t border-gray-100">

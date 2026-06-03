@@ -58,7 +58,7 @@ export default async function DashboardPage() {
                 </div>
                 {isPremium && (
                     <div className="mt-6 bg-emerald-50 border border-emerald-100 p-6 rounded-[2rem] text-emerald-700 text-sm shadow-sm font-black text-center animate-pulse">
-                        MEMBRE VIP ACTIF ✨
+                        MEMBRE Premium ACTIF ✨
                     </div>
                 )}
             </aside>
@@ -82,7 +82,7 @@ export default async function DashboardPage() {
                     </div>
                     {role === 'student' && !isPremium && (
                         <Link href="/paiement" className="px-8 py-3 bg-brand-orange text-white rounded-2xl font-black text-sm shadow-xl shadow-brand-orange/20 hover:scale-105 transition-all">
-                            DÉBLOQUER MON PASS VIP
+                            DÉBLOQUER MON PASS Premium
                         </Link>
                     )}
                 </header>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
                                             Accède en illimité à toute l'arborescence de {grade_level} (Maths & Informatique). Vidéos, Chapitres PDF et Annales d'examens disponibles à vie pour un seul paiement.
                                         </p>
                                         <Link href="/paiement" className="inline-block px-10 py-4 bg-brand-orange text-white rounded-2xl font-black hover:shadow-2xl hover:shadow-brand-orange/40 transition-all">
-                                            ACTIVER MON PASS VIP (2000 FCFA)
+                                            ACTIVER MON PASS Premium (2000 FCFA)
                                         </Link>
                                     </div>
                                 </div>
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
                             <div className="w-24 h-24 bg-emerald-50 rounded-[2.5rem] flex items-center justify-center text-emerald-500 mx-auto mb-10">
                                 <span className="text-5xl">💼</span>
                             </div>
-                            <h2 className="text-4xl font-black text-gray-900 mb-6 tracking-tight">Espace Ambassadeur VIP</h2>
+                            <h2 className="text-4xl font-black text-gray-900 mb-6 tracking-tight">Espace Ambassadeur</h2>
                             <p className="text-gray-500 text-xl max-w-2xl mx-auto mb-12 font-medium">
                                 Vous êtes le moteur de SmartLearn. Partagez votre lien, suivez vos retraits et générez des revenus en aidant les élèves à accéder à l'excellence.
                             </p>

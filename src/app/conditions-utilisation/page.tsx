@@ -17,12 +17,12 @@ export default function TermsPage() {
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">1. Objet du service</h2>
                     <p>
-                        SmartLearn est une plateforme éducative fournissant des contenus de révision (vidéos, PDF, annales) pour les élèves. L'accès VIP est payant et personnel.
+                        SmartLearn est une plateforme éducative fournissant des contenus de révision (vidéos, PDF, annales) pour les élèves. L'accès Premium est payant et personnel.
                     </p>
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">2. Accès et Sécurité des comptes</h2>
                     <p>
-                        L'accès à l'espace VIP est strictement personnel. <strong>Le partage de compte est formellement interdit.</strong> Notre système détecte les connexions simultanées. En cas d'abus (partage manifeste du mot de passe), SmartLearn se réserve le droit de suspendre l'accès sans remboursement.
+                        L'accès à l'espace Premium est strictement personnel. <strong>Le partage de compte est formellement interdit.</strong> Notre système détecte les connexions simultanées. En cas d'abus (partage manifeste du mot de passe), SmartLearn se réserve le droit de suspendre l'accès sans remboursement.
                     </p>
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">3. Propriété intellectuelle</h2>
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">4. Modalités de paiement</h2>
                     <p>
-                        Les paiements sont effectués via la plateforme sécurisée Chariow. L'accès VIP est activé à vie pour la classe sélectionnée dès validation de la transaction. Aucun abonnement récurrent n'est appliqué.
+                        Les paiements sont effectués via la plateforme sécurisée Chariow. L'accès Premium est activé à vie pour la classe sélectionnée dès validation de la transaction. Aucun abonnement récurrent n'est appliqué.
                     </p>
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">5. Responsabilité</h2>

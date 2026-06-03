@@ -85,7 +85,7 @@ export async function POST(req: Request) {
         });
 
         const mailOptions = {
-            from: `"SmartLearn VIP" <${process.env.SMTP_USER}>`,
+            from: `"SmartLearn" <${process.env.SMTP_USER}>`,
             to: adminUser.email,
             subject: "Accès Sécurisé Administrateur",
             html: htmlTemplate,

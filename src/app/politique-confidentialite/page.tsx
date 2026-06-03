@@ -30,7 +30,7 @@ export default function PrivacyPolicyPage() {
                     <p>
                         Vos données sont utilisées exclusivement pour :
                         <ul className="list-disc pl-6 space-y-2 mt-2">
-                            <li>Vous fournir l'accès aux contenus éducatifs (VIP)</li>
+                            <li>Vous fournir l'accès aux contenus éducatifs (Premium)</li>
                             <li>Personnaliser votre expérience d'apprentissage</li>
                             <li>Assurer la sécurité de votre compte (détection de connexions simultanées)</li>
                             <li>Traiter vos paiements via notre partenaire sécurisé Chariow</li>
