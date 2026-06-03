@@ -4,7 +4,8 @@ export interface IUser extends Document {
     email: string;
     name: string;
     password?: string;
-    isPremium: boolean;
+    isPremium: boolean;          // Drapeau "a déjà payé un jour" — JAMAIS reset à false
+    premiumUntil?: Date | null;  // Horloge d'expiration. null = grandfather à vie. Cf computePremiumStatus
     role: 'student' | 'affiliate' | 'admin';
     grade_level?: string;
     school?: string;
@@ -28,6 +29,7 @@ const UserSchema = new Schema<IUser>(
         name: { type: String, required: true },
         password: { type: String }, // For credentials auth, not needed if using OAuth
         isPremium: { type: Boolean, default: false },
+        premiumUntil: { type: Date, default: null },
         role: { type: String, enum: ['student', 'affiliate', 'admin'], default: 'student' },
         grade_level: { type: String }, // Optionnel car les affiliés n'ont pas de classe
         school: { type: String },      // Établissement (ex: Collège Laval)

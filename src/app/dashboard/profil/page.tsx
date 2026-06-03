@@ -5,6 +5,7 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import { computeBalances } from "@/lib/balances";
 import ProfilePictureUpload from "@/components/ProfilePictureUpload";
+import { computePremiumStatus } from "@/lib/premium-core";
 
 export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
@@ -32,7 +33,12 @@ export default async function ProfilePage() {
         dbUser.codeAffiliation = newCode;
     }
 
-    const { name, email, role, grade_level, isPremium, isVerified, codeAffiliation, commission_rate = 10, image } = dbUser as any;
+    const { name, email, role, grade_level, isVerified, codeAffiliation, commission_rate = 10, image } = dbUser as any;
+
+    // Statut Premium EFFECTIF (combine isPremium flag + premiumUntil, respecte l'expiration).
+    const access = computePremiumStatus(dbUser);
+    const formatDate = (d: Date | null) =>
+        d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
 
     // Soldes calculés (source de vérité unique) ; 0 pour les non-affiliés.
     const { pending: balance_pending, available: balance_available } =
@@ -114,36 +120,81 @@ export default async function ProfilePage() {
 
                 {/* Sidebar : Statut & Actions */}
                 <div className="space-y-6">
-                    {/* Carte VIP */}
-                    <div className={`p-6 rounded-2xl border backdrop-blur-xl relative overflow-hidden group ${isPremium
-                        ? 'bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/30'
-                        : 'bg-slate-800/50 border-slate-700/50'
-                        }`}>
-
-                        {/* Glow effect */}
-                        {isPremium && (
+                    {/* Carte VIP — affiche le statut effectif et le compte à rebours d'expiration. */}
+                    <div className={`p-6 rounded-2xl border backdrop-blur-xl relative overflow-hidden group ${
+                        access.isPremium
+                            ? 'bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/30'
+                            : access.status === 'expired'
+                                ? 'bg-gradient-to-br from-red-500/10 to-orange-600/10 border-red-500/30'
+                                : 'bg-slate-800/50 border-slate-700/50'
+                    }`}>
+                        {access.isPremium && (
                             <div className="absolute top-0 right-0 p-32 bg-amber-500/10 blur-3xl rounded-full group-hover:bg-amber-500/20 transition-all duration-700"></div>
                         )}
 
                         <div className="relative z-10 flex flex-col items-center text-center">
-                            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${isPremium ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-700 text-slate-400'
-                                }`}>
+                            <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${
+                                access.isPremium ? 'bg-amber-500/20 text-amber-400'
+                                : access.status === 'expired' ? 'bg-red-500/20 text-red-400'
+                                : 'bg-slate-700 text-slate-400'
+                            }`}>
                                 <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                                 </svg>
                             </div>
-                            <h3 className={`text-xl font-bold mb-1 ${isPremium ? 'text-amber-400' : 'text-white'}`}>
-                                {isPremium ? 'Membre VIP' : 'Compte Gratuit'}
-                            </h3>
-                            <p className="text-sm text-slate-400 mb-6">
-                                {isPremium
-                                    ? 'Vous avez un accès complet et illimité à tous les cours et corrections.'
-                                    : 'Accédez à plus de contenu en devenant membre VIP.'}
-                            </p>
 
-                            {!isPremium && role === 'student' && (
+                            <h3 className={`text-xl font-bold mb-1 ${
+                                access.isPremium ? 'text-amber-400'
+                                : access.status === 'expired' ? 'text-red-400'
+                                : 'text-white'
+                            }`}>
+                                {access.status === 'lifetime' ? 'Membre VIP à vie'
+                                 : access.status === 'active' ? 'Membre VIP'
+                                 : access.status === 'expired' ? 'Abonnement expiré'
+                                 : 'Compte Gratuit'}
+                            </h3>
+
+                            {access.status === 'lifetime' && (
+                                <p className="text-sm text-slate-400 mb-6">
+                                    Accès complet et illimité à tous les cours et corrections. À vie.
+                                </p>
+                            )}
+                            {access.status === 'active' && (
+                                <>
+                                    <p className="text-sm text-slate-400 mb-2">
+                                        Accès complet à tous les cours et corrections.
+                                    </p>
+                                    <p className="text-xs text-amber-400/80 mb-6">
+                                        {access.daysRemaining === 1 ? '1 jour restant' : `${access.daysRemaining} jours restants`}
+                                        {access.expiresAt && ` · jusqu'au ${formatDate(access.expiresAt)}`}
+                                    </p>
+                                </>
+                            )}
+                            {access.status === 'expired' && (
+                                <p className="text-sm text-slate-400 mb-6">
+                                    {access.expiresAt && `Expiré le ${formatDate(access.expiresAt)}. `}
+                                    Renouvelez pour reprendre l'accès.
+                                </p>
+                            )}
+                            {access.status === 'never' && (
+                                <p className="text-sm text-slate-400 mb-6">
+                                    Accédez à plus de contenu en devenant membre VIP.
+                                </p>
+                            )}
+
+                            {access.status === 'never' && role === 'student' && (
                                 <a href="/paiement" className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-light focus:ring-4 focus:ring-brand-orange/20 text-white rounded-xl font-medium transition-all text-sm shadow-lg shadow-brand-orange/20">
                                     Devenir VIP
+                                </a>
+                            )}
+                            {access.status === 'expired' && role === 'student' && (
+                                <a href="/paiement" className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-light focus:ring-4 focus:ring-brand-orange/20 text-white rounded-xl font-medium transition-all text-sm shadow-lg shadow-brand-orange/20">
+                                    Renouveler mon abonnement
+                                </a>
+                            )}
+                            {access.status === 'active' && role === 'student' && (
+                                <a href="/paiement" className="w-full py-2.5 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-xl font-medium transition-all text-sm border border-slate-600">
+                                    Renouveler à l'avance
                                 </a>
                             )}
                         </div>

@@ -5,6 +5,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectToDatabase from '@/lib/mongoose';
 import ContentMapping from '@/models/ContentMapping';
 import User from '@/models/User';
+import { computePremiumStatus } from '@/lib/premium-core';
 
 export async function GET(req: Request) {
     try {
@@ -22,11 +23,16 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Utilisateur non trouvé" }, { status: 404 });
         }
 
-        // Sécurité : Seuls les VIP (ou admins) voient le contenu dynamique
-        if (!user.isPremium && user.role !== 'admin') {
-            return NextResponse.json({ 
-                message: "Accès réservé aux membres VIP", 
-                isPremium: false 
+        // Sécurité : seuls les VIP actifs (ou admins) voient le contenu dynamique.
+        // computePremiumStatus respecte l'expiration : un abonné échu ne passe plus ici.
+        const access = computePremiumStatus(user);
+        if (!access.isPremium && user.role !== 'admin') {
+            return NextResponse.json({
+                message: access.status === 'expired'
+                    ? "Votre abonnement a expiré — renouvelez pour reprendre l'accès."
+                    : "Accès réservé aux membres VIP",
+                isPremium: false,
+                status: access.status,
             }, { status: 403 });
         }
 

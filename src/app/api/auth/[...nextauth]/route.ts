@@ -4,6 +4,7 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import AdminToken from "@/models/AdminToken";
 import { trackEvent } from "@/lib/retention";
+import { computePremiumStatus } from "@/lib/premium-core";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -58,6 +59,7 @@ export const authOptions = {
                         email: adminUser.email,
                         name: adminUser.name,
                         isPremium: adminUser.isPremium,
+                        premiumUntil: adminUser.premiumUntil,
                         grade_level: adminUser.grade_level,
                         sessionId: sessionId,
                         role: adminUser.role,
@@ -104,6 +106,7 @@ export const authOptions = {
                     email: user.email,
                     name: user.name,
                     isPremium: user.isPremium,
+                    premiumUntil: user.premiumUntil,
                     grade_level: user.grade_level,
                     sessionId: sessionId,
                     role: user.role,
@@ -120,6 +123,7 @@ export const authOptions = {
             if (user) {
                 token.id = user.id;
                 token.isPremium = user.isPremium;
+                token.premiumUntil = user.premiumUntil;
                 token.grade_level = user.grade_level;
                 token.sessionId = user.sessionId;
                 token.role = user.role;
@@ -130,11 +134,20 @@ export const authOptions = {
         async session({ session, token }: { session: any, token: any }) {
             if (token && session.user) {
                 session.user.id = token.id;
-                session.user.isPremium = token.isPremium;
                 session.user.grade_level = token.grade_level;
                 session.user.sessionId = token.sessionId;
                 session.user.role = token.role;
                 session.user.image = token.image;
+
+                // Calcul du statut Premium EFFECTIF à chaque requête (le JWT porte la valeur brute,
+                // la session expose le statut calculé). Un abonné dont premiumUntil est passé verra
+                // session.user.isPremium = false sans avoir à se reconnecter.
+                const access = computePremiumStatus({ isPremium: token.isPremium, premiumUntil: token.premiumUntil });
+                session.user.isPremium = access.isPremium;
+                session.user.premiumStatus = access.status;
+                session.user.premiumUntil = token.premiumUntil;
+                session.user.premiumExpiresAt = access.expiresAt;
+                session.user.premiumDaysRemaining = access.daysRemaining;
             }
             return session;
         }

@@ -18,7 +18,15 @@ export default async function AdminDashboardPage() {
     const totalUsers = await User.countDocuments();
     const totalStudents = await User.countDocuments({ role: 'student' });
     const totalAffiliates = await User.countDocuments({ role: 'affiliate' });
-    const totalVIPs = await User.countDocuments({ isPremium: true });
+    // VIP actifs = "a payé" + (à vie OU pas encore expiré). Les expirés sont exclus du KPI.
+    const totalVIPs = await User.countDocuments({
+        isPremium: true,
+        $or: [
+            { premiumUntil: null },
+            { premiumUntil: { $exists: false } },
+            { premiumUntil: { $gt: now } },
+        ],
+    });
 
     // Statistiques Contenu
     const totalCourses = await Course.countDocuments();

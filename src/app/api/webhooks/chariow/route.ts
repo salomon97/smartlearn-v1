@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
 import Plan from '@/models/Plan';
+import Transaction from '@/models/Transaction';
 import { parseCustomData } from '@/lib/chariow';
 import { DEFAULT_PLAN_CODE } from '@/lib/constants';
 import { trackEvent } from '@/lib/retention';
 import crypto from 'crypto';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 function verifyChariowSignature(rawBody: string, signature: string | null): boolean {
     const secret = process.env.CHARIOW_WEBHOOK_SECRET;
@@ -32,8 +35,6 @@ export async function GET(req: Request) {
 
     console.log('🔔 [REDIRECT CHARIOW] Retour utilisateur après achat :', purchase);
 
-    // Rediriger vers la page de paiement avec success=true pour déclencher le polling
-    // du côté client qui vérifiera l'activation effective du compte VIP.
     return NextResponse.redirect(new URL('/paiement?success=true', req.url));
 }
 
@@ -70,7 +71,6 @@ export async function POST(req: Request) {
                 body: body,
                 query: Object.fromEntries(searchParams.entries()),
             });
-            console.log('📝 [WEBHOOK] Log enregistré dans la collection webhook_logs');
         } catch (logErr) {
             console.error('❌ Erreur lors de l\'enregistrement du log Webhook :', logErr);
         }
@@ -78,6 +78,7 @@ export async function POST(req: Request) {
         // 6. Analyser les données
         const data = body.data || body;
         const customerEmail = data.customer?.email;
+        const referenceId = data.id || null;
 
         const rawCustomData = data.custom_data ||
                           data.metadata?.custom_data ||
@@ -87,42 +88,66 @@ export async function POST(req: Request) {
 
         const { userId, planCode } = parseCustomData(rawCustomData);
 
-        let user = null;
+        // 7. IDÉMPOTENCE — si on a déjà traité ce paiement (referenceId Chariow connu),
+        // on retourne OK sans rien refaire. Évite la double-extension de premiumUntil en cas
+        // de retry du webhook par Chariow.
+        if (referenceId) {
+            const already = await Transaction.findOne({ referenceId });
+            if (already) {
+                console.log(`♻️  [WEBHOOK] Paiement ${referenceId} déjà traité — idempotent, OK`);
+                return NextResponse.json({ message: 'Déjà traité', success: true });
+            }
+        } else {
+            console.warn('⚠️  [WEBHOOK] Pas de referenceId Chariow — idempotence impossible, on traite quand même');
+        }
 
-        // 7. Trouver l'utilisateur qui a payé
+        // 8. Trouver l'utilisateur qui a payé
+        let user = null;
         if (userId) {
             user = await User.findById(userId).catch(() => null);
         }
-
-        // Fallback par email — comparaison exacte insensible à la casse (sans $regex)
         if (!user && customerEmail) {
             console.log(`⚠️ [WEBHOOK] ID non trouvé. Recherche par e-mail : ${customerEmail}`);
             user = await User.findOne({ email: customerEmail.toLowerCase().trim() });
         }
-
         if (!user) {
             console.log(`❌ [WEBHOOK] Utilisateur non trouvé (ID: ${userId}, Email: ${customerEmail})`);
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
-        // Résoudre le plan (planCode du custom_data, sinon plan par défaut = rétro-compat).
+        // 9. Résoudre le plan (planCode du custom_data, sinon plan par défaut = rétro-compat).
         const plan = await Plan.findOne({ code: planCode || DEFAULT_PLAN_CODE });
         if (!plan) {
             console.error(`❌ [WEBHOOK] Plan introuvable (code: ${planCode || DEFAULT_PLAN_CODE}).`);
             return NextResponse.json({ message: 'Plan introuvable' }, { status: 500 });
         }
-        const amountPaid = plan.price; // Montant autoritaire (jamais deviné du payload)
+        const amountPaid = plan.price;
 
-        // 8. Activer le compte VIP
-        if (!user.isPremium && user.role !== 'admin') {
+        // 10. Activer / étendre l'accès VIP.
+        //   - isPremium = true (toujours — drapeau "a payé au moins une fois", jamais reset)
+        //   - premiumUntil étendu de plan.durationDays JOURS depuis max(now, premiumUntil actuel)
+        //     → renouvellement précoce ne perd aucun jour.
+        //   - Si plan.durationDays absent/0 (lifetime, ex: legacy vip_avie) → premiumUntil
+        //     n'est pas touché (reste null = grandfather à vie).
+        if (user.role !== 'admin') {
+            const now = new Date();
+            const wasPremium = user.isPremium;
             user.isPremium = true;
+
+            if (plan.durationDays && plan.durationDays > 0) {
+                const current = user.premiumUntil ? new Date(user.premiumUntil) : null;
+                const base = current && current > now ? current : now;
+                user.premiumUntil = new Date(base.getTime() + plan.durationDays * DAY_MS);
+            }
+
             await user.save();
-            console.log(`✅ [WEBHOOK] Compte VIP activé avec succès pour ${user.email}`);
+            const action = wasPremium && user.premiumUntil ? 'Renouvellement' : 'Activation';
+            console.log(`✅ [WEBHOOK] ${action} VIP pour ${user.email} (plan ${plan.code}, expire: ${user.premiumUntil || 'à vie'})`);
         } else {
-            console.log(`ℹ️ [WEBHOOK] L'utilisateur ${user.email} est déjà VIP ou admin.`);
+            console.log(`ℹ️ [WEBHOOK] Utilisateur ${user.email} est admin — accès intact, on enregistre quand même la Transaction.`);
         }
 
-        // 9. Gérer l'affiliation et la création de la transaction avec délai de 72h
+        // 11. Gérer l'affiliation et la commission
         let parrainDoc = null;
         let commissionAmount = 0;
 
@@ -130,21 +155,15 @@ export async function POST(req: Request) {
             parrainDoc = await User.findById(user.parrainId);
 
             if (parrainDoc) {
-                // --- ANTI-FRAUDE : AUTO-AFFILIATION ---
-                // On vérifie si l'acheteur et le parrain ont la même IP de création de compte
                 const isSameIp = user.registrationIp && parrainDoc.registrationIp && user.registrationIp === parrainDoc.registrationIp;
                 const isSameEmail = user.email.toLowerCase() === parrainDoc.email.toLowerCase();
 
                 if (isSameIp || isSameEmail) {
                     console.log(`🚫 [FRAUDE] Tentative d'auto-affiliation détectée pour ${user.email} (Parrain: ${parrainDoc.email}). Commission annulée.`);
-                    commissionAmount = 0; // Pas de commission si c'est la même personne
+                    commissionAmount = 0;
                 } else {
-                    // Calculer la commission selon le taux de l'affilié (défaut 10%).
                     const rate = parrainDoc.commission_rate ?? 10;
                     commissionAmount = (amountPaid * rate) / 100;
-
-                    // Plus de mutation de solde : la commission EN ATTENTE est portée par la
-                    // Transaction (status 'pending') et recalculée à la lecture (computeBalances).
                     console.log(`💸 [WEBHOOK] Commission EN ATTENTE de ${commissionAmount} FCFA enregistrée (Transaction pending) pour ${parrainDoc.email}`);
                 }
             } else {
@@ -152,12 +171,9 @@ export async function POST(req: Request) {
             }
         }
 
-        // 10. Créer la Transaction pour garder une trace stricte (et libérer les fonds plus tard)
+        // 12. Créer la Transaction (clé d'idempotence + audit comptable)
         const clearingDate = new Date();
-        clearingDate.setDate(clearingDate.getDate() + 3); // +72 heures (3 jours)
-
-        // Dynamic import pour éviter d'éventuelles erreurs de dépendance circulaire
-        const Transaction = (await import('@/models/Transaction')).default;
+        clearingDate.setDate(clearingDate.getDate() + 3); // +72 heures
 
         await Transaction.create({
             userId: user._id.toString(),
@@ -167,19 +183,19 @@ export async function POST(req: Request) {
             status: commissionAmount === 0 && user.parrainId ? 'fraud_suspected' : 'pending',
             paymentMethod: 'Chariow',
             planCode: plan.code,
-            referenceId: data.id || null, // ID de la vente venant de Chariow (si dispo)
+            referenceId: referenceId,
             clearingDate: clearingDate,
             metadata: {
                 buyerIp: user.registrationIp,
                 parrainIp: parrainDoc?.registrationIp,
-                fraudReason: (commissionAmount === 0 && user.parrainId) ? "Même IP ou Email détecté (Auto-Affiliation)" : null
-            }
+                fraudReason: (commissionAmount === 0 && user.parrainId) ? "Même IP ou Email détecté (Auto-Affiliation)" : null,
+            },
         });
 
-        console.log(`📝 [WEBHOOK] Transaction enregistrée. Libération prévue le : ${clearingDate.toLocaleDateString()}`);
-
-        // Instrumentation rétention (best-effort)
+        // 13. Tracker l'événement de rétention (best-effort, non bloquant)
         await trackEvent(user._id.toString(), 'payment_succeeded', { value: amountPaid });
+
+        console.log(`📝 [WEBHOOK] Transaction enregistrée. Libération prévue le : ${clearingDate.toLocaleDateString()}`);
 
         return NextResponse.json({ message: 'Paiement traité avec succès', success: true });
 
