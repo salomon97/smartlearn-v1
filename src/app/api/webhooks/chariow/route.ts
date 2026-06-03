@@ -115,11 +115,24 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
-        // 9. Résoudre le plan (planCode du custom_data, sinon plan par défaut = rétro-compat).
-        const plan = await Plan.findOne({ code: planCode || DEFAULT_PLAN_CODE });
+        // 9. Résoudre le plan (planCode du custom_data, sinon plan par défaut).
+        const resolvedCode = planCode || DEFAULT_PLAN_CODE;
+        const plan = await Plan.findOne({ code: resolvedCode });
         if (!plan) {
-            console.error(`❌ [WEBHOOK] Plan introuvable (code: ${planCode || DEFAULT_PLAN_CODE}).`);
+            console.error(`❌ [WEBHOOK] Plan introuvable (code: ${resolvedCode}).`);
             return NextResponse.json({ message: 'Plan introuvable' }, { status: 500 });
+        }
+        // Garde-fou : un plan archivé (isActive=false) ne doit JAMAIS activer un accès. Ça vise
+        // les vieux liens (ex. legacy vip_avie 2000 FCFA à vie) qui pourraient encore traîner.
+        if (!plan.isActive) {
+            console.error(`🚫 [WEBHOOK] Tentative de paiement sur plan ARCHIVÉ : ${plan.code}. Refus. Action admin requise : désactiver le produit Chariow correspondant ET rembourser le client.`);
+            return NextResponse.json({ message: 'Plan archivé — paiement refusé' }, { status: 500 });
+        }
+        // Garde-fou : les plans "à vie" (sans durationDays) ne sont plus acceptés. Toute formule
+        // doit avoir une durée d'abonnement explicite.
+        if (!plan.durationDays || plan.durationDays <= 0) {
+            console.error(`🚫 [WEBHOOK] Plan ${plan.code} sans durationDays — la formule "à vie" n'est plus acceptée.`);
+            return NextResponse.json({ message: 'Plan invalide (pas de durée d\'abonnement)' }, { status: 500 });
         }
         const amountPaid = plan.price;
 

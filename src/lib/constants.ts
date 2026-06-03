@@ -19,8 +19,10 @@ export const classesDisponibles = [
     "Terminale TI"
 ];
 
-// Code du plan par défaut (rétro-compatibilité de l'ancien custom_data = userId seul).
-export const DEFAULT_PLAN_CODE = 'vip_avie';
+// Code du plan par défaut quand le custom_data du webhook n'en porte pas (cas hérité).
+// Doit pointer vers un plan ACTIF avec durationDays > 0. Anciennement 'vip_avie' (lifetime),
+// désormais le mensuel — la formule "à vie" n'est plus une option.
+export const DEFAULT_PLAN_CODE = 'vip_monthly';
 
 // Délimiteur encodant userId + planCode dans le custom_data Chariow.
 // Un code de plan ne doit JAMAIS contenir cette séquence.
