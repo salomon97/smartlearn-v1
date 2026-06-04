@@ -4,7 +4,7 @@ export default function TermsPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-20 px-6">
             <div className="max-w-4xl mx-auto bg-white rounded-[3rem] p-10 md:p-16 shadow-sm border border-gray-100">
-                <Link href="/" className="text-brand-orange font-bold flex items-center gap-2 mb-8">
+                <Link href="/" className="text-teal font-semibold flex items-center gap-2 mb-8 hover:text-teal-dark transition-colors">
                     ← Retour à l'accueil
                 </Link>
                 
@@ -32,7 +32,7 @@ export default function TermsPage() {
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">4. Modalités de paiement</h2>
                     <p>
-                        Les paiements sont effectués via la plateforme sécurisée Chariow. L'accès Premium est activé à vie pour la classe sélectionnée dès validation de la transaction. Aucun abonnement récurrent n'est appliqué.
+                        Les paiements sont effectués via la plateforme sécurisée Chariow. SmartLearn propose trois formules d'abonnement (mensuel, trimestriel, annuel) avec une durée d'accès définie. À l'échéance, le renouvellement est à l'initiative de l'utilisateur — aucun prélèvement automatique n'est appliqué.
                     </p>
 
                     <h2 className="text-xl font-bold text-gray-800 mt-8">5. Responsabilité</h2>
@@ -42,9 +42,11 @@ export default function TermsPage() {
 
                     <div className="mt-12 p-6 bg-gray-50 rounded-2xl border border-gray-200">
                         <p className="text-sm">
-                            <strong>SmartLearn - Éducation pour tous</strong><br />
+                            <strong>SmartLearn — L'école qui suit votre enfant.</strong><br />
+                            Fondateur &amp; Directeur Pédagogique : Salomon FOE<br />
                             Siège social : Douala, Cameroun<br />
-                            Contact : foesalomon65@gmail.com
+                            Téléphones : +237 671 71 91 24 / +237 691 27 63 34<br />
+                            Email : <a href="mailto:salomonfoe97@smartlearn-edu.org" className="text-teal underline">salomonfoe97@smartlearn-edu.org</a>
                         </p>
                     </div>
                 </div>

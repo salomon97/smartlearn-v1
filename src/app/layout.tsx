@@ -87,31 +87,68 @@ export default function RootLayout({
           </main>
 
           {/* ─── Footer ─── */}
-          <footer className="bg-navy border-t border-white/5 py-12 px-6">
+          <footer className="bg-navy border-t border-white/5 py-14 px-6">
             <div className="max-w-7xl mx-auto">
-              {/* Ligne principale */}
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10">
-                <div className="flex flex-col gap-3">
+              {/* Ligne principale : 3 colonnes */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+
+                {/* Col 1 : Logo + pitch + coordonnées */}
+                <div className="flex flex-col gap-4">
                   <Logo variant="full" theme="dark" size={44} />
-                  <p className="text-sm text-slate-400 max-w-md">
-                    Plateforme éducative fédérée. Cameroun, Afrique francophone.
+                  <p className="text-sm text-slate-400 max-w-xs">
+                    Plateforme numérique d'excellence pédagogique pour le secondaire camerounais.
                   </p>
+                  <div className="text-xs text-slate-500 space-y-1 mt-2">
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>📍</span>
+                      <span>Douala, Cameroun</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>📞</span>
+                      <span>+237 671 71 91 24 / +237 691 27 63 34</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>✉️</span>
+                      <a href="mailto:salomonfoe97@smartlearn-edu.org" className="hover:text-teal transition-colors">
+                        salomonfoe97@smartlearn-edu.org
+                      </a>
+                    </div>
+                  </div>
                 </div>
 
-                <nav className="flex flex-col md:flex-row gap-3 md:gap-8 text-sm font-medium text-slate-300">
-                  <Link href="/catalogue" className="hover:text-teal transition-colors">
+                {/* Col 2 : Navigation */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Plateforme</h3>
+                  <Link href="/catalogue" className="text-sm text-slate-300 hover:text-teal transition-colors">
                     Catalogue
                   </Link>
-                  <Link href="/affiliation" className="hover:text-teal transition-colors">
+                  <Link href="/paiement" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Tarifs &amp; abonnements
+                  </Link>
+                  <Link href="/affiliation" className="text-sm text-slate-300 hover:text-teal transition-colors">
                     Programme Ambassadeur
                   </Link>
-                  <Link href="/le-fondateur" className="hover:text-teal transition-colors">
+                  <Link href="/le-fondateur" className="text-sm text-slate-300 hover:text-teal transition-colors">
                     Le fondateur
                   </Link>
-                  <Link href="mailto:salomonfoe97@smartlearn-edu.org" className="hover:text-teal transition-colors">
-                    Contact
+                </div>
+
+                {/* Col 3 : Légal + contact */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Institutionnel</h3>
+                  <Link href="/politique-confidentialite" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Politique de confidentialité
                   </Link>
-                </nav>
+                  <Link href="/conditions-utilisation" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Conditions générales
+                  </Link>
+                  <a
+                    href="mailto:salomonfoe97@smartlearn-edu.org?subject=Partenariat%20%C3%A9tablissement"
+                    className="text-sm text-slate-300 hover:text-teal transition-colors"
+                  >
+                    Devenir établissement partenaire
+                  </a>
+                </div>
               </div>
 
               {/* Ligne mentions légales */}
@@ -119,13 +156,8 @@ export default function RootLayout({
                 <div>
                   © 2026 SmartLearn. Tous droits réservés. Propulsé par Salomon FOE, enseignant.
                 </div>
-                <div className="flex gap-5">
-                  <Link href="/politique-confidentialite" className="hover:text-slate-300 transition-colors">
-                    Confidentialité
-                  </Link>
-                  <Link href="/conditions-utilisation" className="hover:text-slate-300 transition-colors">
-                    CGU
-                  </Link>
+                <div className="text-slate-600">
+                  Fait à Douala 🇨🇲
                 </div>
               </div>
             </div>

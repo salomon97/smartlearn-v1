@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Logo } from "@/components/ui/Logo";
 
 type Plan = {
     _id: string;
@@ -23,7 +23,6 @@ const PERIOD_LABEL: Record<string, string> = {
     lifetime: 'à vie',
 };
 
-// Coût équivalent mensuel = price / (durationDays / 30). Utilisé pour calculer l'économie.
 function monthlyEquivalent(plan: Plan): number | null {
     if (!plan.durationDays || plan.durationDays <= 0) return null;
     return plan.price / (plan.durationDays / 30);
@@ -47,15 +46,11 @@ function CheckoutContent() {
     }, [status, router]);
 
     useEffect(() => {
-        // Seuls les utilisateurs à vie (grandfather) sont redirigés — ils n'ont rien à renouveler.
-        // Les Premium actifs PEUVENT visiter /paiement pour renouveler à l'avance (extension sans perte).
-        // Les expirés et les visiteurs jamais payés voient les 3 plans normalement.
         if ((session?.user as any)?.premiumStatus === 'lifetime' && !paymentSuccess) {
             router.push("/dashboard");
         }
     }, [session, router, paymentSuccess]);
 
-    // Charger les plans actifs depuis l'API (fin des constantes hardcodées)
     useEffect(() => {
         let cancelled = false;
         (async () => {
@@ -72,7 +67,6 @@ function CheckoutContent() {
         return () => { cancelled = true; };
     }, []);
 
-    // Polling pour vérifier le statut de paiement
     useEffect(() => {
         if (paymentSuccess && !isVerified) {
             let attempts = 0;
@@ -89,60 +83,67 @@ function CheckoutContent() {
                     console.error("Erreur de vérification :", error);
                 }
                 attempts++;
-                if (attempts > 12) { // Max 1 minute (5s * 12)
-                    setChecking(false);
-                }
+                if (attempts > 12) setChecking(false);
                 return false;
             };
-
             checkStatus();
             const interval = setInterval(async () => {
                 const done = await checkStatus();
                 if (done) clearInterval(interval);
             }, 5000);
-
             return () => clearInterval(interval);
         }
     }, [paymentSuccess, isVerified]);
 
     if (status === "loading") {
         return (
-            <div className="min-h-screen bg-[var(--background)] flex items-center justify-center text-[var(--primary-gold)] font-bold text-xl">
-                Chargement sécurisé...
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-12 h-12 border-4 border-teal border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                    <p className="text-slate-600 font-medium">Chargement sécurisé…</p>
+                </div>
             </div>
         );
     }
 
-    // Page de confirmation après retour de Chariow
+    // Page de confirmation post-Chariow
     if (paymentSuccess) {
         return (
-            <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4">
-                <div className="max-w-md w-full text-center">
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+                <div className="max-w-md w-full text-center bg-white rounded-3xl shadow-sm border border-slate-200 p-10">
                     {checking ? (
                         <>
-                            <div className="w-20 h-20 border-4 border-[var(--primary-gold)] border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-                            <h1 className="text-2xl font-black text-gray-900 mb-3">Vérification en cours...</h1>
-                            <p className="text-gray-500 font-medium">Nous confirmons la réception de votre paiement. Cela prend généralement quelques secondes.</p>
+                            <div className="w-20 h-20 border-4 border-teal border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                            <h1 className="font-heading text-2xl font-bold text-navy mb-3">Vérification en cours…</h1>
+                            <p className="text-slate-500">Nous confirmons la réception de votre paiement. Cela prend généralement quelques secondes.</p>
                         </>
                     ) : isVerified ? (
                         <>
-                            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <div className="w-20 h-20 bg-teal/15 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <svg className="w-10 h-10 text-teal" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                 </svg>
                             </div>
-                            <h1 className="text-3xl font-extrabold text-gray-900 mb-3">Paiement reçu !</h1>
-                            <p className="text-gray-500 mb-8 font-medium">Votre accès Premium est maintenant actif. Bienvenue dans l&apos;excellence !</p>
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                <Link href="/dashboard" className="px-6 py-3 bg-[var(--primary-dark)] text-white rounded-xl font-bold hover:shadow-lg transition-all">Aller à mon espace</Link>
-                            </div>
+                            <h1 className="font-heading text-3xl font-bold text-navy mb-3">Paiement reçu !</h1>
+                            <p className="text-slate-500 mb-8">Votre accès Premium est maintenant actif. Bienvenue.</p>
+                            <Link
+                                href="/dashboard"
+                                className="inline-flex w-full justify-center px-6 py-3 bg-orange text-white rounded-full font-semibold hover:bg-orange/90 transition-all"
+                            >
+                                Aller à mon espace
+                            </Link>
                         </>
                     ) : (
                         <>
-                            <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">⏳</div>
-                            <h1 className="text-2xl font-black text-gray-900 mb-3">Confirmation différée</h1>
-                            <p className="text-gray-500 mb-8 font-medium">Le paiement est toujours en cours de traitement par l&apos;opérateur. Ne vous inquiétez pas, votre accès sera activé dès la confirmation reçue.</p>
-                            <Link href="/dashboard" className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold">Retourner au tableau de bord</Link>
+                            <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">⏳</div>
+                            <h1 className="font-heading text-2xl font-bold text-navy mb-3">Confirmation différée</h1>
+                            <p className="text-slate-500 mb-8">Le paiement est toujours en cours de traitement par l&apos;opérateur. Pas d&apos;inquiétude : votre accès sera activé dès la confirmation reçue.</p>
+                            <Link
+                                href="/dashboard"
+                                className="inline-flex w-full justify-center px-6 py-3 bg-slate-100 text-slate-700 rounded-full font-semibold hover:bg-slate-200 transition-all"
+                            >
+                                Retourner au tableau de bord
+                            </Link>
                         </>
                     )}
                 </div>
@@ -157,81 +158,104 @@ function CheckoutContent() {
             : plan.chariowUrl;
 
     return (
-        <div className="min-h-screen bg-[var(--background)] py-12 px-4">
-            <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-8">
+        <div className="min-h-screen bg-slate-50">
 
-                {/* Résumé de la commande (Gauche) */}
-                <div className="flex-1">
-                    <h1 className="text-3xl font-extrabold text-[var(--foreground)] mb-6">Valider l&apos;Accès Premium</h1>
+            {/* Mini-header checkout (sobre, sans navbar complète) */}
+            <header className="bg-navy text-white py-5 px-6 border-b border-white/5">
+                <div className="max-w-6xl mx-auto flex items-center justify-between">
+                    <Link href="/" aria-label="SmartLearn — Accueil">
+                        <Logo variant="compact" theme="dark" size={32} />
+                    </Link>
+                    <Link href="/dashboard" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                        ← Retour
+                    </Link>
+                </div>
+            </header>
 
-                    <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 mb-6">
-                        <div className="mb-6 pb-6 border-b border-gray-100">
-                            <h2 className="text-xl font-bold text-[var(--primary-dark)] mb-2">Accès au programme</h2>
-                            <p className="text-gray-500 font-medium text-sm">
-                                Programme complet pour la classe :{" "}
-                                <span className="text-[var(--primary-gold-hover)] font-bold">
-                                    {session?.user?.grade_level || "Votre Classe"}
-                                </span>
-                            </p>
-                        </div>
+            <div className="max-w-5xl mx-auto py-12 px-4 md:px-6">
 
-                        <ul className="space-y-4 text-gray-600 mb-8">
-                            {[
-                                "Vidéos de révision HD",
-                                "PDFs téléchargeables et fiches pratiques",
-                                "Accès sans abonnement ultérieur",
-                            ].map((item) => (
-                                <li key={item} className="flex items-center gap-3">
-                                    <div className="bg-green-100 p-1 rounded-full text-green-600">
-                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </div>
-                                    {item}
-                                </li>
-                            ))}
-                        </ul>
-
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start gap-4">
-                            <span className="text-2xl mt-0.5">🔒</span>
-                            <p className="text-sm text-yellow-800 font-medium">
-                                Paiement sécurisé via Chariow. Accepte MTN MoMo, Orange Money, Visa et Mastercard. Votre accès est activé après confirmation.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Moyens de paiement acceptés */}
-                    <div className="bg-white rounded-2xl border border-gray-100 p-5">
-                        <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-4">Moyens de paiement acceptés</p>
-                        <div className="flex flex-wrap gap-3">
-                            {[
-                                { label: "MTN MoMo", color: "bg-yellow-400", text: "text-black" },
-                                { label: "Orange Money", color: "bg-orange-500", text: "text-white" },
-                                { label: "Visa", color: "bg-blue-700", text: "text-white" },
-                                { label: "Mastercard", color: "bg-red-600", text: "text-white" },
-                            ].map((m) => (
-                                <span
-                                    key={m.label}
-                                    className={`${m.color} ${m.text} px-3 py-1.5 rounded-lg text-xs font-black`}
-                                >
-                                    {m.label}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
+                {/* Titre */}
+                <div className="text-center mb-12">
+                    <span className="inline-block text-xs font-semibold uppercase tracking-widest text-teal mb-3">
+                        Choisir ma formule
+                    </span>
+                    <h1 className="font-heading text-3xl md:text-5xl font-bold text-navy mb-3">
+                        Activer mon accès Premium
+                    </h1>
+                    <p className="text-slate-500 max-w-xl mx-auto">
+                        Trois formules pour s&apos;adapter à votre budget.
+                        {session?.user?.grade_level && (
+                            <> Programme officiel <span className="text-navy font-semibold">{session.user.grade_level}</span>.</>
+                        )}
+                    </p>
                 </div>
 
-                {/* Choix du plan + bouton Chariow (Droite) */}
-                <div className="w-full md:w-96 flex flex-col gap-6">
-                    <div className="bg-white rounded-3xl shadow-lg shadow-[var(--primary-dark)]/5 border-2 border-[var(--primary-dark)]/5 p-8 sticky top-24">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Choisissez votre accès</h3>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
+                    {/* COLONNE GAUCHE — récap inclus + sécurité */}
+                    <div className="lg:col-span-1 space-y-5">
+
+                        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+                            <h2 className="font-heading text-lg font-bold text-navy mb-4">Ce qui est inclus</h2>
+                            <ul className="space-y-3 text-sm text-slate-700">
+                                {[
+                                    "Cours vidéo HD, structurés APC",
+                                    "Annales et exercices corrigés",
+                                    "PDFs téléchargeables hors-ligne",
+                                    "Suivi de progression personnalisé",
+                                    "Accès depuis tout téléphone Android",
+                                ].map((item) => (
+                                    <li key={item} className="flex items-start gap-3">
+                                        <span className="bg-teal/15 text-teal rounded-full p-1 flex-shrink-0 mt-0.5">
+                                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </span>
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+                            <p className="text-xs text-slate-400 font-semibold uppercase tracking-widest mb-3">
+                                Moyens de paiement
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {[
+                                    { label: "MTN MoMo", cls: "bg-yellow-400 text-black" },
+                                    { label: "Orange Money", cls: "bg-orange text-white" },
+                                    { label: "Visa", cls: "bg-blue-700 text-white" },
+                                    { label: "Mastercard", cls: "bg-red-600 text-white" },
+                                ].map((m) => (
+                                    <span key={m.label} className={`${m.cls} px-3 py-1.5 rounded-lg text-xs font-bold`}>
+                                        {m.label}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-teal/5 border border-teal/20 rounded-2xl p-5 flex items-start gap-3">
+                            <span className="text-xl flex-shrink-0">🔒</span>
+                            <div className="text-xs text-navy/80 leading-relaxed">
+                                Paiement sécurisé via <strong>Chariow</strong>. Aucune donnée bancaire n&apos;est stockée sur nos serveurs.
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* COLONNE DROITE — plans */}
+                    <div className="lg:col-span-2">
                         {plansLoading ? (
-                            <p className="text-sm text-gray-500">Chargement des offres...</p>
+                            <div className="bg-white rounded-2xl border border-slate-200 p-10 text-center">
+                                <div className="w-10 h-10 border-4 border-teal border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+                                <p className="text-slate-500 text-sm">Chargement des offres…</p>
+                            </div>
                         ) : plans.length === 0 ? (
-                            <p className="text-sm text-red-500">Aucune offre disponible pour le moment. Réessayez plus tard.</p>
+                            <div className="bg-white rounded-2xl border border-red-200 p-10 text-center">
+                                <p className="text-red-600 font-medium">Aucune offre disponible pour le moment.</p>
+                                <p className="text-slate-500 text-sm mt-2">Réessayez plus tard.</p>
+                            </div>
                         ) : (() => {
-                            // Référence "mensuel" pour calculer les économies des autres durées
                             const monthlyPlan = plans.find(p => p.period === 'monthly');
                             const monthlyRef = monthlyPlan?.price ?? null;
                             return (
@@ -245,39 +269,63 @@ function CheckoutContent() {
                                         const isBestValue = plan.period === 'annual';
 
                                         return (
-                                            <div key={plan._id} className={`border rounded-2xl p-4 relative ${isBestValue ? 'border-emerald-400 bg-emerald-50/40' : 'border-gray-100'}`}>
+                                            <div
+                                                key={plan._id}
+                                                className={`relative bg-white rounded-2xl border-2 p-6 transition-all ${
+                                                    isBestValue
+                                                        ? 'border-orange shadow-xl shadow-orange/10'
+                                                        : 'border-slate-200 hover:border-teal/50'
+                                                }`}
+                                            >
                                                 {isBestValue && (
-                                                    <span className="absolute -top-2 right-3 bg-emerald-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                                        Meilleur rapport
+                                                    <span className="absolute -top-3 left-6 bg-orange text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
+                                                        ⭐ Meilleur rapport
                                                     </span>
                                                 )}
-                                                <div className="flex items-baseline justify-between mb-1">
-                                                    <span className="font-bold text-gray-900">{plan.name}</span>
-                                                    <span className="text-xl font-black">
-                                                        {plan.price.toLocaleString('fr-FR')} <span className="text-xs text-gray-400 font-medium">FCFA {periodLabel}</span>
-                                                    </span>
-                                                </div>
-                                                {eqMonthly && plan.period !== 'monthly' && (
-                                                    <p className="text-[11px] text-gray-500 mb-3">
-                                                        soit {Math.round(eqMonthly).toLocaleString('fr-FR')} FCFA / mois
-                                                        {savings > 0 && (
-                                                            <span className="ml-2 inline-block bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded">
-                                                                économie de {savings}%
+
+                                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+                                                    {/* Infos plan */}
+                                                    <div className="flex-1">
+                                                        <h3 className="font-heading text-xl font-bold text-navy mb-1">{plan.name}</h3>
+                                                        <div className="flex items-baseline gap-2 mb-1">
+                                                            <span className="text-3xl font-bold text-navy">
+                                                                {plan.price.toLocaleString('fr-FR')}
                                                             </span>
+                                                            <span className="text-sm text-slate-500 font-medium">
+                                                                FCFA {periodLabel}
+                                                            </span>
+                                                        </div>
+                                                        {eqMonthly && plan.period !== 'monthly' && (
+                                                            <div className="flex flex-wrap items-center gap-2 text-xs">
+                                                                <span className="text-slate-500">
+                                                                    soit {Math.round(eqMonthly).toLocaleString('fr-FR')} FCFA/mois
+                                                                </span>
+                                                                {savings > 0 && (
+                                                                    <span className="inline-flex items-center gap-1 bg-teal/15 text-teal-dark font-bold px-2 py-0.5 rounded-full">
+                                                                        −{savings}%
+                                                                    </span>
+                                                                )}
+                                                            </div>
                                                         )}
-                                                    </p>
-                                                )}
-                                                <a
-                                                    href={buildCheckoutUrl(plan)}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`w-full py-3 px-6 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-center text-white ${isBestValue ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[var(--primary-dark)] hover:bg-[var(--primary-dark)]/90'}`}
-                                                >
-                                                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                                    </svg>
-                                                    Payer {plan.price.toLocaleString('fr-FR')} FCFA
-                                                </a>
+                                                    </div>
+
+                                                    {/* CTA */}
+                                                    <a
+                                                        href={buildCheckoutUrl(plan)}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className={`shrink-0 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full font-semibold transition-all text-sm whitespace-nowrap ${
+                                                            isBestValue
+                                                                ? 'bg-orange hover:bg-orange/90 text-white shadow-lg hover:shadow-xl hover:shadow-orange/30'
+                                                                : 'bg-navy hover:bg-navy/90 text-white'
+                                                        }`}
+                                                    >
+                                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                                        </svg>
+                                                        Payer
+                                                    </a>
+                                                </div>
                                             </div>
                                         );
                                     })}
@@ -285,17 +333,12 @@ function CheckoutContent() {
                             );
                         })()}
 
-                        <p className="text-xs text-gray-400 text-center mt-4">
-                            Vous serez redirigé vers Chariow, une plateforme de paiement sécurisée. Votre accès Premium sera activé après confirmation du paiement.
+                        <p className="text-xs text-slate-400 text-center mt-6 leading-relaxed">
+                            Vous serez redirigé vers Chariow, plateforme de paiement sécurisée.<br />
+                            Votre accès Premium est activé après confirmation du paiement.
                         </p>
-
-                        <div className="mt-6 pt-6 border-t border-gray-100">
-                            <p className="text-xs text-gray-400 font-medium mb-2">🔐 Paiement géré par Chariow</p>
-                            <p className="text-xs text-gray-400">Aucune donnée bancaire n&apos;est stockée sur notre serveur.</p>
-                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     );
@@ -303,7 +346,16 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-[var(--background)] flex items-center justify-center text-[var(--primary-gold)] font-bold text-xl">Chargement...</div>}>
+        <Suspense
+            fallback={
+                <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                    <div className="text-center">
+                        <div className="w-12 h-12 border-4 border-teal border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                        <p className="text-slate-600 font-medium">Chargement…</p>
+                    </div>
+                </div>
+            }
+        >
             <CheckoutContent />
         </Suspense>
     );

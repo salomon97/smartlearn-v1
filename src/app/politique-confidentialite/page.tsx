@@ -4,7 +4,7 @@ export default function PrivacyPolicyPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-20 px-6">
             <div className="max-w-4xl mx-auto bg-white rounded-[3rem] p-10 md:p-16 shadow-sm border border-gray-100">
-                <Link href="/" className="text-brand-orange font-bold flex items-center gap-2 mb-8">
+                <Link href="/" className="text-teal font-semibold flex items-center gap-2 mb-8 hover:text-teal-dark transition-colors">
                     ← Retour à l'accueil
                 </Link>
                 
@@ -52,10 +52,12 @@ export default function PrivacyPolicyPage() {
                         Conformément aux lois en vigueur, vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Vous pouvez exercer ce droit depuis votre profil utilisateur.
                     </p>
 
-                    <div className="mt-12 p-6 bg-brand-orange/5 rounded-2xl border border-brand-orange/10">
-                        <p className="text-sm font-bold text-brand-orange">
-                            Dernière mise à jour : 19 Mars 2026<br />
-                            Contact : foesalomon65@gmail.com
+                    <div className="mt-12 p-6 bg-teal/5 rounded-2xl border border-teal/10">
+                        <p className="text-sm font-semibold text-navy">
+                            Dernière mise à jour : 2 juin 2026<br />
+                            Délégué à la protection des données : Salomon FOE<br />
+                            Contact : <a href="mailto:salomonfoe97@smartlearn-edu.org" className="text-teal underline">salomonfoe97@smartlearn-edu.org</a><br />
+                            Téléphones : +237 671 71 91 24 / +237 691 27 63 34
                         </p>
                     </div>
                 </div>
