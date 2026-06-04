@@ -1,14 +1,13 @@
 import React from 'react';
+import Image from 'next/image';
 
 /**
  * SmartLearn Logo — composant unique pour toutes les surfaces.
- * Documentation : docs/DESIGN.md §5 (Logo).
+ * Documentation : docs/DESIGN.md §5 (Logo) + docs/brand-assets/ (chartes officielles).
  *
- * ⚠️ PLACEHOLDER : le monogramme S est une approximation SVG (stroke bicolore
- * navy→teal). Pour utiliser le SVG officiel du designer :
- *   1. Récupérer le fichier .svg fourni par l'agence
- *   2. Remplacer le contenu de <Monogram /> ci-dessous par les paths officiels
- *   3. Garder l'interface des props inchangée — toute l'app continuera de marcher
+ * Le monogramme utilise le PNG officiel public/brand/logo.png (S plein bicolore
+ * navy + teal). Sur fond sombre, un badge blanc cassé respecte la zone de
+ * protection définie dans la charte (App icon style).
  */
 
 export type LogoVariant = 'full' | 'compact' | 'monogram';
@@ -25,49 +24,34 @@ export interface LogoProps {
 }
 
 function Monogram({ size, theme }: { size: number; theme: LogoTheme }) {
-  // Couleurs selon le thème
-  let topColor = '#0A1628';
-  let bottomColor = '#0FB69C';
-  if (theme === 'dark') {
-    // Fond sombre : haut blanc, bas teal
-    topColor = '#FFFFFF';
-    bottomColor = '#0FB69C';
-  } else if (theme === 'mono-navy') {
-    topColor = bottomColor = '#0A1628';
-  } else if (theme === 'mono-white') {
-    topColor = bottomColor = '#FFFFFF';
-  }
+  // Sur fonds sombres (header navy), on enveloppe le PNG bicolore dans un badge
+  // blanc cassé pour préserver le contraste — c'est exactement le motif "App icon"
+  // de la charte officielle (docs/brand-assets/charte-logo-architecture.jpeg).
+  const needsBadge = theme === 'dark' || theme === 'mono-white';
+  const innerSize = needsBadge ? Math.round(size * 0.78) : size;
 
-  // ID de gradient stable pour éviter les conflits SSR
-  const id = `sl-mono-${theme}`;
-
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      role="img"
-      aria-label="SmartLearn"
-    >
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="49.9%" stopColor={topColor} />
-          <stop offset="50.1%" stopColor={bottomColor} />
-        </linearGradient>
-      </defs>
-      {/* S monogramme (placeholder). Stroke bicolore via gradient vertical. */}
-      <path
-        d="M 78,28 C 78,12 65,5 50,5 C 30,5 18,16 18,32 C 18,52 82,48 82,68 C 82,84 65,95 50,95 C 30,95 18,84 18,68"
-        stroke={`url(#${id})`}
-        strokeWidth="16"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+  const img = (
+    <Image
+      src="/brand/logo.png"
+      alt="SmartLearn"
+      width={innerSize}
+      height={innerSize}
+      priority
+      style={{ width: innerSize, height: innerSize, objectFit: 'contain' }}
+    />
   );
+
+  if (needsBadge) {
+    return (
+      <span
+        className="inline-flex items-center justify-center rounded-2xl bg-[#F7F8FA] shadow-sm"
+        style={{ width: size, height: size }}
+      >
+        {img}
+      </span>
+    );
+  }
+  return <span className="inline-flex items-center justify-center">{img}</span>;
 }
 
 export function Logo({
@@ -77,12 +61,10 @@ export function Logo({
   className = '',
   showTagline = false,
 }: LogoProps) {
-  // Couleurs du wordmark selon le thème
   const smartColor = theme === 'dark' || theme === 'mono-white' ? 'text-white' : 'text-navy';
   const learnColor = theme === 'mono-navy' ? 'text-navy' : theme === 'mono-white' ? 'text-white' : 'text-teal';
   const taglineColor = theme === 'dark' || theme === 'mono-white' ? 'text-slate-300' : 'text-slate-500';
 
-  // Variant monogram = monogramme seul
   if (variant === 'monogram') {
     return (
       <span className={`inline-flex items-center ${className}`}>
@@ -91,7 +73,6 @@ export function Logo({
     );
   }
 
-  // Variant full ou compact = monogramme + wordmark
   return (
     <span className={`inline-flex items-center gap-3 ${className}`}>
       <Monogram size={size} theme={theme} />
