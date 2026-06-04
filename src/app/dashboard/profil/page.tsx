@@ -64,11 +64,11 @@ export default async function ProfilePage() {
                 {/* Carte Principale : Informations */}
                 <div className="md:col-span-2">
                     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 sm:p-8">
-                        <div className="flex items-center space-x-4 mb-8">
+                        <div className="flex items-start space-x-4 mb-8">
                             <ProfilePictureUpload currentImage={image} userName={name} />
-                            <div>
-                                <h2 className="text-2xl font-semibold text-white">{name}</h2>
-                                <p className="text-slate-400">{email}</p>
+                            <div className="min-w-0 flex-1">
+                                <h2 className="text-2xl font-semibold text-white truncate">{name}</h2>
+                                <p className="text-slate-400 text-sm break-all sm:break-words">{email}</p>
                                 <div className="mt-2 flex gap-2">
                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-700 text-slate-300">
                                         {role === 'admin' ? 'Administrateur' : role === 'student' ? 'Élève' : 'Affilié'}
@@ -90,9 +90,9 @@ export default async function ProfilePage() {
                                         {name}
                                     </div>
                                 </div>
-                                <div className="space-y-1">
+                                <div className="space-y-1 min-w-0">
                                     <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">E-mail</label>
-                                    <div className="text-white font-medium bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50">
+                                    <div className="text-white font-medium bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50 break-all text-sm">
                                         {email}
                                     </div>
                                 </div>

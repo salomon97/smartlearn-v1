@@ -5,6 +5,12 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import WithdrawalHistory from "@/models/WithdrawalHistory";
 import { computeBalances } from "@/lib/balances";
+import { sendEmail } from "@/lib/email";
+import { renderEmailLayout } from "@/lib/email-template";
+
+function isSyntheticEmail(email: string): boolean {
+    return /@eleve\.smartlearn-edu\.org$/i.test(email);
+}
 
 export async function POST(req: Request) {
     try {
@@ -41,7 +47,7 @@ export async function POST(req: Request) {
         }
 
         // Créer la demande dans l'historique (status pending par défaut)
-        await WithdrawalHistory.create({
+        const withdrawal = await WithdrawalHistory.create({
             affiliateId: userId,
             affiliateName: user.name,
             affiliateEmail: user.email,
@@ -51,9 +57,53 @@ export async function POST(req: Request) {
             status: "pending"
         });
 
+        // Notification email à l'ambassadeur (best-effort, n'échoue pas la requête)
+        if (!isSyntheticEmail(user.email)) {
+            try {
+                const bodyHtml = `
+                    <p style="color:#334155; line-height:1.6; font-size:15px; margin:0 0 12px 0;">
+                        Bonjour ${user.name},
+                    </p>
+                    <p style="color:#334155; line-height:1.6; font-size:15px; margin:0 0 16px 0;">
+                        Votre demande de retrait a bien été enregistrée. Voici le récapitulatif :
+                    </p>
+                    <div style="background-color:#F0FDFA; border:1px solid #99F6E4; border-radius:12px; padding:16px 20px; margin:16px 0;">
+                        <p style="margin:0 0 8px 0; color:#334155; font-size:14px;">
+                            <strong>Montant :</strong> ${amount.toLocaleString('fr-FR')} FCFA
+                        </p>
+                        <p style="margin:0 0 8px 0; color:#334155; font-size:14px;">
+                            <strong>Méthode :</strong> Mobile Money
+                        </p>
+                        <p style="margin:0; color:#334155; font-size:14px;">
+                            <strong>Numéro :</strong> ${accountNumber}
+                        </p>
+                    </div>
+                    <p style="color:#334155; line-height:1.6; font-size:14px; margin:16px 0 12px 0;">
+                        Notre équipe traite votre demande sous <strong>48 heures ouvrables</strong>.
+                        Vous recevrez un e-mail de confirmation dès que le versement aura été effectué.
+                    </p>
+                    <p style="color:#64748B; font-size:13px; line-height:1.6; margin:0;">
+                        Pour toute question, contactez-nous à
+                        <a href="mailto:salomonfoe97@smartlearn-edu.org" style="color:#0FB69C;">salomonfoe97@smartlearn-edu.org</a>.
+                    </p>
+                `;
+                await sendEmail({
+                    to: user.email,
+                    subject: "Demande de retrait enregistrée — SmartLearn",
+                    html: renderEmailLayout({
+                        title: "Demande de retrait enregistrée",
+                        bodyHtml,
+                        accent: "teal",
+                    }),
+                });
+            } catch (emailErr) {
+                console.error("⚠️ [WITHDRAW] Échec envoi email confirmation (non bloquant):", emailErr);
+            }
+        }
+
         return NextResponse.json({
             success: true,
-            message: "Votre demande de retrait a été enregistrée avec succès et sera traitée sous peu."
+            message: "Votre demande de retrait a été enregistrée. Vous recevrez un e-mail de confirmation sous 48h ouvrables."
         });
 
     } catch (error) {

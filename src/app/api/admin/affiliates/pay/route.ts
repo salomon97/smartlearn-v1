@@ -32,8 +32,10 @@ export async function POST(req: Request) {
         // Disponible calculé (cleared − retraits pending/paid).
         const { available } = await computeBalances(affiliate._id.toString());
 
-        if (available < 1000) {
-            return NextResponse.json({ message: "Le solde disponible est insuffisant (< 1000 FCFA)." }, { status: 400 });
+        // Cohérent avec le seuil utilisateur (frontend + /api/user/withdraw).
+        const SEUIL_RETRAIT = 2000;
+        if (available < SEUIL_RETRAIT) {
+            return NextResponse.json({ message: `Le solde disponible est insuffisant (< ${SEUIL_RETRAIT} FCFA).` }, { status: 400 });
         }
 
         // "Payer" = tracer une WithdrawalHistory 'paid' du disponible. Plus de champ à
