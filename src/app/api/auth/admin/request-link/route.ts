@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import nodemailer from 'nodemailer';
 import { BASE_URL } from '@/lib/auth-env';
+import { renderEmailLayout, renderPrimaryButton } from '@/lib/email-template';
 
 export async function POST(req: Request) {
     try {
@@ -49,32 +50,28 @@ export async function POST(req: Request) {
         // Le lien pointera vers la page de vérification qui s'occupera d'appeler NextAuth
         const loginUrl = `${BASE_URL}/api/auth/admin/verify?token=${rawToken}&email=${encodeURIComponent(adminUser.email)}`;
 
-        const htmlTemplate = `
-        <div style="font-family: Arial, sans-serif; max-w: 600px; margin: 0 auto; border: 1px solid #e5e7eb; border-radius: 12px; overflow: hidden;">
-            <div style="background-color: #ff6e14; padding: 24px; text-align: center;">
-                <h1 style="color: white; margin: 0; font-size: 24px;">SmartLearn Admin</h1>
-            </div>
-            
-            <div style="padding: 32px; background-color: white;">
-                <h2 style="color: #111827; margin-top: 0;">Connexion Sécurisée</h2>
-                <p style="color: #4b5563; line-height: 1.6;">
-                    Bonjour Administrateur,<br><br>
-                    Une demande de connexion au tableau de bord a été effectuée. Cliquez sur le bouton ci-dessous pour accéder à votre espace de manière sécurisée.
-                </p>
-                
-                <div style="text-align: center; margin: 32px 0;">
-                    <a href="${loginUrl}" style="background-color: #ff6e14; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">
-                        Accéder au Tableau de Bord
-                    </a>
-                </div>
-                
-                <p style="color: #ef4444; font-size: 14px;">
-                    ⚠️ Ce lien n'est valable que pendant <b>15 minutes</b> et s'autodétruira après utilisation.<br>
-                    Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail.
+        const bodyHtml = `
+            <p style="color:#334155; line-height:1.6; font-size:15px; margin:0 0 12px 0;">
+                Bonjour Administrateur,
+            </p>
+            <p style="color:#334155; line-height:1.6; font-size:15px; margin:0 0 16px 0;">
+                Une demande de connexion au tableau de bord SmartLearn a été effectuée. Cliquez sur le bouton ci-dessous pour accéder à votre espace de manière sécurisée.
+            </p>
+            ${renderPrimaryButton('Accéder au tableau de bord', loginUrl)}
+            <div style="background-color:#FEF2F2; border:1px solid #FECACA; border-radius:8px; padding:12px 16px; margin-top:8px;">
+                <p style="color:#991B1B; font-size:13px; line-height:1.5; margin:0;">
+                    ⚠️ Ce lien n'est valable que pendant <strong>15 minutes</strong> et s'autodétruira après utilisation.<br>
+                    Si vous n'êtes pas à l'origine de cette demande, ignorez cet email.
                 </p>
             </div>
-        </div>
         `;
+
+        const htmlTemplate = renderEmailLayout({
+            title: 'Connexion administrateur sécurisée',
+            bodyHtml,
+            accent: 'orange',
+            minimalFooter: true,
+        });
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
