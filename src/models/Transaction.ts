@@ -22,17 +22,20 @@ export interface ITransaction extends Document {
 const TransactionSchema = new Schema<ITransaction>(
     {
         userId: { type: String, required: true },
-        parrainId: { type: String },
+        parrainId: { type: String, index: true }, // computeBalances filtre par parrainId
         amount: { type: Number, required: true },
         commission: { type: Number, default: 0 },
-        status: { type: String, enum: ['pending', 'cleared', 'failed', 'fraud_suspected'], default: 'pending' },
+        status: { type: String, enum: ['pending', 'cleared', 'failed', 'fraud_suspected'], default: 'pending', index: true },
         paymentMethod: { type: String, default: 'Chariow' },
-        referenceId: { type: String },
+        referenceId: { type: String, index: true, sparse: true }, // idempotence webhook Chariow
         planCode: { type: String },
         clearingDate: { type: Date, required: true },
         metadata: { type: Schema.Types.Mixed },
     },
     { timestamps: true }
 );
+
+// Index composé pour le cron auto-clear : find({ status: 'pending', clearingDate: { $lte: now } })
+TransactionSchema.index({ status: 1, clearingDate: 1 });
 
 export default models.Transaction || mongoose.model<ITransaction>('Transaction', TransactionSchema);

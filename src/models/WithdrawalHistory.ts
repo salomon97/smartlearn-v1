@@ -43,6 +43,7 @@ const WithdrawalHistorySchema: Schema<IWithdrawalHistory> = new Schema(
       type: String,
       enum: ["pending", "paid", "failed"],
       default: "pending",
+      index: true,
     },
   },
   {
@@ -50,8 +51,11 @@ const WithdrawalHistorySchema: Schema<IWithdrawalHistory> = new Schema(
   }
 );
 
+// computeBalances + GET /api/user/withdrawals filtrent par affiliateId
+WithdrawalHistorySchema.index({ affiliateId: 1, createdAt: -1 });
+
 // Pour éviter les redéfinitions lors du rechargement à chaud (hot reloading)
-const WithdrawalHistory: Model<IWithdrawalHistory> = 
+const WithdrawalHistory: Model<IWithdrawalHistory> =
   mongoose.models.WithdrawalHistory || mongoose.model<IWithdrawalHistory>("WithdrawalHistory", WithdrawalHistorySchema);
 
 export default WithdrawalHistory;
