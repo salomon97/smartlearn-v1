@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, Activity, LogOut } from "lucide-react";
+import { Menu, X, LayoutDashboard, CreditCard, Users, BookOpen, Handshake, ShieldAlert, RefreshCw, Activity, LogOut, Wrench } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { Logo } from "@/components/ui/Logo";
 
@@ -19,6 +19,7 @@ export default function AdminNavigation() {
         { href: "/admin/retention", label: "Rétention", icon: <Activity size={20} /> },
         { href: "/admin/affilies", label: "Affiliations", icon: <Handshake size={20} /> },
         { href: "/admin/cours", label: "Contenu Pédagogique", icon: <BookOpen size={20} /> },
+        { href: "/admin/reconcile", label: "Réconcilier paiement", icon: <Wrench size={20} /> },
         { href: "/admin/sync", label: "Synchronisation", icon: <RefreshCw size={20} /> },
         { href: "/admin/fraudes", label: "Surveillance Fraudes", icon: <ShieldAlert size={20} /> },
     ];
@@ -28,8 +29,10 @@ export default function AdminNavigation() {
     return (
         <>
             {/* Bouton Mobile Toggle (Fixé en haut à droite pour être accessible) */}
-            <button 
+            <button
+                type="button"
                 onClick={toggleMenu}
+                aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu"}
                 className="md:hidden fixed top-3 right-4 z-[70] p-2 bg-slate-800 text-white rounded-lg shadow-lg border border-slate-700 active:scale-95 transition-all"
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -89,6 +92,7 @@ export default function AdminNavigation() {
                         Retour au tableau de bord
                     </Link>
                     <button
+                        type="button"
                         onClick={() => signOut({ callbackUrl: '/' })}
                         className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-semibold text-sm rounded-2xl border border-transparent hover:border-red-500/20"
                     >

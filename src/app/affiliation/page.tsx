@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Logo } from "@/components/ui/Logo";
+import { isValidCameroonMobileMoney } from "@/lib/validation";
 
 interface AffiliateStats {
     referrals: number;
@@ -338,8 +339,8 @@ export default function AffiliationPage() {
                                         setWithdrawError("Vous ne pouvez pas retirer plus que votre solde disponible.");
                                         return;
                                     }
-                                    if (!withdrawNumber || withdrawNumber.length < 8) {
-                                        setWithdrawError("Veuillez entrer un numéro Mobile Money valide.");
+                                    if (!isValidCameroonMobileMoney(withdrawNumber)) {
+                                        setWithdrawError("Numéro Mobile Money invalide. Format attendu : +237 6XX XX XX XX (MTN ou Orange).");
                                         return;
                                     }
 
@@ -388,8 +389,19 @@ export default function AffiliationPage() {
                                                 value={withdrawNumber}
                                                 onChange={e => setWithdrawNumber(e.target.value)}
                                                 placeholder="+237 6 XX XX XX XX"
-                                                className="w-full bg-slate-50 border border-slate-200 focus:border-teal focus:ring-2 focus:ring-teal/20 outline-none p-3 rounded-xl text-navy font-semibold transition-all"
+                                                className={`w-full bg-slate-50 border focus:ring-2 outline-none p-3 rounded-xl text-navy font-semibold transition-all ${
+                                                    withdrawNumber.length === 0
+                                                        ? 'border-slate-200 focus:border-teal focus:ring-teal/20'
+                                                        : isValidCameroonMobileMoney(withdrawNumber)
+                                                            ? 'border-teal focus:border-teal focus:ring-teal/20'
+                                                            : 'border-red-300 focus:border-red-400 focus:ring-red-200'
+                                                }`}
                                             />
+                                            {withdrawNumber.length > 0 && !isValidCameroonMobileMoney(withdrawNumber) && (
+                                                <p className="text-xs text-red-600 mt-1.5">
+                                                    Format attendu : +237 6XX XX XX XX (MTN ou Orange)
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
                                     {withdrawError && (

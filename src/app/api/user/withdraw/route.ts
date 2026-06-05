@@ -7,23 +7,7 @@ import WithdrawalHistory from "@/models/WithdrawalHistory";
 import { computeBalances } from "@/lib/balances";
 import { sendEmail } from "@/lib/email";
 import { renderEmailLayout } from "@/lib/email-template";
-
-function isSyntheticEmail(email: string): boolean {
-    return /@eleve\.smartlearn-edu\.org$/i.test(email);
-}
-
-/**
- * Valide un numéro Mobile Money camerounais.
- * Accepte les formats :
- *   - +2376XXXXXXXX (E.164 international, 12 chiffres après le +)
- *   - 2376XXXXXXXX  (sans +)
- *   - 6XXXXXXXX     (national, 9 chiffres, préfixé par le 6)
- * Refuse tout autre format pour éviter les erreurs de versement opérateur.
- */
-function isValidCameroonMobileMoney(raw: string): boolean {
-    const cleaned = raw.replace(/[\s\-().]/g, '');
-    return /^(\+?237)?6\d{8}$/.test(cleaned);
-}
+import { isSyntheticEmail, isValidCameroonMobileMoney } from "@/lib/validation";
 
 export async function POST(req: Request) {
     try {

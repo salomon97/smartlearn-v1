@@ -7,10 +7,7 @@ import WithdrawalHistory from '@/models/WithdrawalHistory';
 import { computeBalances } from '@/lib/balances';
 import { sendEmail } from '@/lib/email';
 import { renderEmailLayout } from '@/lib/email-template';
-
-function isSyntheticEmail(email: string): boolean {
-    return /@eleve\.smartlearn-edu\.org$/i.test(email);
-}
+import { isSyntheticEmail } from '@/lib/validation';
 
 export async function POST(req: Request) {
     try {

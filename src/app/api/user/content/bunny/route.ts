@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import { computePremiumStatus } from "@/lib/premium-core";
+import { signBunnyUrl } from "@/lib/bunny-signed-url";
 
 export async function GET(req: Request) {
     try {
@@ -74,15 +75,21 @@ export async function GET(req: Request) {
 
             const data = await response.json();
             
+            // Si BUNNY_TOKEN_AUTH_KEY est configurée côté Vercel ET que Token Auth est
+            // activée sur la Pull Zone Bunny, les URLs sont signées avec expiration 1h.
+            // Sinon (legacy), les URLs sont servies non signées (comportement actuel).
+            // Voir lib/bunny-signed-url.ts pour les étapes d'activation côté Bunny.
+            const bunnyKey = process.env.BUNNY_TOKEN_AUTH_KEY;
+
             const files = data
                 .filter((item: any) => !item.IsDirectory)
                 .map((item: any) => {
                     const encodedFilePath = `${encodedPath}/${encodeURIComponent(item.ObjectName)}`;
+                    const rawUrl = `https://${process.env.BUNNY_STORAGE_HOSTNAME}/${encodedFilePath}`;
                     return {
                         id: item.Guid || item.ObjectName,
                         name: item.ObjectName,
-                        // URL publique vers le fichier (pour l'iFrame ou le PDF Viewer)
-                        cdnUrl: `https://${process.env.BUNNY_STORAGE_HOSTNAME}/${encodedFilePath}`,
+                        cdnUrl: signBunnyUrl(rawUrl, bunnyKey),
                         contentType: 'file'
                     };
                 });
@@ -108,14 +115,20 @@ export async function GET(req: Request) {
 
              const data = await response.json();
              
-             const videos = data.items.map((v: any) => ({
-                 id: v.guid,
-                 name: v.title,
-                 libraryId: libraryId,
-                 // Utilisation du hostname CDN Stream fourni
-                 thumbnailUrl: `https://vz-e1000817-6ad.b-cdn.net/${v.guid}/thumbnail.jpg`,
-                 contentType: 'video'
-             }));
+             // Idem pour Bunny Stream : si BUNNY_TOKEN_AUTH_KEY (Player Security Key) est
+             // configurée, les thumbnails sont signées. Sinon URL brute legacy.
+             const bunnyKey = process.env.BUNNY_TOKEN_AUTH_KEY;
+
+             const videos = data.items.map((v: any) => {
+                 const rawThumb = `https://vz-e1000817-6ad.b-cdn.net/${v.guid}/thumbnail.jpg`;
+                 return {
+                     id: v.guid,
+                     name: v.title,
+                     libraryId: libraryId,
+                     thumbnailUrl: signBunnyUrl(rawThumb, bunnyKey),
+                     contentType: 'video'
+                 };
+             });
 
              return NextResponse.json({ items: videos });
         }
