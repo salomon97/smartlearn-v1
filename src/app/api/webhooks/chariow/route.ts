@@ -10,23 +10,57 @@ import crypto from 'crypto';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-function verifyChariowSignature(rawBody: string, signature: string | null): boolean {
-    const secret = process.env.CHARIOW_WEBHOOK_SECRET;
-    if (!secret) {
-        console.error('❌ [WEBHOOK] CHARIOW_WEBHOOK_SECRET non défini — vérification ignorée');
-        return false;
-    }
-    if (!signature) return false;
+/**
+ * Vérifie l'authenticité du webhook Chariow.
+ *
+ * Stratégie principale : TOKEN URL.
+ *   Chariow (du moins dans sa version actuelle) n'expose pas de "Webhook
+ *   Signing Secret" comme Stripe ou Paystack. On utilise donc un token
+ *   secret dans l'URL du Pulse :
+ *     https://www.smartlearn-edu.org/api/webhooks/chariow?token=XXX
+ *   La variable CHARIOW_WEBHOOK_TOKEN sur Vercel contient la valeur de
+ *   référence et on compare en temps-constant.
+ *
+ * Fallback HMAC : on conserve la vérification HMAC pour le jour où Chariow
+ * ajouterait un signing secret. Si un header x-chariow-signature est présent
+ * ET que CHARIOW_WEBHOOK_SECRET est défini, on le valide en plus.
+ *
+ * Au moins UNE des deux protections doit être configurée. Si aucune des deux
+ * n'est définie, on refuse — c'est un déploiement non sécurisé.
+ */
+function verifyWebhookAuth(
+    rawBody: string,
+    signatureHeader: string | null,
+    urlToken: string | null,
+): { ok: boolean; reason: string } {
+    const expectedToken = process.env.CHARIOW_WEBHOOK_TOKEN;
+    const hmacSecret = process.env.CHARIOW_WEBHOOK_SECRET;
 
-    const expected = crypto.createHmac('sha256', secret).update(rawBody, 'utf8').digest('hex');
-    // Chariow peut préfixer avec "sha256="
-    const received = signature.startsWith('sha256=') ? signature.slice(7) : signature;
-
-    try {
-        return crypto.timingSafeEqual(Buffer.from(received, 'hex'), Buffer.from(expected, 'hex'));
-    } catch {
-        return false;
+    // Mode 1 — token URL (principal)
+    if (expectedToken) {
+        if (!urlToken) return { ok: false, reason: 'token URL manquant' };
+        const a = Buffer.from(urlToken);
+        const b = Buffer.from(expectedToken);
+        if (a.length !== b.length) return { ok: false, reason: 'token URL invalide' };
+        const tokenOk = crypto.timingSafeEqual(a, b);
+        if (!tokenOk) return { ok: false, reason: 'token URL invalide' };
+        return { ok: true, reason: 'token URL ok' };
     }
+
+    // Mode 2 — HMAC signature (legacy / futur)
+    if (hmacSecret && signatureHeader) {
+        const expected = crypto.createHmac('sha256', hmacSecret).update(rawBody, 'utf8').digest('hex');
+        const received = signatureHeader.startsWith('sha256=') ? signatureHeader.slice(7) : signatureHeader;
+        try {
+            const ok = crypto.timingSafeEqual(Buffer.from(received, 'hex'), Buffer.from(expected, 'hex'));
+            return { ok, reason: ok ? 'HMAC ok' : 'HMAC invalide' };
+        } catch {
+            return { ok: false, reason: 'HMAC malformé' };
+        }
+    }
+
+    // Aucune config — refuse pour ne pas accepter n'importe qui
+    return { ok: false, reason: 'aucune méthode d\'authentification configurée (CHARIOW_WEBHOOK_TOKEN ou CHARIOW_WEBHOOK_SECRET)' };
 }
 
 export async function GET(req: Request) {
@@ -42,14 +76,17 @@ export async function POST(req: Request) {
     try {
         const { searchParams } = new URL(req.url);
 
-        // 1. Lire le corps brut (nécessaire pour vérifier la signature HMAC)
+        // 1. Lire le corps brut (nécessaire pour fallback HMAC)
         const rawBody = await req.text();
 
-        // 2. Vérifier la signature Chariow AVANT tout traitement
+        // 2. Vérifier l'authenticité du webhook AVANT tout traitement
+        //    (token URL en mode principal, HMAC en fallback — voir verifyWebhookAuth)
         const signature = req.headers.get('x-chariow-signature');
-        if (!verifyChariowSignature(rawBody, signature)) {
-            console.warn('🚫 [WEBHOOK] Signature invalide ou absente — requête rejetée');
-            return NextResponse.json({ message: 'Signature invalide' }, { status: 401 });
+        const urlToken = searchParams.get('token');
+        const auth = verifyWebhookAuth(rawBody, signature, urlToken);
+        if (!auth.ok) {
+            console.warn(`🚫 [WEBHOOK] Auth refusée : ${auth.reason}`);
+            return NextResponse.json({ message: 'Authentification refusée' }, { status: 401 });
         }
 
         // 3. Parser le corps maintenant que la signature est validée
