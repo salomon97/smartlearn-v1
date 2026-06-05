@@ -12,6 +12,19 @@ function isSyntheticEmail(email: string): boolean {
     return /@eleve\.smartlearn-edu\.org$/i.test(email);
 }
 
+/**
+ * Valide un numéro Mobile Money camerounais.
+ * Accepte les formats :
+ *   - +2376XXXXXXXX (E.164 international, 12 chiffres après le +)
+ *   - 2376XXXXXXXX  (sans +)
+ *   - 6XXXXXXXX     (national, 9 chiffres, préfixé par le 6)
+ * Refuse tout autre format pour éviter les erreurs de versement opérateur.
+ */
+function isValidCameroonMobileMoney(raw: string): boolean {
+    const cleaned = raw.replace(/[\s\-().]/g, '');
+    return /^(\+?237)?6\d{8}$/.test(cleaned);
+}
+
 export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
@@ -29,6 +42,12 @@ export async function POST(req: Request) {
 
         if (!accountNumber) {
             return NextResponse.json({ error: "Le numéro Mobile Money est requis" }, { status: 400 });
+        }
+
+        if (!isValidCameroonMobileMoney(accountNumber)) {
+            return NextResponse.json({
+                error: "Numéro Mobile Money invalide. Format attendu : +237 6XX XX XX XX (MTN ou Orange)."
+            }, { status: 400 });
         }
 
         await connectToDatabase();

@@ -88,17 +88,18 @@ export async function POST(req: Request) {
 
         const { userId, planCode } = parseCustomData(rawCustomData);
 
-        // 7. IDÉMPOTENCE — si on a déjà traité ce paiement (referenceId Chariow connu),
-        // on retourne OK sans rien refaire. Évite la double-extension de premiumUntil en cas
-        // de retry du webhook par Chariow.
-        if (referenceId) {
-            const already = await Transaction.findOne({ referenceId });
-            if (already) {
-                console.log(`♻️  [WEBHOOK] Paiement ${referenceId} déjà traité — idempotent, OK`);
-                return NextResponse.json({ message: 'Déjà traité', success: true });
-            }
-        } else {
-            console.warn('⚠️  [WEBHOOK] Pas de referenceId Chariow — idempotence impossible, on traite quand même');
+        // 7. IDÉMPOTENCE STRICTE — sans referenceId, on REFUSE de traiter. Sinon, un attaquant
+        // qui forgerait un webhook valide HMAC (ou un retry malformé) pourrait re-étendre
+        // premiumUntil indéfiniment. Politique : pas de referenceId = pas de traitement.
+        if (!referenceId) {
+            console.error('🚫 [WEBHOOK] Aucun referenceId fourni — paiement refusé pour préserver l\'idempotence.');
+            return NextResponse.json({ message: 'referenceId requis pour traitement idempotent' }, { status: 400 });
+        }
+
+        const already = await Transaction.findOne({ referenceId });
+        if (already) {
+            console.log(`♻️  [WEBHOOK] Paiement ${referenceId} déjà traité — idempotent, OK`);
+            return NextResponse.json({ message: 'Déjà traité', success: true });
         }
 
         // 8. Trouver l'utilisateur qui a payé
