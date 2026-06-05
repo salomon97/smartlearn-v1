@@ -36,15 +36,15 @@ export default async function FounderPage() {
             <div className="md:col-span-2 flex justify-center md:justify-start">
               <div className="relative">
                 {/* Halo */}
-                <div className="absolute -inset-4 bg-gradient-to-br from-teal/30 to-orange/20 blur-2xl rounded-full"></div>
-                {/* Photo */}
-                <div className="relative w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
+                <div className="absolute -inset-6 bg-gradient-to-br from-teal/30 to-orange/20 blur-2xl rounded-full"></div>
+                {/* Photo — cadre généreux, crop centré sur la tête (top de la photo) */}
+                <div className="relative w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl bg-navy-deep">
                   <Image
                     src="/founder-portrait.png"
                     alt="Salomon FOE, fondateur de SmartLearn"
                     fill
-                    sizes="(max-width: 768px) 16rem, 18rem"
-                    className="object-cover"
+                    sizes="(max-width: 768px) 18rem, 24rem"
+                    className="object-cover object-[55%_15%]"
                     priority
                   />
                 </div>

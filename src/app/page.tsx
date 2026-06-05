@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import UserNav from "@/components/UserNav";
@@ -278,8 +279,14 @@ export default async function Home() {
                 </Link>
               </div>
               <div className="hidden md:flex justify-center">
-                <div className="w-44 h-44 rounded-full bg-gradient-to-br from-teal/30 to-orange/20 flex items-center justify-center text-7xl border-4 border-white/10">
-                  👨🏿‍🏫
+                <div className="relative w-72 h-72 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl">
+                  <Image
+                    src="/founder-portrait.png"
+                    alt="Salomon FOE, fondateur de SmartLearn"
+                    fill
+                    sizes="18rem"
+                    className="object-cover object-center"
+                  />
                 </div>
               </div>
             </div>
