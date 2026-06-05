@@ -95,7 +95,7 @@ export default async function AdminFraudsPage() {
                                     <div className="bg-red-50/50 p-4 rounded-2xl border border-red-100">
                                         <p className="text-sm font-bold text-red-600 mb-2">Commission Bloquée : 0 FCFA</p>
                                         <p className="text-[11px] text-gray-500 leading-relaxed uppercase font-bold tracking-tight">
-                                            L'acheteur a bien été activé VIP (paiement reçu de {report.amount}F), mais le parrain n'a pas reçu sa commission car ils partagent la même IP ou le même email.
+                                            L'acheteur a bien été activé Premium (paiement reçu de {report.amount}F), mais le parrain n'a pas reçu sa commission car ils partagent la même IP ou le même email.
                                         </p>
                                     </div>
                                 </div>

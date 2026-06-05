@@ -99,7 +99,7 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
         return (
             <div className="bg-slate-50/80 p-6 md:p-10 rounded-[3rem] shadow-sm border border-slate-100/50 animate-in fade-in duration-700">
                 <div className="mb-8 text-center animate-in fade-in slide-in-from-bottom-4">
-                    <h2 className="text-3xl font-black text-slate-800">Ressources VIP</h2>
+                    <h2 className="text-3xl font-black text-slate-800">Ressources Premium</h2>
                     <p className="text-slate-500 mt-2">Choisissez une matière pour explorer le contenu sécurisé</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

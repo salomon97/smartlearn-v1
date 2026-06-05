@@ -48,11 +48,14 @@ export default async function ProfilePage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in zoom-in duration-500">
             <div>
-                <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+                <span className="inline-block text-xs font-semibold uppercase tracking-widest text-teal mb-2">
+                    Mon espace
+                </span>
+                <h1 className="font-heading text-3xl md:text-4xl font-bold text-navy">
                     Mon Profil
                 </h1>
-                <p className="text-slate-400 mt-2">
-                    Gérez vos informations personnelles et vos préférences.
+                <p className="text-slate-500 mt-2">
+                    Gérez vos informations personnelles et votre abonnement.
                 </p>
             </div>
 
@@ -61,11 +64,11 @@ export default async function ProfilePage() {
                 {/* Carte Principale : Informations */}
                 <div className="md:col-span-2">
                     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-6 sm:p-8">
-                        <div className="flex items-center space-x-4 mb-8">
+                        <div className="flex items-start space-x-4 mb-8">
                             <ProfilePictureUpload currentImage={image} userName={name} />
-                            <div>
-                                <h2 className="text-2xl font-semibold text-white">{name}</h2>
-                                <p className="text-slate-400">{email}</p>
+                            <div className="min-w-0 flex-1">
+                                <h2 className="text-2xl font-semibold text-white truncate">{name}</h2>
+                                <p className="text-slate-400 text-sm break-all sm:break-words">{email}</p>
                                 <div className="mt-2 flex gap-2">
                                     <span className="px-3 py-1 rounded-full text-xs font-medium bg-slate-700 text-slate-300">
                                         {role === 'admin' ? 'Administrateur' : role === 'student' ? 'Élève' : 'Affilié'}
@@ -87,9 +90,9 @@ export default async function ProfilePage() {
                                         {name}
                                     </div>
                                 </div>
-                                <div className="space-y-1">
+                                <div className="space-y-1 min-w-0">
                                     <label className="text-xs font-medium text-slate-400 uppercase tracking-wider">E-mail</label>
-                                    <div className="text-white font-medium bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50">
+                                    <div className="text-white font-medium bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50 break-all text-sm">
                                         {email}
                                     </div>
                                 </div>
@@ -120,21 +123,21 @@ export default async function ProfilePage() {
 
                 {/* Sidebar : Statut & Actions */}
                 <div className="space-y-6">
-                    {/* Carte VIP — affiche le statut effectif et le compte à rebours d'expiration. */}
+                    {/* Carte Premium — affiche le statut effectif et le compte à rebours d'expiration. */}
                     <div className={`p-6 rounded-2xl border backdrop-blur-xl relative overflow-hidden group ${
                         access.isPremium
-                            ? 'bg-gradient-to-br from-amber-500/10 to-orange-600/10 border-amber-500/30'
+                            ? 'bg-gradient-to-br from-teal/10 to-teal-dark/10 border-teal/30'
                             : access.status === 'expired'
-                                ? 'bg-gradient-to-br from-red-500/10 to-orange-600/10 border-red-500/30'
+                                ? 'bg-gradient-to-br from-red-500/10 to-orange/10 border-red-500/30'
                                 : 'bg-slate-800/50 border-slate-700/50'
                     }`}>
                         {access.isPremium && (
-                            <div className="absolute top-0 right-0 p-32 bg-amber-500/10 blur-3xl rounded-full group-hover:bg-amber-500/20 transition-all duration-700"></div>
+                            <div className="absolute top-0 right-0 p-32 bg-teal/10 blur-3xl rounded-full group-hover:bg-teal/20 transition-all duration-700"></div>
                         )}
 
                         <div className="relative z-10 flex flex-col items-center text-center">
                             <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${
-                                access.isPremium ? 'bg-amber-500/20 text-amber-400'
+                                access.isPremium ? 'bg-teal/20 text-teal'
                                 : access.status === 'expired' ? 'bg-red-500/20 text-red-400'
                                 : 'bg-slate-700 text-slate-400'
                             }`}>
@@ -143,15 +146,15 @@ export default async function ProfilePage() {
                                 </svg>
                             </div>
 
-                            <h3 className={`text-xl font-bold mb-1 ${
-                                access.isPremium ? 'text-amber-400'
+                            <h3 className={`text-xl font-bold mb-1 font-heading ${
+                                access.isPremium ? 'text-teal'
                                 : access.status === 'expired' ? 'text-red-400'
                                 : 'text-white'
                             }`}>
-                                {access.status === 'lifetime' ? 'Membre VIP à vie'
-                                 : access.status === 'active' ? 'Membre VIP'
+                                {access.status === 'lifetime' ? 'Membre Premium à vie'
+                                 : access.status === 'active' ? 'Membre Premium'
                                  : access.status === 'expired' ? 'Abonnement expiré'
-                                 : 'Compte Gratuit'}
+                                 : 'Compte gratuit'}
                             </h3>
 
                             {access.status === 'lifetime' && (
@@ -164,7 +167,7 @@ export default async function ProfilePage() {
                                     <p className="text-sm text-slate-400 mb-2">
                                         Accès complet à tous les cours et corrections.
                                     </p>
-                                    <p className="text-xs text-amber-400/80 mb-6">
+                                    <p className="text-xs text-teal/90 mb-6">
                                         {access.daysRemaining === 1 ? '1 jour restant' : `${access.daysRemaining} jours restants`}
                                         {access.expiresAt && ` · jusqu'au ${formatDate(access.expiresAt)}`}
                                     </p>
@@ -173,28 +176,28 @@ export default async function ProfilePage() {
                             {access.status === 'expired' && (
                                 <p className="text-sm text-slate-400 mb-6">
                                     {access.expiresAt && `Expiré le ${formatDate(access.expiresAt)}. `}
-                                    Renouvelez pour reprendre l'accès.
+                                    Renouvelez pour reprendre l&apos;accès.
                                 </p>
                             )}
                             {access.status === 'never' && (
                                 <p className="text-sm text-slate-400 mb-6">
-                                    Accédez à plus de contenu en devenant membre VIP.
+                                    Activez votre accès Premium pour débloquer tous les cours.
                                 </p>
                             )}
 
                             {access.status === 'never' && role === 'student' && (
-                                <a href="/paiement" className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-light focus:ring-4 focus:ring-brand-orange/20 text-white rounded-xl font-medium transition-all text-sm shadow-lg shadow-brand-orange/20">
-                                    Devenir VIP
+                                <a href="/paiement" className="w-full py-2.5 px-4 bg-orange hover:bg-orange/90 text-white rounded-full font-semibold transition-all text-sm shadow-lg shadow-orange/20">
+                                    Activer mon Premium
                                 </a>
                             )}
                             {access.status === 'expired' && role === 'student' && (
-                                <a href="/paiement" className="w-full py-2.5 px-4 bg-gradient-to-r from-brand-orange to-brand-orange-dark hover:from-brand-orange-light focus:ring-4 focus:ring-brand-orange/20 text-white rounded-xl font-medium transition-all text-sm shadow-lg shadow-brand-orange/20">
+                                <a href="/paiement" className="w-full py-2.5 px-4 bg-orange hover:bg-orange/90 text-white rounded-full font-semibold transition-all text-sm shadow-lg shadow-orange/20">
                                     Renouveler mon abonnement
                                 </a>
                             )}
                             {access.status === 'active' && role === 'student' && (
-                                <a href="/paiement" className="w-full py-2.5 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-xl font-medium transition-all text-sm border border-slate-600">
-                                    Renouveler à l'avance
+                                <a href="/paiement" className="w-full py-2.5 px-4 bg-slate-700 hover:bg-slate-600 text-slate-300 hover:text-white rounded-full font-medium transition-all text-sm border border-slate-600">
+                                    Renouveler à l&apos;avance
                                 </a>
                             )}
                         </div>

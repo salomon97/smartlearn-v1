@@ -27,7 +27,7 @@ export default async function AdminStudentsPage() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 mb-2">Gestion des Élèves</h1>
-                    <p className="text-gray-500 font-medium">Inscrivez vos élèves, gérez les accès VIP et organisez par salle.</p>
+                    <p className="text-gray-500 font-medium">Inscrivez vos élèves, gérez les accès Premium et organisez par salle.</p>
                 </div>
             </div>
 

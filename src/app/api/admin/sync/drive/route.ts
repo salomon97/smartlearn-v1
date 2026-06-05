@@ -67,13 +67,14 @@ export async function POST(req: Request) {
             const folders = response.data.files || [];
 
             for (const folder of folders) {
-                const name = folder.name.toLowerCase().trim();
-                const newPath = currentPath ? `${currentPath} > ${folder.name}` : folder.name;
+                // Google Drive peut renvoyer name/id en null. On skippe les dossiers anonymes.
+                if (!folder.name || !folder.id) continue;
+                const folderName: string = folder.name;
+                const folderId: string = folder.id;
+                const newPath = currentPath ? `${currentPath} > ${folderName}` : folderName;
 
                 // Try to detect Mappings
                 // Pattern detected : Grade -> Subject -> Type
-                
-                // Let's check if the parent or grandparent gives us info
                 const pathParts = newPath.split(' > ').map(p => p.toLowerCase().trim());
                 
                 let detectedGrade = "";
@@ -97,8 +98,8 @@ export async function POST(req: Request) {
                 if (detectedGrade && detectedSubject && detectedType) {
                     await DriveMapping.findOneAndUpdate(
                         { grade_level: detectedGrade, subject: detectedSubject, contentType: detectedType },
-                        { 
-                            folderId: folder.id, 
+                        {
+                            folderId,
                             path: newPath,
                             updatedAt: new Date()
                         },
@@ -109,7 +110,7 @@ export async function POST(req: Request) {
 
                 // Limit recursion depth or keep it simple for now (DFS)
                 if (pathParts.length < 5) {
-                    await scanFolder(folder.id, newPath);
+                    await scanFolder(folderId, newPath);
                 }
             }
         }

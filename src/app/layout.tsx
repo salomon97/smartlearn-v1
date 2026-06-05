@@ -1,19 +1,21 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import "./globals.css";
 import NextAuthProvider from "@/components/NextAuthProvider";
 import SessionGuardian from "@/components/SessionGuardian";
 import MarketingBanner from "@/components/MarketingBanner";
+import { Logo } from "@/components/ui/Logo";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://smartlearn-edu.org"),
   title: {
-    default: "SmartLearn - Apprendre pour Réussir",
-    template: "%s | SmartLearn"
+    default: "SmartLearn — L'école qui suit votre enfant.",
+    template: "%s · SmartLearn"
   },
-  description: "Rejoignez SmartLearn, la plateforme d'apprentissage en ligne nouvelle génération. Cours vidéo, supports PDF et suivi de progression pour une réussite académique garantie.",
-  keywords: ["éducation", "cours en ligne", "apprentissage", "réussite scolaire", "formation vidéo", "SmartLearn"],
-  authors: [{ name: "SmartLearn Team" }],
-  creator: "SmartLearn",
+  description: "Plateforme éducative fédérée qui connecte école, parent et élève. Cours, exercices, suivi de progression — accessible depuis n'importe quel téléphone Android, même quand le réseau tousse.",
+  keywords: ["éducation", "cours en ligne", "Cameroun", "lycée", "suivi scolaire", "APC", "SmartLearn", "Afrique francophone"],
+  authors: [{ name: "Salomon FOE", url: "https://smartlearn-edu.org" }],
+  creator: "Salomon FOE",
   publisher: "SmartLearn",
   formatDetection: {
     email: false,
@@ -25,29 +27,33 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://smartlearn-edu.org",
     siteName: "SmartLearn",
-    title: "SmartLearn - Excellence Académique en Ligne",
-    description: "Évoluez à votre rythme avec nos formations interactives et nos supports de cours complets.",
+    title: "SmartLearn — L'école qui suit votre enfant.",
+    description: "Cours, exercices, suivi de progression et alertes parents — accessibles depuis n'importe quel téléphone Android.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "SmartLearn - Plateforme d'apprentissage",
+        alt: "SmartLearn — Plateforme éducative fédérée",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SmartLearn - Excellence Académique en Ligne",
-    description: "La plateforme qui transforme votre apprentissage.",
+    title: "SmartLearn — L'école qui suit votre enfant.",
+    description: "Plateforme éducative fédérée pour l'Afrique francophone.",
     images: ["/og-image.png"],
   },
   icons: {
-    icon: "/logo.jpg",
-    shortcut: "/logo.jpg",
-    apple: "/logo.jpg",
+    icon: [
+      { url: "/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon-32.png",
+    apple: "/apple-touch-icon.png",
   },
-
+  manifest: "/manifest.webmanifest",
   robots: {
     index: true,
     follow: true,
@@ -55,6 +61,16 @@ export const metadata: Metadata = {
   verification: {
     google: "-1XyO6LCHqiTWdmEj_8xXB5G94PuYItC4nqeVkUM11k",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0A1628" },
+    { media: "(prefers-color-scheme: dark)", color: "#0A1628" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -71,16 +87,80 @@ export default function RootLayout({
           <main className="flex-grow">
             {children}
           </main>
-          
-          <footer className="bg-gradient-to-br from-slate-900 via-slate-800 to-black border-t border-white/5 py-12 px-6">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-sm text-gray-500 font-medium">
-                © 2026 SmartLearn. Tous droits réservés.
+
+          {/* ─── Footer ─── */}
+          <footer className="bg-navy border-t border-white/5 py-14 px-6">
+            <div className="max-w-7xl mx-auto">
+              {/* Ligne principale : 3 colonnes */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-12">
+
+                {/* Col 1 : Logo + pitch + coordonnées */}
+                <div className="flex flex-col gap-4">
+                  <Logo variant="full" theme="dark" size={44} />
+                  <p className="text-sm text-slate-400 max-w-xs">
+                    Plateforme numérique d'excellence pédagogique pour le secondaire camerounais.
+                  </p>
+                  <div className="text-xs text-slate-500 space-y-1 mt-2">
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>📍</span>
+                      <span>Douala, Cameroun</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>📞</span>
+                      <span>+237 671 71 91 24 / +237 691 27 63 34</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <span aria-hidden>✉️</span>
+                      <a href="mailto:salomonfoe97@smartlearn-edu.org" className="hover:text-teal transition-colors">
+                        salomonfoe97@smartlearn-edu.org
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Col 2 : Navigation */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Plateforme</h3>
+                  <Link href="/catalogue" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Catalogue
+                  </Link>
+                  <Link href="/paiement" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Tarifs &amp; abonnements
+                  </Link>
+                  <Link href="/affiliation" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Programme Ambassadeur
+                  </Link>
+                  <Link href="/le-fondateur" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Le fondateur
+                  </Link>
+                </div>
+
+                {/* Col 3 : Légal + contact */}
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Institutionnel</h3>
+                  <Link href="/politique-confidentialite" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Politique de confidentialité
+                  </Link>
+                  <Link href="/conditions-utilisation" className="text-sm text-slate-300 hover:text-teal transition-colors">
+                    Conditions générales
+                  </Link>
+                  <a
+                    href="mailto:salomonfoe97@smartlearn-edu.org?subject=Partenariat%20%C3%A9tablissement"
+                    className="text-sm text-slate-300 hover:text-teal transition-colors"
+                  >
+                    Devenir établissement partenaire
+                  </a>
+                </div>
               </div>
-              <div className="flex gap-6 text-sm font-bold text-gray-400">
-                <a href="/politique-confidentialite" className="hover:text-[var(--primary-gold)] transition-colors">Politique de Confidentialité</a>
-                <a href="/conditions-utilisation" className="hover:text-[var(--primary-gold)] transition-colors">Conditions d'Utilisation</a>
-                <a href="mailto:foesalomon65@gmail.com" className="hover:text-[var(--primary-gold)] transition-colors">Contact</a>
+
+              {/* Ligne mentions légales */}
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-white/10 text-xs text-slate-500">
+                <div>
+                  © 2026 SmartLearn. Tous droits réservés. Propulsé par Salomon FOE, enseignant.
+                </div>
+                <div className="text-slate-600">
+                  Fait à Douala 🇨🇲
+                </div>
               </div>
             </div>
           </footer>

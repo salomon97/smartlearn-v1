@@ -31,7 +31,7 @@ export default function YouTubePlayer({ videoUrl, isLocked = false, onVideoEnd }
                 <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 transition-transform duration-500">
                     <Lock className="w-10 h-10 text-brand-orange animate-pulse" />
                 </div>
-                <h3 className="text-white text-2xl font-black mb-2 relative z-10">Contenu VIP</h3>
+                <h3 className="text-white text-2xl font-black mb-2 relative z-10">Contenu Premium</h3>
                 <p className="text-gray-400 font-medium max-w-sm relative z-10">
                     Débloquez l'accès premium pour visionner cette leçon exclusive.
                 </p>

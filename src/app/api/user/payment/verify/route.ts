@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
         if (access.isPremium || isAdmin) {
             return NextResponse.json({
                 success: true,
-                message: "Accès VIP actif",
+                message: "Accès Premium actif",
                 status: isAdmin ? 'admin' : access.status,
                 expiresAt: access.expiresAt,
                 daysRemaining: access.daysRemaining,

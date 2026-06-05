@@ -29,7 +29,7 @@ export default function StudentsList({ initialStudents }: { initialStudents: Stu
     const grades = Array.from(new Set(students.map(s => s.grade_level).filter(Boolean)));
 
     const handleDelete = async (id: string) => {
-        if (!confirm("⚠️ ATTENTION : Voulez-vous vraiment supprimer cet élève ?\nCette opération effacera son compte et son accès VIP définitivement.")) return;
+        if (!confirm("⚠️ ATTENTION : Voulez-vous vraiment supprimer cet élève ?\nCette opération effacera son compte et son accès Premium définitivement.")) return;
         
         try {
             const res = await fetch(`/api/admin/eleves/${id}`, { method: "DELETE" });
@@ -135,7 +135,7 @@ export default function StudentsList({ initialStudents }: { initialStudents: Stu
                         className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm outline-none cursor-pointer focus:border-brand-orange"
                     >
                         <option value="all">Tous les statuts</option>
-                        <option value="vip">VIP Uniquement</option>
+                        <option value="vip">Premium Uniquement</option>
                         <option value="free">Gratuits Uniquement</option>
                     </select>
                 </div>
@@ -190,7 +190,7 @@ export default function StudentsList({ initialStudents }: { initialStudents: Stu
                                                     onClick={() => togglePremium(student._id, student.isPremium)}
                                                     className={`px-3 py-1 rounded-full text-[10px] font-black uppercase transition-all ${student.isPremium ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-400 border border-transparent hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-600'}`}
                                                 >
-                                                    {student.isPremium ? 'VIP' : 'Gratuit'}
+                                                    {student.isPremium ? 'Premium' : 'Gratuit'}
                                                 </button>
                                             </td>
                                             <td className="py-3 text-right pr-4">

@@ -82,7 +82,7 @@ export default async function StudentCoursesCatalog() {
                                 
                                 {!isPremium && (
                                     <div className="absolute top-4 right-4 bg-gray-900/90 backdrop-blur-sm text-yellow-400 text-xs font-black px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1.5">
-                                        <Lock className="w-3 h-3" /> VIP
+                                        <Lock className="w-3 h-3" /> Premium
                                     </div>
                                 )}
                             </div>

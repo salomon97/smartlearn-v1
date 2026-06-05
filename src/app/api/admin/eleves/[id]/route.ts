@@ -4,7 +4,7 @@ import User from "@/models/User";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-// PATCH : Mettre à jour un élève (statut VIP ou Classe)
+// PATCH : Mettre à jour un élève (statut Premium ou Classe)
 export async function PATCH(
     req: Request,
     { params }: { params: { id: string } }

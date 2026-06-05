@@ -113,7 +113,7 @@ export default function CataloguePage() {
                                 <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
                                     <div className="flex flex-col">
                                         <span className="text-[10px] uppercase font-bold text-gray-500">Accès</span>
-                                        <span className="text-xs font-black text-[var(--primary-gold)]">MEMBRE VIP</span>
+                                        <span className="text-xs font-black text-[var(--primary-gold)]">MEMBRE Premium</span>
                                     </div>
                                     <div className="w-10 h-10 rounded-full bg-[var(--primary-gold)] text-[var(--primary-dark)] flex items-center justify-center transform group-hover:translate-x-1 transition-transform">
                                         <ArrowRight className="w-5 h-5" />
@@ -162,11 +162,11 @@ export default function CataloguePage() {
                                 <h1 className="text-3xl font-black mb-4">{activeProgram.title}</h1>
                                 <div className="bg-[var(--primary-gold)]/10 px-4 py-1.5 rounded-full text-xs font-black text-[var(--primary-gold)] mb-8 uppercase tracking-widest border border-[var(--primary-gold)]/20 flex items-center gap-2">
                                     <GraduationCap className="w-4 h-4" />
-                                    Offre Exclusive VIP
+                                    Offre Exclusive Premium
                                 </div>
                                 
                                 <p className="text-gray-300 text-lg leading-relaxed mb-10">
-                                    Ce module est conçu pour vous offrir une maîtrise totale du programme officiel. Pour accéder aux vidéos, PDF et exercices de cette formation, vous devez être **Visiteur VIP**.
+                                    Ce module est conçu pour vous offrir une maîtrise totale du programme officiel. Pour accéder aux vidéos, PDF et exercices de cette formation, vous devez être **Membre Premium**.
                                 </p>
 
                                 <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10 text-left">
@@ -185,7 +185,7 @@ export default function CataloguePage() {
                                         href="/auth/inscription" 
                                         className="w-full py-5 bg-[var(--primary-gold)] hover:bg-[var(--primary-gold-hover)] text-[var(--primary-dark)] rounded-2xl font-black transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2"
                                     >
-                                        S'enregistrer comme Visiteur VIP
+                                        S'enregistrer comme Membre Premium
                                         <ArrowRight className="w-5 h-5" />
                                     </Link>
                                     <button 

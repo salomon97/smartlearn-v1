@@ -1,4 +1,4 @@
-// Source de vérité unique de l'accès VIP — PURE (aucun import, testable seule).
+// Source de vérité unique de l'accès Premium — PURE (aucun import, testable seule).
 // Combine isPremium (drapeau "a déjà payé un jour", jamais reset) et premiumUntil
 // (horloge d'expiration). Le résultat .isPremium retourné est l'accès EFFECTIF
 // (différent du champ stocké : un abonné expiré a isPremium=true en base mais

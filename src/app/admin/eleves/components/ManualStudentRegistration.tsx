@@ -125,7 +125,7 @@ export default function ManualStudentRegistration() {
                 disabled={loading}
                 className="mt-6 w-full py-3 px-4 bg-brand-orange hover:bg-brand-orange-dark disabled:opacity-50 text-white rounded-xl font-bold transition-colors shadow-lg shadow-brand-orange/20"
             >
-                {loading ? "Création en cours..." : "Créer le compte VIP"}
+                {loading ? "Création en cours..." : "Créer le compte Premium"}
             </button>
         </form>
     );

@@ -9,7 +9,7 @@ import { computeBalances } from "@/lib/balances";
  * GET /api/user/affiliate-stats
  * Retourne les statistiques d'affiliation de l'utilisateur connecté :
  * - referrals : nombre d'utilisateurs inscrits via son lien
- * - conversions : nombre de filleuls devenus Premium (VIP)
+ * - conversions : nombre de filleuls devenus Premium
  * - earnings_pending : gains en attente de clearing (72h)
  * - earnings_available : gains disponibles pour le retrait
  */

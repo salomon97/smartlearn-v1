@@ -58,7 +58,7 @@ export default async function StudentCourseDetailPage({ params }: { params: Prom
         isFreePreview: !!l.isFreePreview
     }));
 
-    // 3. Déterminer si l'utilisateur est Premium (VIP)
+    // 3. Déterminer si l'utilisateur est Premium
     const isPremium = session?.user?.isPremium || false;
 
     return (
