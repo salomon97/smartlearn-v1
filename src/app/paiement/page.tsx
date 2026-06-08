@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import { isSyntheticEmail } from "@/lib/validation";
 
 type Plan = {
     _id: string;
@@ -152,10 +153,30 @@ function CheckoutContent() {
     }
 
     const userId = (session?.user as any)?.id as string | undefined;
-    const buildCheckoutUrl = (plan: Plan) =>
-        userId
-            ? `${plan.chariowUrl}?custom_data=${encodeURIComponent(`${userId}__${plan.code}`)}`
-            : plan.chariowUrl;
+    const userEmail = session?.user?.email || '';
+    const userName = (session?.user?.name || '').trim();
+    const isSynthetic = isSyntheticEmail(userEmail);
+
+    // On pré-remplit email + nom dans l'URL Chariow pour minimiser les paiements
+    // orphelins (élève qui tape un autre email au checkout que celui de son compte).
+    // Chariow accepte ?email, ?first_name, ?last_name comme query params au checkout.
+    // custom_data est toujours envoyé mais Chariow ne le re-transmet pas dans le webhook
+    // (vérifié en prod) — c'est donc l'email qui sert de lien fiable côté webhook.
+    const buildCheckoutUrl = (plan: Plan) => {
+        const params = new URLSearchParams();
+        if (userId) params.set('custom_data', `${userId}__${plan.code}`);
+        // Pour les emails synthétiques (élèves sans email réel), on N'INJECTE PAS l'email
+        // côté Chariow : il est invalide et bloquerait le checkout. L'élève devra saisir
+        // un email réel et l'admin réconciliera manuellement via /admin/reconcile.
+        if (userEmail && !isSynthetic) params.set('email', userEmail);
+        if (userName) {
+            const [first, ...rest] = userName.split(/\s+/);
+            if (first) params.set('first_name', first);
+            if (rest.length) params.set('last_name', rest.join(' '));
+        }
+        const qs = params.toString();
+        return qs ? `${plan.chariowUrl}?${qs}` : plan.chariowUrl;
+    };
 
     return (
         <div className="min-h-screen bg-slate-50">
@@ -189,6 +210,37 @@ function CheckoutContent() {
                         )}
                     </p>
                 </div>
+
+                {/* Avertissement email — évite les paiements orphelins (email checkout ≠ email compte). */}
+                {userEmail && !isSynthetic && (
+                    <div className="max-w-2xl mx-auto mb-10 bg-amber-50 border border-amber-300 rounded-xl p-4 flex items-start gap-3">
+                        <span className="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">⚠️</span>
+                        <div className="text-sm text-amber-900 leading-relaxed">
+                            <p className="font-semibold mb-1">
+                                Sur la page de paiement Chariow, utilise bien cet email&nbsp;:
+                            </p>
+                            <p className="font-mono bg-amber-100 inline-block px-2 py-0.5 rounded text-amber-950 break-all">
+                                {userEmail}
+                            </p>
+                            <p className="text-xs text-amber-800 mt-2">
+                                Si tu en saisis un autre, ton accès Premium ne s&apos;activera pas automatiquement (tu devras contacter le support).
+                            </p>
+                        </div>
+                    </div>
+                )}
+                {isSynthetic && (
+                    <div className="max-w-2xl mx-auto mb-10 bg-amber-50 border border-amber-300 rounded-xl p-4 flex items-start gap-3">
+                        <span className="text-2xl flex-shrink-0 mt-0.5" aria-hidden="true">📧</span>
+                        <div className="text-sm text-amber-900 leading-relaxed">
+                            <p className="font-semibold mb-1">Ton compte n&apos;a pas encore d&apos;email réel</p>
+                            <p className="text-xs text-amber-800">
+                                Pour activer ton accès Premium automatiquement après le paiement, ajoute un email réel
+                                à ton compte (depuis ton tableau de bord). Sinon, paie quand même puis contacte le support
+                                avec ton numéro de transaction Chariow — on activera ton accès manuellement.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
