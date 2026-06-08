@@ -3,7 +3,7 @@ import connectToDatabase from '@/lib/mongoose';
 import User from '@/models/User';
 import Plan from '@/models/Plan';
 import Transaction from '@/models/Transaction';
-import { parseCustomData } from '@/lib/chariow';
+import { parseCustomData, parseChariowSale } from '@/lib/chariow';
 import { DEFAULT_PLAN_CODE } from '@/lib/constants';
 import { trackEvent } from '@/lib/retention';
 import crypto from 'crypto';
@@ -112,17 +112,10 @@ export async function POST(req: Request) {
             console.error('❌ Erreur lors de l\'enregistrement du log Webhook :', logErr);
         }
 
-        // 6. Analyser les données
-        const data = body.data || body;
-        const customerEmail = data.customer?.email;
-        const referenceId = data.id || null;
-
-        const rawCustomData = data.custom_data ||
-                          data.metadata?.custom_data ||
-                          searchParams.get('custom_data') ||
-                          body.metadata?.custom_data ||
-                          null;
-
+        // 6. Analyser les données (voir parseChariowSale pour la structure réelle Chariow)
+        const parsed = parseChariowSale(body);
+        const { customerEmail, referenceId, chariowProductId } = parsed;
+        const rawCustomData = parsed.rawCustomData || searchParams.get('custom_data');
         const { userId, planCode } = parseCustomData(rawCustomData);
 
         // 7. IDÉMPOTENCE STRICTE — sans referenceId, on REFUSE de traiter. Sinon, un attaquant
@@ -153,8 +146,21 @@ export async function POST(req: Request) {
             return NextResponse.json({ message: 'User not found' }, { status: 404 });
         }
 
-        // 9. Résoudre le plan (planCode du custom_data, sinon plan par défaut).
-        const resolvedCode = planCode || DEFAULT_PLAN_CODE;
+        // 9. Résoudre le plan : priorité au planCode du custom_data, puis mapping
+        //    Chariow product.id → Plan.chariowUrl (cas standard pour les paiements réels où
+        //    Chariow n'echo pas le custom_data), puis fallback DEFAULT_PLAN_CODE.
+        let resolvedCode = planCode;
+        if (!resolvedCode && chariowProductId) {
+            const planByProduct = await Plan.findOne({
+                chariowUrl: { $regex: chariowProductId, $options: 'i' },
+                isActive: true,
+            });
+            if (planByProduct) {
+                resolvedCode = planByProduct.code;
+                console.log(`🔎 [WEBHOOK] Plan résolu via product.id "${chariowProductId}" → ${resolvedCode}`);
+            }
+        }
+        if (!resolvedCode) resolvedCode = DEFAULT_PLAN_CODE;
         const plan = await Plan.findOne({ code: resolvedCode });
         if (!plan) {
             console.error(`❌ [WEBHOOK] Plan introuvable (code: ${resolvedCode}).`);
