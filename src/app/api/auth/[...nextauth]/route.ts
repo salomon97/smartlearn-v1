@@ -119,7 +119,7 @@ export const authOptions = {
         strategy: "jwt" as const,
     },
     callbacks: {
-        async jwt({ token, user }: { token: any, user: any }) {
+        async jwt({ token, user, trigger }: { token: any, user: any, trigger?: string }) {
             if (user) {
                 token.id = user.id;
                 token.isPremium = user.isPremium;
@@ -128,6 +128,24 @@ export const authOptions = {
                 token.sessionId = user.sessionId;
                 token.role = user.role;
                 token.image = user.image;
+            }
+            // Refresh manuel depuis la BD (déclenché par useSession().update() côté client).
+            // Utilisé après un paiement Chariow réussi pour que isPremium/premiumUntil reflètent
+            // l'état BD sans forcer un logout/login.
+            if (trigger === 'update' && token?.id) {
+                try {
+                    await connectToDatabase();
+                    const fresh = await User.findById(token.id).select('isPremium premiumUntil role grade_level image');
+                    if (fresh) {
+                        token.isPremium = fresh.isPremium;
+                        token.premiumUntil = fresh.premiumUntil;
+                        token.role = fresh.role;
+                        token.grade_level = fresh.grade_level;
+                        token.image = fresh.image;
+                    }
+                } catch (err) {
+                    console.error('[NextAuth jwt update] échec refresh BD :', err);
+                }
             }
             return token;
         },

@@ -30,7 +30,7 @@ function monthlyEquivalent(plan: Plan): number | null {
 }
 
 function CheckoutContent() {
-    const { data: session, status } = useSession();
+    const { data: session, status, update: updateSession } = useSession();
     const router = useRouter();
     const searchParams = useSearchParams();
     const paymentSuccess = searchParams.get("success") === "true";
@@ -76,6 +76,10 @@ function CheckoutContent() {
                     const res = await fetch("/api/user/payment/verify");
                     const data = await res.json();
                     if (data.success) {
+                        // Force NextAuth à recharger le JWT depuis la BD pour que session.user.isPremium
+                        // reflète l'activation immédiatement, sans logout/login. Sinon le dashboard
+                        // continue de voir la valeur du JWT créé au login (stale).
+                        try { await updateSession(); } catch (e) { console.error('Session update failed', e); }
                         setIsVerified(true);
                         setChecking(false);
                         return true;
@@ -94,7 +98,7 @@ function CheckoutContent() {
             }, 5000);
             return () => clearInterval(interval);
         }
-    }, [paymentSuccess, isVerified]);
+    }, [paymentSuccess, isVerified, updateSession]);
 
     if (status === "loading") {
         return (
