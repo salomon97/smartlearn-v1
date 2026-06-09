@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import UserNav from "@/components/UserNav";
 import { Logo } from "@/components/ui/Logo";
+import { programs } from "@/data/curriculum";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -30,10 +31,10 @@ export default async function Home() {
           </div>
 
           {/* Headline */}
-          <h1 className="font-heading text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-[1.05] tracking-tight">
-            L'école qui suit{" "}
+          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-[1.05] tracking-tight">
+            De la 6<sup>e</sup> à la Terminale,{" "}
             <span className="bg-gradient-to-r from-teal to-teal-dark bg-clip-text text-transparent">
-              votre enfant.
+              le programme MINESEC depuis chez soi.
             </span>
           </h1>
 
@@ -46,7 +47,7 @@ export default async function Home() {
           {/* Sub */}
           <p className="text-lg md:text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
             La plateforme numérique d'excellence pédagogique pour le secondaire camerounais.
-            Mathématiques et Informatique selon l'<strong className="text-white">Approche Par les Compétences</strong>,
+            Mathématiques et Informatique selon l'<strong className="text-white">Approche Par Compétences</strong>,
             de la 6ème à la Terminale.
           </p>
 
@@ -85,7 +86,7 @@ export default async function Home() {
                   Méthode pédagogique
                 </span>
                 <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6 leading-tight">
-                  L'<span className="text-teal">Approche Par les Compétences</span>, vraiment appliquée.
+                  L'<span className="text-teal">Approche Par Compétences</span>, vraiment appliquée.
                 </h2>
                 <p className="text-slate-300 text-lg leading-relaxed mb-8">
                   Fini l'apprentissage par cœur. Nos cours transforment chaque notion en situation de vie
@@ -136,70 +137,77 @@ export default async function Home() {
           </div>
         </section>
 
-        {/* ──────────────────────── SECTION CYCLES ──────────────────────── */}
+        {/* ──────────────────────── SECTION PROGRAMMES (CATALOGUE TEASER) ──────────────────────── */}
         <section className="container mx-auto max-w-7xl mb-32 px-4">
           <div className="text-center mb-16">
             <span className="inline-block text-xs font-semibold uppercase tracking-widest text-teal mb-3">
               Couverture pédagogique
             </span>
             <h2 className="font-heading text-4xl md:text-5xl font-bold mb-4">
-              De la 6<sup>e</sup> à la Terminale
+              Le programme officiel à portée de clic
             </h2>
             <p className="text-slate-400 max-w-2xl mx-auto">
-              Un accompagnement structuré, adapté à chaque cycle du système éducatif camerounais.
+              Mathématiques et Informatique selon l'Approche Par Compétences, par cycle.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                title: "Premier Cycle",
-                desc: "6e à 3e — socle commun en Maths & Informatique.",
-                icon: "📘",
-                accent: "from-teal/15",
-                badge: "6e · 5e · 4e · 3e",
-              },
-              {
-                title: "Second Cycle A",
-                desc: "Séries littéraires — analyse, probabilités, gestion numérique.",
-                icon: "🖋️",
-                accent: "from-teal/15",
-                badge: "A1 · A2 · A3 · A4",
-              },
-              {
-                title: "Second Cycle C/D/E",
-                desc: "Séries scientifiques — géométrie, algorithmique, programmation.",
-                icon: "🔬",
-                accent: "from-teal/15",
-                badge: "C · D · E",
-              },
-              {
-                title: "Série Technique TI",
-                desc: "Technologies de l'Information — programmation, réseaux, maths TI.",
-                icon: "🚀",
-                accent: "from-orange/15",
-                badge: "1ère TI · Tle TI",
-              },
-            ].map((cycle) => (
-              <div
-                key={cycle.title}
-                className="group relative bg-white/5 border border-white/10 rounded-3xl p-7 hover:bg-white/10 transition-all hover:-translate-y-1 duration-300 flex flex-col"
-              >
-                <div className={`absolute inset-0 bg-gradient-to-br ${cycle.accent} to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl`}></div>
-                <div className="text-4xl mb-4 relative z-10">{cycle.icon}</div>
-                <h3 className="font-heading text-xl font-bold mb-2 relative z-10">{cycle.title}</h3>
-                <div className="bg-white/5 px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-widest text-white/60 mb-4 relative z-10 border border-white/5 w-fit">
-                  {cycle.badge}
-                </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6 relative z-10 flex-grow">{cycle.desc}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {programs.slice(0, 6).map((program) => {
+              const isInfo = program.category.includes('Info');
+              return (
                 <Link
+                  key={program.id}
                   href="/catalogue"
-                  className="inline-flex items-center gap-2 text-teal font-semibold text-sm hover:gap-3 transition-all relative z-10"
+                  className="group relative bg-white/5 border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 hover:border-teal/30 transition-all hover:-translate-y-1 duration-300 flex flex-col"
                 >
-                  Découvrir →
+                  {/* Hero icon avec dégradé teal (Info) ou orange (Maths) */}
+                  <div className={`h-32 ${isInfo ? 'bg-gradient-to-br from-teal/30 to-teal/5' : 'bg-gradient-to-br from-orange/30 to-orange/5'} relative flex items-center justify-center`}>
+                    <span className="text-6xl group-hover:scale-110 transition-transform duration-500">
+                      {program.icon}
+                    </span>
+                    <div className="absolute top-3 right-3 bg-white/10 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                      <span className="text-[10px] font-semibold uppercase tracking-widest text-white/80">
+                        {program.category}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="p-6 flex flex-col flex-1">
+                    <span className="text-[10px] font-semibold uppercase tracking-widest text-teal mb-2">
+                      {program.cycle}
+                    </span>
+                    <h3 className="font-heading text-xl font-bold mb-3 leading-tight group-hover:text-teal transition-colors">
+                      {program.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {program.gradeLevels.map((g) => (
+                        <span key={g} className="text-[10px] font-semibold bg-white/5 border border-white/10 px-2 py-1 rounded-full text-white/70">
+                          {g}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 mb-4 flex-grow">
+                      {program.description}
+                    </p>
+                    <span className="inline-flex items-center gap-2 text-teal font-semibold text-sm group-hover:gap-3 transition-all">
+                      Découvrir →
+                    </span>
+                  </div>
                 </Link>
-              </div>
-            ))}
+              );
+            })}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/catalogue"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-teal/40 hover:border-teal hover:bg-teal/5 text-white rounded-full font-semibold text-sm transition-all"
+            >
+              Voir tout le catalogue
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
+            </Link>
           </div>
         </section>
 

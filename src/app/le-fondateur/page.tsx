@@ -102,7 +102,7 @@ export default async function FounderPage() {
             <p>
               SmartLearn est né de cette frustration. Une plateforme conçue pour que <strong className="text-white">
               chaque élève camerounais</strong>, peu importe son lycée, son village ou son budget, ait accès à
-              des cours structurés selon l'<span className="text-teal">Approche Par les Compétences (APC)</span>
+              des cours structurés selon l'<span className="text-teal">Approche Par Compétences (APC)</span>
               et à des annales corrigées qui préparent vraiment aux examens officiels.
             </p>
 

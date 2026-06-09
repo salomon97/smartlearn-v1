@@ -52,7 +52,7 @@ export default function TermsPage() {
               réussite scolaire des élèves du secondaire au Cameroun. Elle propose :
             </p>
             <BulletList items={[
-              "Des cours structurés en Mathématiques et Informatique selon l'Approche Par les Compétences (APC)",
+              "Des cours structurés en Mathématiques et Informatique selon l'Approche Par Compétences (APC)",
               "Des exercices corrigés progressifs et des annales d'examens officiels (BEPC, Probatoire, BAC)",
               "Un suivi de progression personnalisé accessible à l'élève et à ses parents",
               "Un programme Ambassadeur permettant de générer des revenus par parrainage",

@@ -52,7 +52,7 @@ export default function CataloguePage() {
                     </div>
                     <h1 className="text-4xl md:text-6xl font-black mb-6">Explorez nos <span className="gradient-gold font-black">Programmes</span></h1>
                     <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
-                        De la 6ème à la Terminale, accédez à des cours structurés selon l'Approche Par les Compétences (APC). 100% conformes au programme du Cameroun.
+                        De la 6ème à la Terminale, accédez à des cours structurés selon l'Approche Par Compétences (APC). 100% conformes au programme du Cameroun.
                     </p>
                 </div>
 
