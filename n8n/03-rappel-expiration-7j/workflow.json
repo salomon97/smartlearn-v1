@@ -1,0 +1,102 @@
+{
+  "name": "03 - Rappel expiration Premium J-7",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 10 * * *" }]
+        }
+      },
+      "id": "cron-daily-10h",
+      "name": "Cron daily 10h Africa/Douala",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "users",
+        "query": "={\n  \"role\": \"student\",\n  \"isPremium\": true,\n  \"premiumUntil\": {\n    \"$gte\": { \"$date\": \"{{ $now.plus({ days: 7 }).toISO() }}\" },\n    \"$lt\": { \"$date\": \"{{ $now.plus({ days: 8 }).toISO() }}\" }\n  }\n}",
+        "options": { "projection": "{\"email\":1,\"name\":1,\"premiumUntil\":1,\"grade_level\":1}" }
+      },
+      "id": "mongo-find-expiring",
+      "name": "MongoDB: find premium expirant J+7",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@eleve.smartlearn-edu.org",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-not-synthetic",
+      "name": "Skip si email synthétique",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "{{ $json.name }}, ton Premium expire dans 7 jours",
+        "html": "<p>À compléter dans n8n UI — voir DESIGN.md section Contenu de l'email</p>",
+        "options": {}
+      },
+      "id": "email-reminder",
+      "name": "Email rappel expiration",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SMARTLEARN_BASE_URL }}/api/internal/user/{{ $json._id }}/reminder-sent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.SMARTLEARN_WEBHOOK_SECRET }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "patch-reminder-sent",
+      "name": "PATCH lastExpirationReminderAt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 200]
+    }
+  ],
+  "connections": {
+    "Cron daily 10h Africa/Douala": {
+      "main": [[{ "node": "MongoDB: find premium expirant J+7", "type": "main", "index": 0 }]]
+    },
+    "MongoDB: find premium expirant J+7": {
+      "main": [[{ "node": "Skip si email synthétique", "type": "main", "index": 0 }]]
+    },
+    "Skip si email synthétique": {
+      "main": [
+        [{ "node": "Email rappel expiration", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Email rappel expiration": {
+      "main": [[{ "node": "PATCH lastExpirationReminderAt", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Africa/Douala" },
+  "active": false,
+  "tags": ["smartlearn", "premium", "renouvellement", "non-critique"]
+}

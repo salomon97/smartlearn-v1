@@ -1,0 +1,145 @@
+{
+  "name": "05 - Synthèse mensuelle KPI admin",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 8 1 * *" }]
+        }
+      },
+      "id": "cron-monthly-1st",
+      "name": "Cron monthly 1er 08h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Calcule prev_month_start et this_month_start\nconst now = $now;\nconst thisMonthStart = now.startOf('month');\nconst prevMonthStart = thisMonthStart.minus({ months: 1 });\nreturn [{\n  json: {\n    prev_month_start: prevMonthStart.toISO(),\n    this_month_start: thisMonthStart.toISO(),\n    month_label: prevMonthStart.toFormat('MMMM yyyy', { locale: 'fr' })\n  }\n}];"
+      },
+      "id": "compute-ranges",
+      "name": "Compute date ranges",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "operation": "aggregate",
+        "collection": "users",
+        "query": "=[\n  { \"$match\": { \"role\": \"student\", \"createdAt\": { \"$gte\": { \"$date\": \"{{ $json.prev_month_start }}\" }, \"$lt\": { \"$date\": \"{{ $json.this_month_start }}\" } } } },\n  { \"$count\": \"total\" }\n]"
+      },
+      "id": "kpi-new-signups",
+      "name": "KPI 1 — Nouveaux inscrits",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [680, 100]
+    },
+    {
+      "parameters": {
+        "operation": "aggregate",
+        "collection": "transactions",
+        "query": "=[\n  { \"$match\": { \"status\": { \"$in\": [\"pending\", \"cleared\"] }, \"createdAt\": { \"$gte\": { \"$date\": \"{{ $json.prev_month_start }}\" }, \"$lt\": { \"$date\": \"{{ $json.this_month_start }}\" } } } },\n  { \"$group\": { \"_id\": null, \"count\": { \"$sum\": 1 }, \"total\": { \"$sum\": \"$amount\" } } }\n]"
+      },
+      "id": "kpi-transactions",
+      "name": "KPI 2+3 — Conversions + CA",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [680, 250]
+    },
+    {
+      "parameters": {
+        "operation": "aggregate",
+        "collection": "transactions",
+        "query": "=[\n  { \"$match\": { \"createdAt\": { \"$gte\": { \"$date\": \"{{ $json.prev_month_start }}\" }, \"$lt\": { \"$date\": \"{{ $json.this_month_start }}\" } } } },\n  { \"$group\": { \"_id\": \"$planCode\", \"count\": { \"$sum\": 1 }, \"total\": { \"$sum\": \"$amount\" } } }\n]"
+      },
+      "id": "kpi-by-plan",
+      "name": "KPI 4 — Répartition par plan",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "operation": "aggregate",
+        "collection": "users",
+        "query": "=[\n  { \"$match\": { \"role\": \"student\", \"isPremium\": true, \"premiumUntil\": { \"$gte\": { \"$date\": \"{{ $json.this_month_start }}\" } } } },\n  { \"$count\": \"total\" }\n]"
+      },
+      "id": "kpi-active-premium",
+      "name": "KPI 6 — Premium actifs",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [680, 550]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "id": "merge-kpis",
+      "name": "Merge tous les KPIs",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Formate le HTML email synthèse — voir DESIGN.md pour le template complet\nconst kpis = $input.all()[0].json;\nconst html = `\n<h2>Synthèse SmartLearn — ${kpis.month_label || ''}</h2>\n<table border=\"1\" cellpadding=\"8\">\n<tr><td>Nouveaux inscrits</td><td>${kpis.new_signups || '⚠️ donnée manquante'}</td></tr>\n<tr><td>Conversions Premium</td><td>${kpis.conversions || '⚠️'}</td></tr>\n<tr><td>CA brut (FCFA)</td><td>${kpis.revenue || '⚠️'}</td></tr>\n<tr><td>Premium actifs fin de mois</td><td>${kpis.active_premium || '⚠️'}</td></tr>\n</table>\n<p style=\"font-size:11px;color:#666\">Généré automatiquement le 1er ${kpis.month_label || ''} par n8n.</p>\n`;\nreturn [{ json: { html_body: html } }];"
+      },
+      "id": "format-html",
+      "name": "Format HTML email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $env.ADMIN_EMAIL }}",
+        "subject": "SmartLearn — Synthèse mensuelle",
+        "html": "={{ $json.html_body }}",
+        "options": {}
+      },
+      "id": "send-admin-email",
+      "name": "Send admin email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Cron monthly 1er 08h": {
+      "main": [[{ "node": "Compute date ranges", "type": "main", "index": 0 }]]
+    },
+    "Compute date ranges": {
+      "main": [[
+        { "node": "KPI 1 — Nouveaux inscrits", "type": "main", "index": 0 },
+        { "node": "KPI 2+3 — Conversions + CA", "type": "main", "index": 0 },
+        { "node": "KPI 4 — Répartition par plan", "type": "main", "index": 0 },
+        { "node": "KPI 6 — Premium actifs", "type": "main", "index": 0 }
+      ]]
+    },
+    "KPI 1 — Nouveaux inscrits": {
+      "main": [[{ "node": "Merge tous les KPIs", "type": "main", "index": 0 }]]
+    },
+    "KPI 2+3 — Conversions + CA": {
+      "main": [[{ "node": "Merge tous les KPIs", "type": "main", "index": 1 }]]
+    },
+    "KPI 4 — Répartition par plan": {
+      "main": [[{ "node": "Merge tous les KPIs", "type": "main", "index": 2 }]]
+    },
+    "KPI 6 — Premium actifs": {
+      "main": [[{ "node": "Merge tous les KPIs", "type": "main", "index": 3 }]]
+    },
+    "Merge tous les KPIs": {
+      "main": [[{ "node": "Format HTML email", "type": "main", "index": 0 }]]
+    },
+    "Format HTML email": {
+      "main": [[{ "node": "Send admin email", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Africa/Douala" },
+  "active": false,
+  "tags": ["smartlearn", "admin", "reporting", "non-critique"]
+}

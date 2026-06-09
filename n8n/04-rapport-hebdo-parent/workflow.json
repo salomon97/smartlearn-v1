@@ -1,0 +1,107 @@
+{
+  "name": "04 - Rapport hebdo parent (BLOQUÉ : requires parentEmail + parentOptIn)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 19 * * 0" }]
+        }
+      },
+      "id": "cron-weekly-sunday",
+      "name": "Cron weekly dimanche 19h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "users",
+        "query": "={\n  \"role\": \"student\",\n  \"parentEmail\": { \"$exists\": true, \"$ne\": null },\n  \"parentOptIn\": true,\n  \"$or\": [\n    { \"lastWeeklyReportSentAt\": { \"$exists\": false } },\n    { \"lastWeeklyReportSentAt\": { \"$lt\": { \"$date\": \"{{ $now.minus({ days: 6 }).toISO() }}\" } } }\n  ]\n}",
+        "options": { "projection": "{\"email\":1,\"name\":1,\"grade_level\":1,\"parentEmail\":1,\"isPremium\":1}" }
+      },
+      "id": "mongo-find-with-parent",
+      "name": "MongoDB: élèves avec parent opt-in",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.parentEmail }}",
+              "rightValue": "={{ $json.email }}",
+              "operator": { "type": "string", "operation": "notEquals" }
+            },
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@eleve.smartlearn-edu.org",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-safe-to-send",
+      "name": "Garde-fous (parent≠élève, pas synthétique)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.parentEmail }}",
+        "subject": "SmartLearn — Cette semaine avec {{ $json.name }}",
+        "html": "<p>Template parent — à compléter dans n8n UI conformément à DESIGN.md.</p><p style=\"font-size:11px;color:#666\">Pour ne plus recevoir ces emails : <a href=\"{{ $env.SMARTLEARN_BASE_URL }}/parent/unsubscribe?token={{ $json._id }}\">se désabonner</a>.</p>",
+        "options": {}
+      },
+      "id": "email-parent",
+      "name": "Email rapport au parent",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SMARTLEARN_BASE_URL }}/api/internal/user/{{ $json._id }}/parent-report-sent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.SMARTLEARN_WEBHOOK_SECRET }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "patch-report-sent",
+      "name": "PATCH lastWeeklyReportSentAt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 200]
+    }
+  ],
+  "connections": {
+    "Cron weekly dimanche 19h": {
+      "main": [[{ "node": "MongoDB: élèves avec parent opt-in", "type": "main", "index": 0 }]]
+    },
+    "MongoDB: élèves avec parent opt-in": {
+      "main": [[{ "node": "Garde-fous (parent≠élève, pas synthétique)", "type": "main", "index": 0 }]]
+    },
+    "Garde-fous (parent≠élève, pas synthétique)": {
+      "main": [
+        [{ "node": "Email rapport au parent", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Email rapport au parent": {
+      "main": [[{ "node": "PATCH lastWeeklyReportSentAt", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Africa/Douala" },
+  "active": false,
+  "tags": ["smartlearn", "parent", "BLOQUÉ-requires-parentEmail-field", "non-critique"]
+}

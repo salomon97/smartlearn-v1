@@ -1,0 +1,125 @@
+{
+  "name": "01 - Welcome élève",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "welcome-eleve",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "id": "trigger-webhook",
+      "name": "Webhook signup",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@eleve.smartlearn-edu.org",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-not-synthetic",
+      "name": "Skip si synthétique ou admin",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "Bienvenue sur SmartLearn, {{ $json.name }}",
+        "html": "<p>À compléter dans n8n UI — voir DESIGN.md section Email J+0</p>",
+        "options": {}
+      },
+      "id": "email-j0",
+      "name": "Email J+0 — Welcome",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": { "amount": 1, "unit": "days" },
+      "id": "wait-1d",
+      "name": "Wait 1 jour",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [900, 200],
+      "webhookId": "wait-1d-webhook"
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "{{ $json.name }}, voici comment tirer le maximum de SmartLearn",
+        "html": "<p>À compléter dans n8n UI — voir DESIGN.md section Email J+1</p>",
+        "options": {}
+      },
+      "id": "email-j1",
+      "name": "Email J+1 — Comment utiliser",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": { "amount": 2, "unit": "days" },
+      "id": "wait-2d",
+      "name": "Wait 2 jours",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1340, 200],
+      "webhookId": "wait-2d-webhook"
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "30 minutes par jour suffisent",
+        "html": "<p>À compléter dans n8n UI — voir DESIGN.md section Email J+3</p>",
+        "options": {}
+      },
+      "id": "email-j3",
+      "name": "Email J+3 — Conseil pédagogique",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1560, 200]
+    }
+  ],
+  "connections": {
+    "Webhook signup": {
+      "main": [[{ "node": "Skip si synthétique ou admin", "type": "main", "index": 0 }]]
+    },
+    "Skip si synthétique ou admin": {
+      "main": [
+        [{ "node": "Email J+0 — Welcome", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Email J+0 — Welcome": {
+      "main": [[{ "node": "Wait 1 jour", "type": "main", "index": 0 }]]
+    },
+    "Wait 1 jour": {
+      "main": [[{ "node": "Email J+1 — Comment utiliser", "type": "main", "index": 0 }]]
+    },
+    "Email J+1 — Comment utiliser": {
+      "main": [[{ "node": "Wait 2 jours", "type": "main", "index": 0 }]]
+    },
+    "Wait 2 jours": {
+      "main": [[{ "node": "Email J+3 — Conseil pédagogique", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "tags": ["smartlearn", "cycle-eleve", "non-critique"]
+}

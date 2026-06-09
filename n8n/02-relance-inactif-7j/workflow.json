@@ -1,0 +1,145 @@
+{
+  "name": "02 - Relance élève inactif 7j",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 18 * * *" }]
+        }
+      },
+      "id": "cron-daily-18h",
+      "name": "Cron daily 18h Africa/Douala",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "users",
+        "query": "={\n  \"role\": \"student\",\n  \"lastLoginAt\": {\n    \"$gte\": { \"$date\": \"{{ $now.minus({ days: 8 }).toISO() }}\" },\n    \"$lt\": { \"$date\": \"{{ $now.minus({ days: 7 }).toISO() }}\" }\n  }\n}",
+        "options": { "projection": "{\"email\":1,\"name\":1,\"isPremium\":1,\"grade_level\":1,\"lastLoginAt\":1}" }
+      },
+      "id": "mongo-find-inactive",
+      "name": "MongoDB: find inactifs J-7",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@eleve.smartlearn-edu.org",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-not-synthetic",
+      "name": "Skip si synthétique",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.isPremium }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-premium",
+      "name": "Branche Premium ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "{{ $json.name }}, on t'a pas vu depuis une semaine",
+        "html": "<p>Variante A — élève Premium. À compléter dans n8n UI — voir DESIGN.md Variante A</p>",
+        "options": {}
+      },
+      "id": "email-premium",
+      "name": "Email variante Premium",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1120, 200]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "{{ $json.name }}, on a préparé un contenu pour toi",
+        "html": "<p>Variante B — élève Free. À compléter dans n8n UI — voir DESIGN.md Variante B</p>",
+        "options": {}
+      },
+      "id": "email-free",
+      "name": "Email variante Free",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1120, 400]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ $env.SMARTLEARN_BASE_URL }}/api/internal/user/{{ $json._id }}/inactif-reminder-sent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer {{ $env.SMARTLEARN_WEBHOOK_SECRET }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "patch-reminder-sent",
+      "name": "PATCH lastReminderInactiveAt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 300]
+    }
+  ],
+  "connections": {
+    "Cron daily 18h Africa/Douala": {
+      "main": [[{ "node": "MongoDB: find inactifs J-7", "type": "main", "index": 0 }]]
+    },
+    "MongoDB: find inactifs J-7": {
+      "main": [[{ "node": "Skip si synthétique", "type": "main", "index": 0 }]]
+    },
+    "Skip si synthétique": {
+      "main": [
+        [{ "node": "Branche Premium ?", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Branche Premium ?": {
+      "main": [
+        [{ "node": "Email variante Premium", "type": "main", "index": 0 }],
+        [{ "node": "Email variante Free", "type": "main", "index": 0 }]
+      ]
+    },
+    "Email variante Premium": {
+      "main": [[{ "node": "PATCH lastReminderInactiveAt", "type": "main", "index": 0 }]]
+    },
+    "Email variante Free": {
+      "main": [[{ "node": "PATCH lastReminderInactiveAt", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Africa/Douala" },
+  "active": false,
+  "tags": ["smartlearn", "retention", "non-critique", "requires-lastLoginAt-field"]
+}
