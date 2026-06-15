@@ -1,3 +1,5 @@
+import { isSyntheticEmail } from './validation';
+
 /**
  * SmartLearn Unified — Logique freemium (gating Free vs Premium).
  *
@@ -65,4 +67,36 @@ export function canAccessContent(user: AccessUser, path: string): AccessVerdict 
     return { ok: true, reason: 'free-chapter' };
   }
   return { ok: false, reason: 'premium-required-content' };
+}
+
+export const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 jours
+
+export type TrialEligibleUser = {
+  email: string;
+  role?: 'student' | 'affiliate' | 'admin';
+  premiumUntil?: Date | null;
+  welcomeTrialGrantedAt?: Date | null;
+};
+
+/**
+ * Octroi l'essai Premium 7 jours à l'utilisateur s'il est éligible.
+ * Mute l'objet `user` en place et retourne true si l'octroi a eu lieu.
+ *
+ * Critères d'éligibilité (TOUS doivent être vrais) :
+ *   - Pas d'email synthétique (@eleve.smartlearn-edu.org)
+ *   - role !== 'admin'
+ *   - welcomeTrialGrantedAt absent (jamais reçu d'essai)
+ *   - premiumUntil absent (jamais payé)
+ *
+ * @returns true si octroi effectif, false sinon (idempotent — safe à appeler à chaque login).
+ */
+export function grantTrialIfEligible(user: TrialEligibleUser, now: Date = new Date()): boolean {
+  if (isSyntheticEmail(user.email)) return false;
+  if (user.role === 'admin') return false;
+  if (user.welcomeTrialGrantedAt) return false;
+  if (user.premiumUntil) return false;
+
+  user.premiumUntil = new Date(now.getTime() + TRIAL_DURATION_MS);
+  user.welcomeTrialGrantedAt = now;
+  return true;
 }

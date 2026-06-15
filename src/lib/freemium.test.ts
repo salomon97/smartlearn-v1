@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isFreeChapterPath, isAnnalePath, canAccessContent } from './freemium';
+import { isFreeChapterPath, isAnnalePath, canAccessContent, grantTrialIfEligible, TRIAL_DURATION_MS } from './freemium';
 
 describe('isFreeChapterPath', () => {
   it('accepte un chapitre 1 dans une matière (premier cycle)', () => {
@@ -100,5 +100,67 @@ describe('canAccessContent', () => {
   it("affiliate non premium → traité comme student", () => {
     expect(canAccessContent({ isPremium: false, role: 'affiliate' }, PREMIUM_CHAPTER))
       .toEqual({ ok: false, reason: 'premium-required-content' });
+  });
+});
+
+describe('grantTrialIfEligible', () => {
+  const baseUser = () => ({
+    email: 'eleve@example.com',
+    role: 'student' as const,
+    isPremium: false,
+    premiumUntil: null,
+    welcomeTrialGrantedAt: null,
+  });
+
+  it("octroi l'essai à un nouveau student éligible", () => {
+    const u = baseUser();
+    const now = new Date('2026-06-10T10:00:00Z');
+    const granted = grantTrialIfEligible(u, now);
+
+    expect(granted).toBe(true);
+    expect(u.premiumUntil).toEqual(new Date(now.getTime() + TRIAL_DURATION_MS));
+    expect(u.welcomeTrialGrantedAt).toEqual(now);
+  });
+
+  it("ne ré-octroie pas si welcomeTrialGrantedAt déjà set (idempotence)", () => {
+    const u = baseUser();
+    u.welcomeTrialGrantedAt = new Date('2026-01-01T00:00:00Z');
+    const granted = grantTrialIfEligible(u, new Date());
+    expect(granted).toBe(false);
+  });
+
+  it("ne ré-octroie pas si l'user a déjà payé (premiumUntil set)", () => {
+    const u = baseUser();
+    u.premiumUntil = new Date('2026-12-31T00:00:00Z');
+    const granted = grantTrialIfEligible(u, new Date());
+    expect(granted).toBe(false);
+  });
+
+  it("ne ré-octroie pas si Premium expiré (anti-abus)", () => {
+    const u = baseUser();
+    u.premiumUntil = new Date('2025-01-01T00:00:00Z'); // past
+    const granted = grantTrialIfEligible(u, new Date('2026-06-10T00:00:00Z'));
+    expect(granted).toBe(false);
+  });
+
+  it("refuse les emails synthétiques", () => {
+    const u = baseUser();
+    u.email = 'eleve-123@eleve.smartlearn-edu.org';
+    const granted = grantTrialIfEligible(u, new Date());
+    expect(granted).toBe(false);
+  });
+
+  it("refuse les admins", () => {
+    const u = baseUser();
+    (u as any).role = 'admin';
+    const granted = grantTrialIfEligible(u, new Date());
+    expect(granted).toBe(false);
+  });
+
+  it("accepte les affiliates (parrains) comme les students", () => {
+    const u = baseUser();
+    (u as any).role = 'affiliate';
+    const granted = grantTrialIfEligible(u, new Date('2026-06-10T00:00:00Z'));
+    expect(granted).toBe(true);
   });
 });
