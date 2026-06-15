@@ -19,6 +19,12 @@ export interface IUser extends Document {
     resetPasswordOtp?: string;
     resetPasswordExpires?: Date;
     registrationIp?: string;
+    welcomeTrialGrantedAt?: Date | null;
+    registrationFraudFlag?: {
+        ipCount24h: number;
+        flaggedAt: Date;
+    } | null;
+    lastLoginAt?: Date | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -43,6 +49,16 @@ const UserSchema = new Schema<IUser>(
         resetPasswordOtp: { type: String },
         resetPasswordExpires: { type: Date },
         registrationIp: { type: String },
+        welcomeTrialGrantedAt: { type: Date, default: null },
+        registrationFraudFlag: {
+            type: {
+                ipCount24h: { type: Number },
+                flaggedAt: { type: Date },
+            },
+            default: null,
+            _id: false,
+        },
+        lastLoginAt: { type: Date, default: null },
     },
     { timestamps: true }
 );
