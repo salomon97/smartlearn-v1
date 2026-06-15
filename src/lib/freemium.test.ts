@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isFreeChapterPath } from './freemium';
+import { isFreeChapterPath, isAnnalePath } from './freemium';
 
 describe('isFreeChapterPath', () => {
   it('accepte un chapitre 1 dans une matière (premier cycle)', () => {
@@ -29,5 +29,28 @@ describe('isFreeChapterPath', () => {
   it('refuse null / undefined', () => {
     expect(isFreeChapterPath(null as any)).toBe(false);
     expect(isFreeChapterPath(undefined as any)).toBe(false);
+  });
+});
+
+describe('isAnnalePath', () => {
+  it('accepte un path annale BEPC', () => {
+    expect(isAnnalePath('/annales/BEPC/2024-mathematiques/')).toBe(true);
+  });
+
+  it('accepte un path annale Bac C', () => {
+    expect(isAnnalePath('/annales/Bac-C/2023-physique/')).toBe(true);
+  });
+
+  it('accepte un path annale en racine', () => {
+    expect(isAnnalePath('annales/Probatoire/2022-svt/')).toBe(true);
+  });
+
+  it("refuse un chapitre régulier", () => {
+    expect(isAnnalePath('/6e/Mathematiques/chapters/01-nombres/')).toBe(false);
+  });
+
+  it('refuse path vide ou null', () => {
+    expect(isAnnalePath('')).toBe(false);
+    expect(isAnnalePath(null as any)).toBe(false);
   });
 });

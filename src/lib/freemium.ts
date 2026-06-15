@@ -17,6 +17,17 @@
  * Regex stricte : /chapters\/01-/i — empêche faux positifs comme "10-" ou "chapitre-01-".
  */
 export function isFreeChapterPath(path: string | null | undefined): boolean {
-    if (!path) return false;
-    return /\/chapters\/01-/i.test(path);
+  if (!path) return false;
+  return /\/chapters\/01-/i.test(path);
+}
+
+/**
+ * Vrai si le path Bunny est une annale corrigée MINESEC.
+ * Les annales sont TOUJOURS Premium, quel que soit le numéro (anti hook côté Free).
+ *
+ * Convention : path contient "/annales/" ou commence par "annales/".
+ */
+export function isAnnalePath(path: string | null | undefined): boolean {
+  if (!path) return false;
+  return /(^|\/)annales\//i.test(path);
 }
