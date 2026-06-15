@@ -31,3 +31,38 @@ export function isAnnalePath(path: string | null | undefined): boolean {
   if (!path) return false;
   return /(^|\/)annales\//i.test(path);
 }
+
+export type AccessUser = {
+  isPremium: boolean;
+  role?: 'student' | 'affiliate' | 'admin';
+};
+
+export type AccessVerdict =
+  | { ok: true; reason: 'admin' | 'premium' | 'free-chapter' }
+  | { ok: false; reason: 'premium-required-content' | 'premium-required-annale' };
+
+/**
+ * Verdict d'accès à un contenu Bunny pour un utilisateur donné.
+ *
+ * Ordre des règles (premier qui matche gagne) :
+ *   1. role === 'admin'         → ok admin (sans aucun check)
+ *   2. isPremium === true       → ok premium
+ *   3. path = annale            → ko premium-required-annale (annales toujours Premium)
+ *   4. path = chapitre 1        → ok free-chapter
+ *   5. par défaut               → ko premium-required-content
+ */
+export function canAccessContent(user: AccessUser, path: string): AccessVerdict {
+  if (user.role === 'admin') {
+    return { ok: true, reason: 'admin' };
+  }
+  if (user.isPremium) {
+    return { ok: true, reason: 'premium' };
+  }
+  if (isAnnalePath(path)) {
+    return { ok: false, reason: 'premium-required-annale' };
+  }
+  if (isFreeChapterPath(path)) {
+    return { ok: true, reason: 'free-chapter' };
+  }
+  return { ok: false, reason: 'premium-required-content' };
+}
