@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { BookOpen, Video, FileText, Award, Library, Loader2, ChevronRight } from "lucide-react";
 import SecureVideoPlayer from "@/components/SecureVideoPlayer";
 import SecurePDFViewer from "@/components/SecurePDFViewer";
+import PaywallModal from "@/components/PaywallModal";
 
 interface Mapping {
     subject: string;
@@ -19,9 +20,16 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
     const [selectedType, setSelectedType] = useState<string>("chapters");
     const [items, setItems] = useState<any[]>([]);
     const [itemsLoading, setItemsLoading] = useState(false);
-    
+
     // Etat pour la lecture modale sécurisée
     const [selectedMedia, setSelectedMedia] = useState<{ type: 'video' | 'pdf', url: string, title: string, libraryId?: string, videoId?: string } | null>(null);
+
+    // Etat pour le paywall
+    const [paywall, setPaywall] = useState<{
+        open: boolean;
+        reason: 'premium-required-content' | 'premium-required-annale' | null;
+        itemName: string;
+    }>({ open: false, reason: null, itemName: '' });
 
     // 1. Charger les mappings au montage
     useEffect(() => {
@@ -49,7 +57,7 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
             setItemsLoading(true);
             try {
                 const mapping = mappings.find(m => m.subject === selectedSubject && m.contentType === selectedType);
-                
+
                 if (!mapping) {
                     setItems([]);
                     return;
@@ -75,12 +83,12 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                 if (url) {
                     const res = await fetch(url);
                     const data = await res.json();
-                    
+
                     if (!res.ok) {
                         setItems([{ isError: true, message: data.message, details: data.error }]);
                         return;
                     }
-                    
+
                     setItems(data.items || []);
                 }
             } catch (err: any) {
@@ -127,28 +135,28 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
 
     return (
         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-8 duration-700 bg-slate-50/60 p-6 md:p-8 rounded-[3rem] border border-slate-100/80 shadow-inner">
-            
+
             {/* Rendu dynamique du lecteur vidéo sécurisé (S'affiche par-dessus l'écran) */}
             {selectedMedia?.type === 'video' && selectedMedia.videoId && selectedMedia.libraryId && (
-                <SecureVideoPlayer 
-                    videoId={selectedMedia.videoId} 
-                    libraryId={selectedMedia.libraryId} 
-                    title={selectedMedia.title} 
-                    onClose={() => setSelectedMedia(null)} 
+                <SecureVideoPlayer
+                    videoId={selectedMedia.videoId}
+                    libraryId={selectedMedia.libraryId}
+                    title={selectedMedia.title}
+                    onClose={() => setSelectedMedia(null)}
                 />
             )}
 
             {/* Rendu dynamique du lecteur PDF sécurisé */}
             {selectedMedia?.type === 'pdf' && (
-                <SecurePDFViewer 
-                    fileUrl={selectedMedia.url} 
-                    title={selectedMedia.title} 
-                    onClose={() => setSelectedMedia(null)} 
+                <SecurePDFViewer
+                    fileUrl={selectedMedia.url}
+                    title={selectedMedia.title}
+                    onClose={() => setSelectedMedia(null)}
                 />
             )}
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <button 
+                <button
                     onClick={() => { setSelectedSubject(null); setSelectedType('chapters'); }}
                     className="text-sm font-bold text-gray-500 hover:text-brand-orange flex items-center gap-2 transition-colors bg-white px-4 py-2 w-max rounded-xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 duration-300"
                 >
@@ -173,8 +181,8 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                             key={tab.id}
                             onClick={() => setSelectedType(tab.id)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300 text-left ${
-                                selectedType === tab.id 
-                                    ? "bg-brand-orange text-white shadow-md shadow-brand-orange/20 scale-[1.02]" 
+                                selectedType === tab.id
+                                    ? "bg-brand-orange text-white shadow-md shadow-brand-orange/20 scale-[1.02]"
                                     : "text-slate-500 hover:text-slate-900 hover:bg-slate-100/80"
                             }`}
                         >
@@ -203,12 +211,33 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {selectedType === "videos" ? (
                                 items.map((video: any, idx: number) => (
-                                    <button 
-                                        key={video.id} 
-                                        onClick={() => setSelectedMedia({ type: 'video', url: '', title: video.name, libraryId: video.libraryId, videoId: video.id })}
+                                    <button
+                                        key={video.id}
+                                        onClick={() => {
+                                            if (video.isLocked) {
+                                                setPaywall({
+                                                    open: true,
+                                                    reason: video.lockReason ?? 'premium-required-content',
+                                                    itemName: video.name,
+                                                });
+                                                return;
+                                            }
+                                            setSelectedMedia({ type: 'video', url: '', title: video.name, libraryId: video.libraryId, videoId: video.id });
+                                        }}
                                         style={{ animationDelay: `${idx * 100}ms` }}
-                                        className="group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-brand-orange/10 hover:border-brand-orange/40 transition-all duration-500 ease-out hover:-translate-y-2 animate-in fade-in"
+                                        className="group bg-white border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-brand-orange/10 hover:border-brand-orange/40 transition-all duration-500 ease-out hover:-translate-y-2 animate-in fade-in relative"
                                     >
+                                        {video.isLocked && (
+                                            <div className="absolute top-2 right-2 z-10 flex items-center gap-1 bg-orange-500/15 border border-orange-500/40 px-2 py-0.5 rounded-full pointer-events-none">
+                                                <span className="text-orange-500 text-[10px]">🔒</span>
+                                                <span className="text-orange-500 text-[10px] font-semibold uppercase tracking-widest">Premium</span>
+                                            </div>
+                                        )}
+                                        {video.isFree && !video.isLocked && (
+                                            <div className="absolute top-2 right-2 z-10 bg-teal-500/15 border border-teal-500/40 px-2 py-0.5 rounded-full pointer-events-none">
+                                                <span className="text-teal-600 text-[10px] font-semibold uppercase tracking-widest">Gratuit</span>
+                                            </div>
+                                        )}
                                         <div className="aspect-video relative bg-slate-100 overflow-hidden">
                                             <img src={video.thumbnailUrl} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" alt="Miniature" />
                                             <div className="absolute inset-0 flex items-center justify-center bg-slate-900/20 group-hover:bg-slate-900/40 transition-colors duration-500">
@@ -224,12 +253,33 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                                 ))
                             ) : (
                                 items.map((file: any, idx: number) => (
-                                    <button 
-                                        key={file.id} 
-                                        onClick={() => setSelectedMedia({ type: 'pdf', url: file.cdnUrl, title: file.name })}
+                                    <button
+                                        key={file.id}
+                                        onClick={() => {
+                                            if (file.isLocked) {
+                                                setPaywall({
+                                                    open: true,
+                                                    reason: file.lockReason ?? 'premium-required-content',
+                                                    itemName: file.name,
+                                                });
+                                                return;
+                                            }
+                                            setSelectedMedia({ type: 'pdf', url: file.cdnUrl, title: file.name });
+                                        }}
                                         style={{ animationDelay: `${idx * 100}ms` }}
-                                        className="flex text-left items-center gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-brand-orange/10 hover:border-brand-orange/30 transition-all duration-300 ease-out hover:-translate-y-1 animate-in fade-in group w-full"
+                                        className="flex text-left items-center gap-4 bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-brand-orange/10 hover:border-brand-orange/30 transition-all duration-300 ease-out hover:-translate-y-1 animate-in fade-in group w-full relative"
                                     >
+                                        {file.isLocked && (
+                                            <div className="absolute top-2 right-2 flex items-center gap-1 bg-orange-500/15 border border-orange-500/40 px-2 py-0.5 rounded-full pointer-events-none">
+                                                <span className="text-orange-500 text-[10px]">🔒</span>
+                                                <span className="text-orange-500 text-[10px] font-semibold uppercase tracking-widest">Premium</span>
+                                            </div>
+                                        )}
+                                        {file.isFree && !file.isLocked && (
+                                            <div className="absolute top-2 right-2 bg-teal-500/15 border border-teal-500/40 px-2 py-0.5 rounded-full pointer-events-none">
+                                                <span className="text-teal-600 text-[10px] font-semibold uppercase tracking-widest">Gratuit</span>
+                                            </div>
+                                        )}
                                         <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-brand-orange shrink-0 group-hover:scale-110 group-hover:bg-brand-orange group-hover:text-white transition-all duration-300">
                                             <FileText className="w-6 h-6" />
                                         </div>
@@ -244,6 +294,13 @@ export default function DynamicContentBrowser({ gradeLevel }: { gradeLevel: stri
                     )}
                 </div>
             </div>
+
+            <PaywallModal
+                open={paywall.open}
+                onClose={() => setPaywall({ open: false, reason: null, itemName: '' })}
+                reason={paywall.reason}
+                itemName={paywall.itemName}
+            />
         </div>
     );
 }
