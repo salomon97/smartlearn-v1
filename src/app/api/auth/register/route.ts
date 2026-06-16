@@ -5,6 +5,7 @@ import VerificationCode from "@/models/VerificationCode";
 import bcrypt from "bcryptjs";
 import { validate } from "email-validator-node";
 import { sendVerificationEmail } from "@/lib/email";
+import { grantTrialIfEligible } from "@/lib/freemium";
 
 // Fonction pour générer un code à 6 chiffres
 const generateOTP = () => {
@@ -81,8 +82,8 @@ export async function POST(request: Request) {
         const forwarded = request.headers.get("x-forwarded-for");
         const ip = forwarded ? forwarded.split(',')[0] : "127.0.0.1";
 
-        // Créer l'utilisateur (non vérifié par défaut)
-        const user = await User.create({
+        // Préparer les données utilisateur — octroi de l'essai 7j si éligible
+        const userData: any = {
             name,
             email,
             password: hashedPassword,
@@ -94,7 +95,13 @@ export async function POST(request: Request) {
             parrainId: parrainId || undefined,
             registrationIp: ip,
             phone: phoneNormalized,
-        });
+        };
+
+        // Mute userData (set isPremium=true, premiumUntil, welcomeTrialGrantedAt) si éligible
+        grantTrialIfEligible(userData);
+
+        // Créer l'utilisateur (non vérifié par défaut)
+        const user = await User.create(userData);
 
         // Générer et enregistrer le code
         const otpCode = generateOTP();
