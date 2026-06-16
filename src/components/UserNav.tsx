@@ -27,16 +27,28 @@ export default function UserNav({ session }: { session: any }) {
         return () => { document.body.style.overflow = ''; };
     }, [open]);
 
-    const links = session
-        ? [
-            { href: '/catalogue', label: 'Catalogue', variant: 'text' as const },
-            { href: '/dashboard', label: 'Tableau de bord', variant: 'text-strong' as const },
-        ]
-        : [
-            { href: '/catalogue', label: 'Catalogue', variant: 'text' as const },
-            { href: '/auth/connexion', label: 'Connexion', variant: 'text' as const },
-            { href: '/auth/inscription', label: 'Créer un compte', variant: 'cta' as const },
-        ];
+    const u = session?.user as any;
+    const isAdmin = u?.role === 'admin';
+    const isOnTrial = !!u?.isOnTrial;
+    const isPremiumPaid = !!u?.isPremium && !isOnTrial;
+    const isFree = !!session && !u?.isPremium && !isAdmin;
+
+    const links: Array<{ href: string; label: string; variant: 'text' | 'text-strong' | 'cta' | 'trial-badge' }> = [];
+
+    if (!session) {
+        links.push({ href: '/catalogue', label: 'Catalogue', variant: 'text' });
+        links.push({ href: '/auth/connexion', label: 'Connexion', variant: 'text' });
+        links.push({ href: '/auth/inscription', label: 'Créer un compte', variant: 'cta' });
+    } else {
+        links.push({ href: '/catalogue', label: 'Catalogue', variant: 'text' });
+        links.push({ href: '/dashboard', label: 'Tableau de bord', variant: 'text-strong' });
+        if (isOnTrial) {
+            const days = u?.premiumDaysRemaining ?? 0;
+            links.push({ href: '/paiement', label: `J-${days} essai Premium`, variant: 'trial-badge' });
+        } else if (isFree) {
+            links.push({ href: '/paiement', label: 'Passer Premium', variant: 'cta' });
+        }
+    }
 
     return (
         <>
@@ -49,6 +61,17 @@ export default function UserNav({ session }: { session: any }) {
                                 key={l.href}
                                 href={l.href}
                                 className="bg-orange hover:bg-orange/90 text-white px-6 py-2.5 rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:shadow-orange/30"
+                            >
+                                {l.label}
+                            </Link>
+                        );
+                    }
+                    if (l.variant === 'trial-badge') {
+                        return (
+                            <Link
+                                key={l.href}
+                                href={l.href}
+                                className="bg-teal/15 border border-teal/40 text-teal text-xs font-bold px-3 py-2 rounded-full uppercase tracking-widest hover:bg-teal/25 transition-colors"
                             >
                                 {l.label}
                             </Link>
@@ -112,6 +135,18 @@ export default function UserNav({ session }: { session: any }) {
                                             href={l.href}
                                             onClick={() => setOpen(false)}
                                             className="w-full text-center bg-orange hover:bg-orange/90 text-white px-6 py-3.5 rounded-full font-semibold transition-all shadow-md"
+                                        >
+                                            {l.label}
+                                        </Link>
+                                    );
+                                }
+                                if (l.variant === 'trial-badge') {
+                                    return (
+                                        <Link
+                                            key={l.href}
+                                            href={l.href}
+                                            onClick={() => setOpen(false)}
+                                            className="w-full text-center bg-teal/15 border border-teal/40 text-teal font-bold px-6 py-3 rounded-full uppercase tracking-widest text-sm"
                                         >
                                             {l.label}
                                         </Link>
