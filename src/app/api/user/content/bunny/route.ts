@@ -6,6 +6,7 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import { computePremiumStatus } from "@/lib/premium-core";
 import { signBunnyUrl } from "@/lib/bunny-signed-url";
+import { canAccessContent, isFreeChapterPath } from "@/lib/freemium";
 
 export async function GET(req: Request) {
     try {
@@ -23,13 +24,19 @@ export async function GET(req: Request) {
             return NextResponse.json({ message: "Utilisateur introuvable" }, { status: 404 });
         }
         const access = computePremiumStatus(dbUser);
-        if (!access.isPremium && dbUser.role !== 'admin') {
-            return NextResponse.json({
-                message: access.status === 'expired'
-                    ? "Abonnement expiré — renouvelez pour reprendre l'accès aux vidéos."
-                    : "Accès Premium requis pour voir ce contenu",
-                status: access.status,
-            }, { status: 403 });
+        // Si FREEMIUM_ENABLED=false, on garde le comportement binaire historique (rollback safe).
+        // Sinon, la décision per-item est faite plus bas via canAccessContent.
+        const freemiumEnabled = process.env.FREEMIUM_ENABLED === 'true';
+
+        if (!freemiumEnabled) {
+            if (!access.isPremium && dbUser.role !== 'admin') {
+                return NextResponse.json({
+                    message: access.status === 'expired'
+                        ? "Abonnement expiré — renouvelez pour reprendre l'accès aux vidéos."
+                        : "Accès Premium requis pour voir ce contenu",
+                    status: access.status,
+                }, { status: 403 });
+            }
         }
 
         const { searchParams } = new URL(req.url);
@@ -86,11 +93,19 @@ export async function GET(req: Request) {
                 .map((item: any) => {
                     const encodedFilePath = `${encodedPath}/${encodeURIComponent(item.ObjectName)}`;
                     const rawUrl = `https://${process.env.BUNNY_STORAGE_HOSTNAME}/${encodedFilePath}`;
+                    const itemPath = `/${cleanPath}/${item.ObjectName}`;
+                    const verdict = canAccessContent(
+                        { isPremium: access.isPremium, role: dbUser.role },
+                        itemPath
+                    );
                     return {
                         id: item.Guid || item.ObjectName,
                         name: item.ObjectName,
-                        cdnUrl: signBunnyUrl(rawUrl, bunnyKey),
-                        contentType: 'file'
+                        cdnUrl: verdict.ok ? signBunnyUrl(rawUrl, bunnyKey) : null,
+                        contentType: 'file',
+                        isFree: isFreeChapterPath(itemPath),
+                        isLocked: !verdict.ok,
+                        lockReason: verdict.ok ? null : verdict.reason,
                     };
                 });
 
@@ -121,12 +136,23 @@ export async function GET(req: Request) {
 
              const videos = data.items.map((v: any) => {
                  const rawThumb = `https://vz-e1000817-6ad.b-cdn.net/${v.guid}/thumbnail.jpg`;
+                 // Pour les vidéos Bunny Stream, le path Bunny n'est pas directement disponible.
+                 // On utilise le nom de la vidéo (titre) comme proxy pour détecter le chapitre 1.
+                 // Convention admin : titrer les vidéos chapitre 1 avec un préfixe "01 - " ou "Chapitre 01".
+                 const titleForVerdict = `/chapters/${v.title || ''}/`;
+                 const verdict = canAccessContent(
+                     { isPremium: access.isPremium, role: dbUser.role },
+                     titleForVerdict
+                 );
                  return {
                      id: v.guid,
                      name: v.title,
                      libraryId: libraryId,
-                     thumbnailUrl: signBunnyUrl(rawThumb, bunnyKey),
-                     contentType: 'video'
+                     thumbnailUrl: verdict.ok ? signBunnyUrl(rawThumb, bunnyKey) : null,
+                     contentType: 'video',
+                     isFree: isFreeChapterPath(titleForVerdict),
+                     isLocked: !verdict.ok,
+                     lockReason: verdict.ok ? null : verdict.reason,
                  };
              });
 
