@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import VerificationCode from "@/models/VerificationCode";
+import { grantTrialIfEligible } from "@/lib/freemium";
 
 export async function POST(request: Request) {
     try {
@@ -43,6 +44,12 @@ export async function POST(request: Request) {
 
         // Succès : marquer l'utilisateur comme vérifié
         user.isVerified = true;
+
+        // Octroyer l'essai Premium 7 jours maintenant que l'user peut se connecter.
+        // (Si on l'avait fait au /register, le compteur tournait pendant que l'user
+        // attendait son email de vérification — promesse 7j non tenue.)
+        grantTrialIfEligible(user);
+
         await user.save();
 
         // Supprimer le code utilisé
