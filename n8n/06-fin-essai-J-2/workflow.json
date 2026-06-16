@@ -1,0 +1,79 @@
+{
+  "name": "06 - Fin d'essai Premium J-2",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "cronExpression", "expression": "0 10 * * *" }] }
+      },
+      "id": "cron-daily-10h",
+      "name": "Cron daily 10h Africa/Douala",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "find",
+        "collection": "users",
+        "query": "={\n  \"role\": { \"$in\": [\"student\", \"affiliate\"] },\n  \"welcomeTrialGrantedAt\": { \"$exists\": true, \"$ne\": null },\n  \"premiumUntil\": {\n    \"$gte\": { \"$date\": \"{{ $now.plus({ days: 2 }).toISO() }}\" },\n    \"$lt\": { \"$date\": \"{{ $now.plus({ days: 3 }).toISO() }}\" }\n  }\n}",
+        "options": { "projection": "{\"email\":1,\"name\":1,\"grade_level\":1,\"premiumUntil\":1}" }
+      },
+      "id": "mongo-find-trial-ending",
+      "name": "MongoDB: find trials J+2",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "@eleve.smartlearn-edu.org",
+              "operator": { "type": "string", "operation": "notContains" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "if-not-synthetic",
+      "name": "Skip si synthétique",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@smartlearn-edu.org",
+        "toEmail": "={{ $json.email }}",
+        "subject": "{{ $json.name }}, ton essai Premium se termine dans 2 jours",
+        "html": "<p>À compléter dans n8n UI — voir DESIGN.md</p>",
+        "options": {}
+      },
+      "id": "email-j2",
+      "name": "Email J-2 fin d'essai",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [900, 200]
+    }
+  ],
+  "connections": {
+    "Cron daily 10h Africa/Douala": {
+      "main": [[{ "node": "MongoDB: find trials J+2", "type": "main", "index": 0 }]]
+    },
+    "MongoDB: find trials J+2": {
+      "main": [[{ "node": "Skip si synthétique", "type": "main", "index": 0 }]]
+    },
+    "Skip si synthétique": {
+      "main": [
+        [{ "node": "Email J-2 fin d'essai", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "Africa/Douala" },
+  "active": false,
+  "tags": ["smartlearn", "freemium", "trial-ending", "non-critique"]
+}
