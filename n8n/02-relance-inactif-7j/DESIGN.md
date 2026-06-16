@@ -43,7 +43,13 @@ db.users.find({
   lastLoginAt: {
     $gte: ISODate('<now-8d>'),
     $lt:  ISODate('<now-7d>')
-  }
+  },
+  // SKIP les users en trial actif ou Premium payé (sinon on les relance alors qu'ils ont accès complet)
+  $or: [
+    { premiumUntil: { $exists: false } },
+    { premiumUntil: null },
+    { premiumUntil: { $lt: ISODate('<now>') } }   // expiré uniquement
+  ]
 }, {
   email: 1, name: 1, isPremium: 1, grade_level: 1, lastLoginAt: 1
 })
@@ -56,6 +62,7 @@ db.users.find({
 3. ❌ `lastReminderInactiveAt > now - 14d` (idempotence — pas plus d'1 relance
    inactif par 14 jours pour ne pas spammer)
 4. ❌ Élève qui s'est désinscrit / supprimé entre-temps → SKIP
+5. ❌ user en TRIAL actif OU Premium payé (`premiumUntil > now`) → SKIP (déjà couvert par la requête, double-check)
 
 ## Idempotence
 

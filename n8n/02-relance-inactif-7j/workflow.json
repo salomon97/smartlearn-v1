@@ -17,7 +17,7 @@
       "parameters": {
         "operation": "find",
         "collection": "users",
-        "query": "={\n  \"role\": \"student\",\n  \"lastLoginAt\": {\n    \"$gte\": { \"$date\": \"{{ $now.minus({ days: 8 }).toISO() }}\" },\n    \"$lt\": { \"$date\": \"{{ $now.minus({ days: 7 }).toISO() }}\" }\n  }\n}",
+        "query": "={\n  \"role\": \"student\",\n  \"lastLoginAt\": {\n    \"$gte\": { \"$date\": \"{{ $now.minus({ days: 8 }).toISO() }}\" },\n    \"$lt\": { \"$date\": \"{{ $now.minus({ days: 7 }).toISO() }}\" }\n  },\n  \"$or\": [\n    { \"premiumUntil\": null },\n    { \"premiumUntil\": { \"$lt\": { \"$date\": \"{{ $now.toISO() }}\" } } }\n  ]\n}",
         "options": { "projection": "{\"email\":1,\"name\":1,\"isPremium\":1,\"grade_level\":1,\"lastLoginAt\":1}" }
       },
       "id": "mongo-find-inactive",
