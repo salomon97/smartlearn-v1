@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { isFreeChapterPath, isAnnalePath, canAccessContent, grantTrialIfEligible, TRIAL_DURATION_MS } from './freemium';
+import type { TrialEligibleUser } from './freemium';
 
 describe('isFreeChapterPath', () => {
   it('accepte un chapitre 1 dans une matière (premier cycle)', () => {
@@ -104,7 +105,7 @@ describe('canAccessContent', () => {
 });
 
 describe('grantTrialIfEligible', () => {
-  const baseUser = () => ({
+  const baseUser = (): TrialEligibleUser & { isPremium: boolean } => ({
     email: 'eleve@example.com',
     role: 'student' as const,
     isPremium: false,
@@ -118,6 +119,7 @@ describe('grantTrialIfEligible', () => {
     const granted = grantTrialIfEligible(u, now);
 
     expect(granted).toBe(true);
+    expect(u.isPremium).toBe(true);
     expect(u.premiumUntil).toEqual(new Date(now.getTime() + TRIAL_DURATION_MS));
     expect(u.welcomeTrialGrantedAt).toEqual(now);
   });
@@ -152,15 +154,23 @@ describe('grantTrialIfEligible', () => {
 
   it("refuse les admins", () => {
     const u = baseUser();
-    (u as any).role = 'admin';
+    u.role = 'admin';
     const granted = grantTrialIfEligible(u, new Date());
     expect(granted).toBe(false);
   });
 
   it("accepte les affiliates (parrains) comme les students", () => {
     const u = baseUser();
-    (u as any).role = 'affiliate';
+    u.role = 'affiliate';
     const granted = grantTrialIfEligible(u, new Date('2026-06-10T00:00:00Z'));
     expect(granted).toBe(true);
+  });
+
+  it("ne mute pas isPremium quand le refus", () => {
+    const u = baseUser();
+    u.welcomeTrialGrantedAt = new Date('2026-01-01T00:00:00Z');
+    grantTrialIfEligible(u, new Date());
+    expect(u.isPremium).toBe(false);  // pas touché
+    expect(u.premiumUntil).toBe(null);  // pas touché
   });
 });

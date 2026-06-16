@@ -3,7 +3,9 @@ import { isSyntheticEmail } from './validation';
 /**
  * SmartLearn Unified — Logique freemium (gating Free vs Premium).
  *
- * Source unique de vérité : pure functions, zéro IO, zéro DB.
+ * Source unique de vérité : 3 pure helpers (isFreeChapterPath, isAnnalePath,
+ * canAccessContent) + 1 mutator (grantTrialIfEligible) qui mute le user en
+ * place pour octroyer l'essai 7j. Zéro IO, zéro DB.
  * Tous les call sites de gating (route bunny, frontend pour badges) appellent
  * canAccessContent() pour décider de l'accès.
  *
@@ -74,13 +76,18 @@ export const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000; // 7 jours
 export type TrialEligibleUser = {
   email: string;
   role?: 'student' | 'affiliate' | 'admin';
+  isPremium?: boolean;
   premiumUntil?: Date | null;
   welcomeTrialGrantedAt?: Date | null;
 };
 
 /**
  * Octroi l'essai Premium 7 jours à l'utilisateur s'il est éligible.
- * Mute l'objet `user` en place et retourne true si l'octroi a eu lieu.
+ * Mute l'objet `user` en place (set isPremium=true, premiumUntil, welcomeTrialGrantedAt)
+ * et retourne true si l'octroi a eu lieu.
+ *
+ * isPremium=true est REQUIS pour que computePremiumStatus (cf. premium-core.ts) traite
+ * l'utilisateur comme actif — sans lui, premiumUntil est ignoré et le statut est 'never'.
  *
  * Critères d'éligibilité (TOUS doivent être vrais) :
  *   - Pas d'email synthétique (@eleve.smartlearn-edu.org)
@@ -96,6 +103,7 @@ export function grantTrialIfEligible(user: TrialEligibleUser, now: Date = new Da
   if (user.welcomeTrialGrantedAt) return false;
   if (user.premiumUntil) return false;
 
+  user.isPremium = true;
   user.premiumUntil = new Date(now.getTime() + TRIAL_DURATION_MS);
   user.welcomeTrialGrantedAt = now;
   return true;
