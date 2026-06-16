@@ -138,8 +138,10 @@ export async function GET(req: Request) {
                  const rawThumb = `https://vz-e1000817-6ad.b-cdn.net/${v.guid}/thumbnail.jpg`;
                  // Pour les vidéos Bunny Stream, le path Bunny n'est pas directement disponible.
                  // On utilise le nom de la vidéo (titre) comme proxy pour détecter le chapitre 1.
-                 // Convention admin : titrer les vidéos chapitre 1 avec un préfixe "01 - " ou "Chapitre 01".
-                 const titleForVerdict = `/chapters/${v.title || ''}/`;
+                 // Convention admin : titrer les vidéos chapitre 1 avec un préfixe "01 - " ou "01-".
+                 // Normalisation des espaces avant comparaison pour tolérer les 2 styles.
+                 const normalizedTitle = (v.title || '').replace(/\s+/g, '-').toLowerCase();
+                 const titleForVerdict = `/chapters/${normalizedTitle}/`;
                  const verdict = canAccessContent(
                      { isPremium: access.isPremium, role: dbUser.role },
                      titleForVerdict
