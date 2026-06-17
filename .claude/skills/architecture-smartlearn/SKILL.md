@@ -9,7 +9,7 @@ description: Carte technique de SmartLearn Unified — modèles Mongoose, routes
 
 | Modèle | Champs clés | Fichier |
 |---|---|---|
-| `User` | email, name, role (student/admin), isPremium, premiumUntil, grade_level, parrainId, registrationIp, sessionId | `src/models/User.ts` |
+| `User` | email, name, role (student/admin), isPremium, premiumUntil, grade_level, parrainId, registrationIp, sessionId, welcomeTrialGrantedAt, registrationFraudFlag, lastLoginAt | `src/models/User.ts` |
 | `Plan` | code (vip_monthly/vip_quarterly/vip_annual), name, price, chariowUrl, isActive, period, durationDays | `src/models/Plan.ts` |
 | `Transaction` | userId, parrainId, amount, commission, status, paymentMethod, planCode, referenceId, clearingDate, metadata | `src/models/Transaction.ts` |
 | `AdminToken` | email, token, expiresAt | `src/models/AdminToken.ts` |
@@ -49,6 +49,27 @@ body = {
 | `vip_quarterly` | trimestre | 5 000 FCFA | 90 j |
 | `vip_annual` | an | 10 000 FCFA | 365 j |
 | `vip_avie` (archivé) | — | — | ❌ ne plus jamais utiliser |
+
+## Convention de nommage Bunny (freemium)
+
+Source de vérité du gating Free vs Premium (cf. `src/lib/freemium.ts`).
+
+| Type de contenu | Convention path | Statut |
+|---|---|---|
+| Chapitre 1 d'une matière (gratuit) | `/{niveau}/{matiere}/chapters/01-<slug>/...` | Free + Trial + Premium |
+| Chapitres 2+ | `/{niveau}/{matiere}/chapters/02-<slug>/`, `03-...` | Premium uniquement |
+| Annales corrigées | `/annales/BEPC/...`, `/annales/Bac-C/...` | Premium uniquement |
+
+Regex de détection (dans `src/lib/freemium.ts`) :
+- Free chapter : `/chapters\/01-/i`
+- Annale : `/(^|\/)annales\//i`
+
+Pour les vidéos Bunny Stream, le titre est utilisé comme proxy (normalisé : espaces → tirets,
+lowercase). Convention admin pour les titres de chapitre 1 : commencer par `"01 - "` (avec
+espaces) OU `"01-"` (sans espaces) — les deux sont acceptés grâce à la normalisation.
+
+**Discipline admin** : tout chapitre uploadé doit suivre cette convention. Un dossier
+mal nommé devient automatiquement Premium (fail-safe, pas de perte de sécurité).
 
 ## Scripts de diagnostic existants (`scripts/`)
 

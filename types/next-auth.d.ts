@@ -8,6 +8,8 @@ declare module "next-auth" {
             grade_level: string;
             sessionId?: string;
             role: string;
+            welcomeTrialGrantedAt?: Date | null;
+            isOnTrial?: boolean;
         } & DefaultSession["user"];
     }
 
@@ -20,6 +22,7 @@ declare module "next-auth" {
         name?: string | null;
         email?: string | null;
         image?: string | null;
+        welcomeTrialGrantedAt?: Date | null;
     }
 }
 
@@ -31,5 +34,6 @@ declare module "next-auth/jwt" {
         sessionId?: string;
         role: string;
         image?: string | null;
+        welcomeTrialGrantedAt?: Date | null;
     }
 }

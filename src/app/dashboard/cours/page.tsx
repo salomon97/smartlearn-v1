@@ -5,6 +5,7 @@ import Course from "@/models/Course";
 import Lesson from "@/models/Lesson";
 import Link from "next/link";
 import { BookOpen, GraduationCap, PlayCircle, Lock } from "lucide-react";
+import FreemiumBanner from "@/components/FreemiumBanner";
 
 export default async function StudentCoursesCatalog() {
     const session = await getServerSession(authOptions);
@@ -28,6 +29,7 @@ export default async function StudentCoursesCatalog() {
 
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <FreemiumBanner />
             {/* Header */}
             <div className="bg-gradient-to-br from-brand-orange to-brand-orange-dark rounded-3xl p-8 md:p-12 text-white relative overflow-hidden shadow-xl shadow-brand-orange/20">
                 <div className="relative z-10 max-w-2xl">

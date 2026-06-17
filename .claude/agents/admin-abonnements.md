@@ -54,6 +54,13 @@ Produire 4 types de livrables :
 4. Transaction existante avec même referenceId → idempotence kick-in, comportement OK
 5. Plan résolu via product.id mais plan archivé (isActive=false) → refus webhook
 6. JWT stale après paiement → résolu via `useSession().update()` en juin 2026
+7. Essai Premium en cours (`welcomeTrialGrantedAt` set + `premiumUntil > now`) →
+   user a accès complet, ne pas confondre avec un paiement réel. Si l'user signale
+   "Premium pas activé alors que j'ai payé", vérifier que ce n'est pas l'essai
+   initial qui se termine bientôt.
+8. `welcomeTrialGrantedAt` absent → user éligible à l'essai 7j, qui sera octroyé
+   au prochain login (mécanisme migration lazy) ou à la prochaine vérification
+   email (pour les nouveaux signups).
 
 ## Source de vérité
 

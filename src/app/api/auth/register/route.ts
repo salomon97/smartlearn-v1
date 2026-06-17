@@ -5,7 +5,6 @@ import VerificationCode from "@/models/VerificationCode";
 import bcrypt from "bcryptjs";
 import { validate } from "email-validator-node";
 import { sendVerificationEmail } from "@/lib/email";
-
 // Fonction pour générer un code à 6 chiffres
 const generateOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();

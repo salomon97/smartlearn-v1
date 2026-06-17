@@ -5,6 +5,7 @@ import User from "@/models/User";
 import AdminToken from "@/models/AdminToken";
 import { trackEvent } from "@/lib/retention";
 import { computePremiumStatus } from "@/lib/premium-core";
+import { grantTrialIfEligible, logFreemiumEvent } from "@/lib/freemium";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -93,6 +94,13 @@ export const authOptions = {
                     throw new Error("L'accès Administrateur n'est plus autorisé via ce formulaire par mesure de sécurité.");
                 }
 
+                // Migration lazy : octroi essai 7j si éligible (legacy users sans welcomeTrialGrantedAt)
+                // Idempotent : safe à appeler à chaque login.
+                const trialGrantedMigration = grantTrialIfEligible(user);
+
+                // Tracking last login (pour n8n 02-relance-inactif-7j)
+                user.lastLoginAt = new Date();
+
                 // Générer un nouvel identifiant de session unique pour empêcher le partage
                 const sessionId = crypto.randomUUID();
                 user.sessionId = sessionId;
@@ -101,12 +109,18 @@ export const authOptions = {
                 // Instrumentation rétention (best-effort, non bloquant)
                 await trackEvent(user._id.toString(), 'login');
 
+                // Observability freemium : log trial_granted si octroyé lors de cette migration
+                if (trialGrantedMigration) {
+                  logFreemiumEvent(user._id.toString(), 'trial_granted', { source: 'migration' }).catch(() => {});
+                }
+
                 return {
                     id: user._id.toString(),
                     email: user.email,
                     name: user.name,
                     isPremium: user.isPremium,
                     premiumUntil: user.premiumUntil,
+                    welcomeTrialGrantedAt: user.welcomeTrialGrantedAt,
                     grade_level: user.grade_level,
                     sessionId: sessionId,
                     role: user.role,
@@ -124,6 +138,7 @@ export const authOptions = {
                 token.id = user.id;
                 token.isPremium = user.isPremium;
                 token.premiumUntil = user.premiumUntil;
+                token.welcomeTrialGrantedAt = user.welcomeTrialGrantedAt;
                 token.grade_level = user.grade_level;
                 token.sessionId = user.sessionId;
                 token.role = user.role;
@@ -135,10 +150,11 @@ export const authOptions = {
             if (trigger === 'update' && token?.id) {
                 try {
                     await connectToDatabase();
-                    const fresh = await User.findById(token.id).select('isPremium premiumUntil role grade_level image');
+                    const fresh = await User.findById(token.id).select('isPremium premiumUntil welcomeTrialGrantedAt role grade_level image');
                     if (fresh) {
                         token.isPremium = fresh.isPremium;
                         token.premiumUntil = fresh.premiumUntil;
+                        token.welcomeTrialGrantedAt = fresh.welcomeTrialGrantedAt;
                         token.role = fresh.role;
                         token.grade_level = fresh.grade_level;
                         token.image = fresh.image;
@@ -166,6 +182,21 @@ export const authOptions = {
                 session.user.premiumUntil = token.premiumUntil;
                 session.user.premiumExpiresAt = access.expiresAt;
                 session.user.premiumDaysRemaining = access.daysRemaining;
+
+                session.user.welcomeTrialGrantedAt = token.welcomeTrialGrantedAt;
+
+                // isOnTrial : vrai si l'user est Premium grâce à son essai initial (pas un Premium payé).
+                // Heuristique : welcomeTrialGrantedAt set + premiumUntil ≈ welcomeTrialGrantedAt + 7d (à la minute près).
+                // (Après paiement Chariow, premiumUntil est étendu — la différence dépasse 1 minute, isOnTrial=false.)
+                const trialEnd = token.welcomeTrialGrantedAt
+                    ? new Date(new Date(token.welcomeTrialGrantedAt).getTime() + 7 * 24 * 60 * 60 * 1000)
+                    : null;
+                const premiumUntilDate = token.premiumUntil ? new Date(token.premiumUntil) : null;
+                session.user.isOnTrial = !!(
+                    access.isPremium &&
+                    trialEnd && premiumUntilDate &&
+                    Math.abs(trialEnd.getTime() - premiumUntilDate.getTime()) < 60_000
+                );
             }
             return session;
         }

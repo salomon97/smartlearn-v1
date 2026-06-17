@@ -5,6 +5,7 @@ import Link from "next/link";
 import DynamicContentBrowser from "./components/DynamicContentBrowser";
 import LogoutButton from "./components/LogoutButton";
 import { Logo } from "@/components/ui/Logo";
+import FreemiumBanner from "@/components/FreemiumBanner";
 
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
@@ -16,7 +17,9 @@ export default async function DashboardPage() {
     const { isPremium, grade_level, name, role } = session.user as any;
 
     return (
-        <div className="min-h-screen bg-slate-50 flex">
+        <div className="min-h-screen bg-slate-50 flex flex-col">
+            <FreemiumBanner />
+            <div className="flex flex-1">
             {/* ─── Sidebar ─── */}
             <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 min-h-screen sticky top-0 py-8 px-6">
                 <Link href="/" className="mb-12 px-1" aria-label="SmartLearn — Accueil">
@@ -190,6 +193,7 @@ export default async function DashboardPage() {
                     )}
                 </div>
             </main>
+            </div>
         </div>
     );
 }

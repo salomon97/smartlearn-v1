@@ -98,6 +98,12 @@ export default function CataloguePage() {
                                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em]">{program.cycle}</span>
                                 </div>
 
+                                <div className="mb-3">
+                                    <span className="inline-flex items-center gap-1.5 bg-teal/15 border border-teal/40 text-teal px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                        ★ Chapitre 1 gratuit
+                                    </span>
+                                </div>
+
                                 <h3 className="text-2xl font-black mb-3 group-hover:text-[var(--primary-gold)] transition-colors">{program.title}</h3>
                                 <p className="text-gray-400 text-sm leading-relaxed mb-6 line-clamp-2">{program.description}</p>
 
