@@ -5,7 +5,7 @@ import User from "@/models/User";
 import AdminToken from "@/models/AdminToken";
 import { trackEvent } from "@/lib/retention";
 import { computePremiumStatus } from "@/lib/premium-core";
-import { grantTrialIfEligible } from "@/lib/freemium";
+import { grantTrialIfEligible, logFreemiumEvent } from "@/lib/freemium";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
@@ -96,7 +96,7 @@ export const authOptions = {
 
                 // Migration lazy : octroi essai 7j si éligible (legacy users sans welcomeTrialGrantedAt)
                 // Idempotent : safe à appeler à chaque login.
-                grantTrialIfEligible(user);
+                const trialGrantedMigration = grantTrialIfEligible(user);
 
                 // Tracking last login (pour n8n 02-relance-inactif-7j)
                 user.lastLoginAt = new Date();
@@ -108,6 +108,11 @@ export const authOptions = {
 
                 // Instrumentation rétention (best-effort, non bloquant)
                 await trackEvent(user._id.toString(), 'login');
+
+                // Observability freemium : log trial_granted si octroyé lors de cette migration
+                if (trialGrantedMigration) {
+                  logFreemiumEvent(user._id.toString(), 'trial_granted', { source: 'migration' }).catch(() => {});
+                }
 
                 return {
                     id: user._id.toString(),

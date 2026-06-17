@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import VerificationCode from "@/models/VerificationCode";
-import { grantTrialIfEligible } from "@/lib/freemium";
+import { grantTrialIfEligible, logFreemiumEvent } from "@/lib/freemium";
 
 export async function POST(request: Request) {
     try {
@@ -48,9 +48,13 @@ export async function POST(request: Request) {
         // Octroyer l'essai Premium 7 jours maintenant que l'user peut se connecter.
         // (Si on l'avait fait au /register, le compteur tournait pendant que l'user
         // attendait son email de vérification — promesse 7j non tenue.)
-        grantTrialIfEligible(user);
+        const trialGranted = grantTrialIfEligible(user);
 
         await user.save();
+
+        if (trialGranted) {
+          await logFreemiumEvent(user._id.toString(), 'trial_granted', { source: 'register' });
+        }
 
         // Supprimer le code utilisé
         await VerificationCode.deleteOne({ _id: verificationRecord._id });

@@ -6,7 +6,7 @@ import connectToDatabase from "@/lib/mongoose";
 import User from "@/models/User";
 import { computePremiumStatus } from "@/lib/premium-core";
 import { signBunnyUrl } from "@/lib/bunny-signed-url";
-import { canAccessContent, isFreeChapterPath } from "@/lib/freemium";
+import { canAccessContent, isFreeChapterPath, logFreemiumEvent } from "@/lib/freemium";
 
 export async function GET(req: Request) {
     try {
@@ -109,6 +109,11 @@ export async function GET(req: Request) {
                     };
                 });
 
+            const hasFreeFileAccess = files.some((f: any) => !f.isLocked && f.isFree);
+            if (hasFreeFileAccess && !access.isPremium && dbUser.role !== 'admin') {
+              logFreemiumEvent(dbUser._id.toString(), 'free_content_accessed', { path: cleanPath }).catch(() => {});
+            }
+
             return NextResponse.json({ items: files });
         }
 
@@ -157,6 +162,11 @@ export async function GET(req: Request) {
                      lockReason: verdict.ok ? null : verdict.reason,
                  };
              });
+
+             const hasFreeVideoAccess = videos.some((v: any) => !v.isLocked && v.isFree);
+             if (hasFreeVideoAccess && !access.isPremium && dbUser.role !== 'admin') {
+               logFreemiumEvent(dbUser._id.toString(), 'free_content_accessed', { collectionId }).catch(() => {});
+             }
 
              return NextResponse.json({ items: videos });
         }

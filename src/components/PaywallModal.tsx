@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
 
 type PaywallReason = 'premium-required-content' | 'premium-required-annale';
 
@@ -19,6 +21,19 @@ interface PaywallModalProps {
  * Ne s'affiche que si open=true. Pas de friction sur "Plus tard" (close sans pression).
  */
 export default function PaywallModal({ open, onClose, reason, itemName }: PaywallModalProps) {
+    const { data: session } = useSession();
+    const userId = (session?.user as any)?.id;
+
+    useEffect(() => {
+        if (open && userId) {
+            fetch('/api/user/freemium/event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event: 'paywall_shown', metadata: { itemName, reason } }),
+            }).catch(() => {});
+        }
+    }, [open, userId, itemName, reason]);
+
     if (!open) return null;
 
     const isAnnale = reason === 'premium-required-annale';
@@ -84,6 +99,15 @@ export default function PaywallModal({ open, onClose, reason, itemName }: Paywal
                 <div className="flex flex-col gap-3">
                     <Link
                         href="/paiement"
+                        onClick={() => {
+                            if (userId) {
+                                fetch('/api/user/freemium/event', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ event: 'paywall_clicked_cta', metadata: { itemName, reason } }),
+                                }).catch(() => {});
+                            }
+                        }}
                         className="w-full text-center bg-orange hover:bg-orange/90 text-white font-semibold py-3 rounded-full transition-colors"
                     >
                         Voir les formules →

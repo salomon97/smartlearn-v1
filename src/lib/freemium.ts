@@ -108,3 +108,23 @@ export function grantTrialIfEligible(user: TrialEligibleUser, now: Date = new Da
   user.welcomeTrialGrantedAt = now;
   return true;
 }
+
+/**
+ * Log un event freemium dans retention_events (best-effort, non bloquant).
+ * Centralise pour éviter de dupliquer trackEvent dans 5 fichiers.
+ * Import dynamique de retention.ts pour éviter de charger les dépendances
+ * DB (mongoose) au moment du module-load (important pour les tests unitaires
+ * qui testent les pure-functions de freemium.ts sans BD).
+ */
+export async function logFreemiumEvent(
+  userId: string,
+  eventType: 'trial_granted' | 'trial_expired' | 'free_content_accessed' | 'paywall_shown' | 'paywall_clicked_cta',
+  metadata: Record<string, any> = {},
+): Promise<void> {
+  try {
+    const { trackEvent } = await import('./retention');
+    await trackEvent(userId, eventType as any, metadata);
+  } catch (err) {
+    console.warn(`[freemium] logFreemiumEvent ${eventType} failed:`, err);
+  }
+}
