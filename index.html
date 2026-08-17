@@ -1,890 +1,352 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Salomon Foe — Fondateur SmartLearn · Enseignant · Stratège & Brand Auditor</title>
-<meta name="description" content="Salomon Foe — Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, concepteur de stratégies (CRM, SaaS, commerciales) et auditeur de marque sous la signature SmartLearn — Brand & Strategy Consulting. Praticien avancé des outils IA (Claude, ChatGPT, Google AI Studio, Google Antigravity)." />
-<meta name="author" content="Salomon Foe" />
-<meta name="keywords" content="SmartLearn, EdTech, Cameroun, Douala, fondateur, enseignant mathématiques, enseignant informatique, stratégie commerciale B2B, audit de marque, brand strategy, conception de CRM, Next.js, plateforme éducative, Mobile Money, Chariow, Claude, ChatGPT, Google AI Studio, Google Antigravity, prompt engineering" />
-<meta property="og:title" content="Salomon Foe — Fondateur SmartLearn · Enseignant · Stratège & Brand Auditor" />
-<meta property="og:description" content="Fondateur EdTech, enseignant Maths/Info, concepteur de stratégies commerciales & de systèmes, auditeur de marque. Praticien avancé des outils IA." />
-<meta property="og:type" content="profile" />
-<meta property="og:image" content="salomon.jpg" />
-<meta property="og:locale" content="fr_FR" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Salomon Foe — Fondateur SmartLearn · Enseignant · Stratège & Brand Auditor" />
-<meta name="twitter:description" content="Fondateur EdTech, enseignant Maths/Info, concepteur de stratégies commerciales & auditeur de marque. Praticien avancé des outils IA." />
-<meta name="twitter:image" content="salomon.jpg" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Person",
-  "name": "Salomon Foe",
-  "url": "https://salomon97.github.io/smartlearn-v1/",
-  "image": "https://salomon97.github.io/smartlearn-v1/salomon.jpg",
-  "jobTitle": "Fondateur SmartLearn · Enseignant · Stratège & Brand Auditor",
-  "description": "Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, concepteur de stratégies (CRM, SaaS, commerciales) et auditeur de marque sous la signature SmartLearn — Brand & Strategy Consulting.",
-  "address": { "@type": "PostalAddress", "addressLocality": "Douala", "addressCountry": "CM" },
-  "email": "mailto:salomonfoe97@smartlearn-edu.org",
-  "telephone": "+237691276334",
-  "sameAs": [
-    "https://smartlearn-edu.org",
-    "https://www.linkedin.com/in/salomon-foe-939266198"
-  ],
-  "knowsAbout": ["EdTech", "Conception de stratégies", "Conception de CRM",
-    "Stratégie commerciale B2B", "Audit de marque", "Brand Strategy",
-    "Marketing digital multicanal", "Prospection terrain", "Pipeline commercial",
-    "Mathématiques", "Informatique", "Plateformes SaaS", "Mobile Money",
-    "Next.js", "Innovation pédagogique",
-    "Claude", "ChatGPT", "Google AI Studio", "Google Antigravity",
-    "Prompt engineering", "IA appliquée"]
-}
-</script>
+<meta name="description" content="Salomon Foe — Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, concepteur de stratégies et de systèmes, auditeur de marque. De la salle de classe au produit, de la stratégie à l'exécution.">
+<meta name="author" content="Salomon Foe">
+<meta property="og:title" content="Salomon Foe — Fondateur SmartLearn · Enseignant · Stratège & Brand Auditor">
+<meta property="og:description" content="Fondateur EdTech, enseignant Maths/Info, concepteur de stratégies & de systèmes, auditeur de marque. Praticien avancé des outils IA.">
+<meta property="og:type" content="profile">
+<meta property="og:image" content="https://salomon97.github.io/smartlearn-v1/salomon.jpg">
+<meta property="og:locale" content="fr_FR">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&family=DM+Sans:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --navy:#102A43; --navy-2:#1B3A57; --teal:#0F8B7E; --teal-d:#0B6B61;
-    --ink:#1F2933; --grey:#6B7280; --grey-l:#9AA3AF;
-    --bg:#F7F8FA; --card:#FFFFFF; --rule:#E4E7EB; --light:#EAF3F2;
-    --maxw:1080px;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit;text-decoration:none;}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
-  .kicker{
-    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--teal-d);margin-bottom:14px;
-  }
-  h2.sec{font-size:28px;font-weight:800;color:var(--navy);letter-spacing:-.01em;margin-bottom:8px;}
-  h3.sub{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;}
-  .sec-sub{color:var(--grey);font-size:15px;margin-bottom:38px;max-width:620px;}
-  section{padding:74px 0;}
+:root{
+  /* Navy — Suite umbrella */
+  --color-navy-50:#F0F3F8;--color-navy-100:#D6DDE9;--color-navy-200:#A9B6CB;--color-navy-300:#7C8FAE;--color-navy-400:#4F6791;--color-navy-500:#1A2840;--color-navy-600:#0A1628;--color-navy-700:#050D1A;--color-navy-800:#03080F;--color-navy-900:#010407;
+  /* Orange — Product (School) */
+  --color-school-50:#FFF1E6;--color-school-100:#FFE4CC;--color-school-200:#FFC599;--color-school-300:#FFA666;--color-school-400:#FB8333;--color-school-500:#F97316;--color-school-600:#EA580C;--color-school-700:#C2410C;--color-school-800:#9A3412;--color-school-900:#7C2D12;
+  /* Neutrals */
+  --color-neutral-0:#FFFFFF;--color-neutral-50:#F8FAFC;--color-neutral-100:#F1F5F9;--color-neutral-200:#E2E8F0;--color-neutral-300:#CBD5E1;--color-neutral-400:#94A3B8;--color-neutral-500:#64748B;--color-neutral-600:#475569;--color-neutral-700:#334155;--color-neutral-800:#1E293B;--color-neutral-900:#0F172A;
+  /* Semantic */
+  --color-success-50:#ECFDF5;--color-success-100:#D1FAE5;--color-success-500:#10B981;--color-success-700:#047857;
+  --color-warning-50:#FFFBEB;--color-warning-500:#F59E0B;--color-warning-700:#B45309;
+  --color-danger-50:#FEF2F2;--color-danger-500:#DC2626;--color-danger-700:#991B1B;
+  --color-info-50:#EFF6FF;--color-info-500:#3B82F6;--color-info-700:#1D4ED8;
+  /* Aliases */
+  --bg-canvas:var(--color-neutral-50);--bg-surface:var(--color-neutral-0);--bg-surface-sunken:var(--color-neutral-100);
+  --text-primary:var(--color-navy-600);--text-secondary:var(--color-neutral-600);--text-tertiary:var(--color-neutral-500);--text-inverse:var(--color-neutral-0);
+  --border-subtle:var(--color-neutral-200);--border-default:var(--color-neutral-300);
+  --color-product-soft:var(--color-school-50);
+  /* Type */
+  --font-serif:'Playfair Display',Georgia,serif;--font-sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--font-accent:'Bricolage Grotesque','DM Sans',sans-serif;--font-mono:'JetBrains Mono','Menlo',monospace;
+  /* Radius */
+  --radius-md:8px;--radius-button:8px;--radius-card:12px;--radius-card-large:16px;--radius-chip:9999px;--radius-tag:6px;--radius-full:9999px;
+  /* Shadows */
+  --shadow-elev-1:0 1px 2px 0 rgba(10,22,40,.05);
+  --shadow-elev-2:0 2px 4px -1px rgba(10,22,40,.06),0 1px 2px 0 rgba(10,22,40,.04);
+  --shadow-elev-4:0 12px 24px -4px rgba(10,22,40,.10),0 4px 8px -2px rgba(10,22,40,.06);
+  --shadow-focus-ring:0 0 0 3px rgba(249,115,22,.30);
+}
+*{box-sizing:border-box;}
+html{font-family:var(--font-sans);font-size:16px;line-height:1.5;color:var(--text-primary);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;scroll-behavior:smooth;}
+body{margin:0;background:var(--bg-canvas);color:var(--text-primary);font-size:15px;line-height:1.55;}
+a{color:inherit;text-decoration:none;}
+h1,h2,h3{margin:0;}
+.wrap{max-width:1200px;margin:0 auto;padding-left:24px;padding-right:24px;}
+.kicker{font-family:var(--font-accent);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--color-school-600);}
+.serif{font-family:var(--font-serif);}
+.mono{font-family:var(--font-mono);}
+:focus-visible{outline:2px solid var(--color-school-500);outline-offset:2px;box-shadow:var(--shadow-focus-ring);border-radius:4px;}
 
-  /* ── NAV ── */
-  header{
-    position:sticky;top:0;z-index:50;background:rgba(247,248,250,.92);
-    backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);
-  }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;}
-  .brand{font-weight:800;color:var(--navy);font-size:17px;letter-spacing:-.01em;}
-  .brand span{color:var(--teal);}
-  .nav-links{display:flex;gap:24px;}
-  .nav-links a{font-size:13.5px;font-weight:500;color:var(--grey);transition:color .15s;}
-  .nav-links a:hover{color:var(--teal-d);}
-  .nav-cta{
-    font-size:13px;font-weight:600;color:#fff;background:var(--navy);
-    padding:9px 18px;border-radius:8px;transition:background .15s;
-  }
-  .nav-cta:hover{background:var(--teal-d);}
+/* Header */
+header.site{position:sticky;top:0;z-index:50;background:var(--bg-surface);border-bottom:1px solid var(--border-subtle);}
+header.site .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:14px 0;}
+.brand{display:flex;align-items:baseline;gap:8px;color:var(--text-primary);}
+.brand .name{font-family:var(--font-serif);font-size:20px;font-weight:700;}
+nav.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap;}
+nav.links a{color:var(--text-secondary);font-size:14px;font-weight:500;}
+nav.links a:hover{color:var(--color-school-600);}
+.head-actions{display:flex;align-items:center;gap:12px;}
+.lang-btn{display:inline-flex;align-items:center;justify-content:center;min-width:52px;height:32px;padding:0 10px;border-radius:var(--radius-button);background:var(--bg-surface);border:1px solid var(--border-default);color:var(--text-primary);font-family:var(--font-sans);font-weight:600;font-size:13px;cursor:pointer;transition:background .1s,border-color .1s;}
+.lang-btn:hover{background:var(--bg-surface-sunken);}
+.btn-cta{display:inline-flex;align-items:center;padding:9px 16px;border-radius:var(--radius-button);background:var(--color-school-500);color:var(--text-inverse);font-weight:500;font-size:14px;box-shadow:var(--shadow-elev-1);transition:background .1s;}
+.btn-cta:hover{background:var(--color-school-600);}
 
-  /* ── HERO ── */
-  .hero{padding:78px 0 60px;}
-  .hero-grid{display:grid;grid-template-columns:1.5fr .9fr;gap:54px;align-items:center;}
-  .hero h1{font-family:'Newsreader',Georgia,serif;font-size:42px;line-height:1.15;font-weight:500;color:var(--navy);letter-spacing:-.01em;margin-bottom:18px;}
-  .hero h1 .accent{color:var(--teal);font-style:italic;}
-  .hero .role{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:18px;}
-  .hero p.lead{font-size:15.5px;color:var(--grey);max-width:540px;margin-bottom:24px;}
-  .facets{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:28px;}
-  .facets span{
-    font-size:11.5px;font-weight:600;color:var(--teal-d);background:var(--light);
-    padding:5px 11px;border-radius:14px;
-  }
-  .btns{display:flex;gap:14px;flex-wrap:wrap;}
-  .btn{
-    font-size:14px;font-weight:600;padding:13px 24px;border-radius:9px;transition:.15s;
-    display:inline-block;
-  }
-  .btn-primary{background:var(--teal);color:#fff;}
-  .btn-primary:hover{background:var(--teal-d);}
-  .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--rule);}
-  .btn-ghost:hover{border-color:var(--navy);}
-  .photo-card{
-    position:relative;border-radius:18px;overflow:hidden;
-    box-shadow:0 22px 50px -16px rgba(16,42,67,.32);
-    border:1px solid var(--rule);
-  }
-  .photo-card img{width:100%;display:block;}
-  .photo-badge{
-    position:absolute;left:14px;bottom:14px;background:rgba(16,42,67,.92);
-    color:#fff;font-size:12px;font-weight:600;padding:7px 13px;border-radius:8px;
-    backdrop-filter:blur(4px);
-  }
-  .photo-badge b{color:#5FD0C4;}
+/* Hero */
+.hero{padding:clamp(48px,7vw,88px) 0 clamp(32px,4vw,48px);}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:clamp(32px,5vw,64px);align-items:center;}
+.hero h1{font-family:var(--font-serif);font-size:clamp(34px,5vw,56px);line-height:1.04;letter-spacing:-.02em;font-weight:800;margin:0 0 22px;color:var(--text-primary);}
+.hero .lead{font-size:clamp(16px,1.5vw,19px);line-height:1.6;color:var(--text-secondary);max-width:44ch;margin:0 0 28px;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+.btn-primary{display:inline-flex;align-items:center;padding:14px 22px;border-radius:var(--radius-button);background:var(--color-school-500);color:var(--text-inverse);font-weight:600;font-size:15px;box-shadow:var(--shadow-elev-1);transition:background .1s;}
+.btn-primary:hover{background:var(--color-school-600);}
+.btn-secondary{display:inline-flex;align-items:center;padding:14px 22px;border-radius:var(--radius-button);background:var(--bg-surface);color:var(--text-primary);font-weight:600;font-size:15px;border:1px solid var(--border-default);transition:border-color .1s;}
+.btn-secondary:hover{border-color:var(--text-primary);}
+.chips{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;font-size:13px;font-weight:500;color:var(--text-secondary);background:var(--bg-surface-sunken);border:1px solid var(--border-subtle);padding:6px 13px;border-radius:var(--radius-chip);}
+.portrait-wrap{position:relative;justify-self:center;}
+.portrait{border:1px solid var(--border-subtle);border-radius:var(--radius-card-large);overflow:hidden;box-shadow:var(--shadow-elev-4);background:var(--bg-surface);max-width:420px;}
+.portrait img{display:block;width:100%;height:auto;object-fit:cover;}
+.avail{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:var(--radius-full);background:var(--bg-surface);border:1px solid var(--border-subtle);box-shadow:var(--shadow-elev-2);}
+.avail .dot{width:8px;height:8px;border-radius:50%;background:var(--color-success-500);box-shadow:0 0 0 3px var(--color-success-100);}
+.avail span.t{font-size:13px;font-weight:600;color:var(--text-primary);}
+.proof{margin-top:clamp(40px,5vw,64px);padding-top:28px;border-top:1px solid var(--border-subtle);display:flex;align-items:center;gap:24px 40px;flex-wrap:wrap;}
+.proof .items{display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+.proof .items span{font-family:var(--font-serif);font-size:17px;font-weight:600;color:var(--text-secondary);}
 
-  /* ── ABOUT ── */
-  .about{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-  .about-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:48px;}
-  .about p{font-size:15.5px;color:var(--ink);margin-bottom:14px;}
-  .about p:last-child{margin-bottom:0;}
-  .facts{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-self:start;}
-  .fact{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:16px 16px;}
-  .fact .n{font-size:18px;font-weight:800;color:var(--navy);line-height:1.2;}
-  .fact .l{font-size:12.5px;color:var(--grey);margin-top:4px;}
+/* Sections */
+section.band{background:var(--bg-surface);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);}
+.sec-pad{padding:clamp(56px,7vw,96px) 0;}
+.sec-title{font-family:var(--font-serif);font-size:clamp(26px,3.4vw,40px);line-height:1.1;letter-spacing:-.015em;font-weight:800;max-width:20ch;margin:0 0 12px;}
+.sec-lead{font-size:16px;line-height:1.6;color:var(--text-secondary);max-width:56ch;margin:0 0 40px;}
 
-  /* ── DOMAINES (NEW) ── */
-  .dom-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  .dom{
-    background:var(--card);border:1px solid var(--rule);border-radius:14px;
-    padding:24px 22px;transition:transform .16s,box-shadow .16s;
-  }
-  .dom:hover{transform:translateY(-3px);box-shadow:0 16px 34px -18px rgba(16,42,67,.28);}
-  .dom .ic{
-    width:38px;height:38px;border-radius:9px;background:var(--light);color:var(--teal-d);
-    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;
-  }
-  .dom h3{font-size:15.5px;font-weight:700;color:var(--navy);margin-bottom:8px;}
-  .dom p{font-size:13.5px;color:var(--grey);margin-bottom:10px;}
-  .dom ul{list-style:none;}
-  .dom li{font-size:12.5px;color:var(--ink);padding:3px 0;padding-left:16px;position:relative;}
-  .dom li::before{content:"›";color:var(--teal);font-weight:700;position:absolute;left:0;top:1px;}
+/* About */
+.about-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px 48px;align-items:start;}
+.about-body{display:flex;flex-direction:column;gap:18px;}
+.about-body p{font-size:16px;line-height:1.65;color:var(--text-secondary);margin:0;}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.stat{border:1px solid var(--border-subtle);border-radius:var(--radius-card);background:var(--bg-canvas);padding:20px;}
+.stat .v{font-family:var(--font-mono);font-size:26px;font-weight:700;color:var(--color-school-600);line-height:1;}
+.stat .l{font-size:13px;color:var(--text-tertiary);margin-top:8px;line-height:1.4;}
 
-  /* ── STRATÉGIE & PÉDAGOGIE — split rows ── */
-  .split{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-  .split-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
-  .split-col p{font-size:15px;color:var(--ink);margin-bottom:12px;}
-  .split-col ul{list-style:none;margin-top:8px;}
-  .split-col li{font-size:13.5px;color:var(--ink);padding:6px 0;border-bottom:1px solid var(--rule);}
-  .split-col li:last-child{border-bottom:none;}
+/* Expertise */
+.poles{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:20px;}
+.pole{border:1px solid var(--border-subtle);border-radius:var(--radius-card);background:var(--bg-surface);padding:26px;box-shadow:var(--shadow-elev-1);display:flex;flex-direction:column;gap:14px;}
+.pole-ic{display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:var(--radius-md);background:var(--color-product-soft);color:var(--color-school-600);}
+.pole h3{font-size:18px;font-weight:700;color:var(--text-primary);}
+.pole p{font-size:14px;line-height:1.55;color:var(--text-secondary);margin:0;}
+.pole-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:6px;}
+.pole-tags span{font-size:12px;font-weight:500;color:var(--text-tertiary);background:var(--bg-surface-sunken);padding:5px 10px;border-radius:var(--radius-chip);}
+.ai-ribbon{margin-top:24px;border:1px solid var(--color-navy-500);border-radius:var(--radius-card-large);background:var(--color-navy-600);color:var(--text-inverse);padding:clamp(28px,4vw,44px);display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px 48px;align-items:center;}
+.ai-ribbon h3{font-family:var(--font-serif);font-size:clamp(22px,2.6vw,30px);line-height:1.15;font-weight:700;margin:0 0 14px;color:var(--text-inverse);}
+.ai-ribbon p{font-size:15px;line-height:1.6;color:var(--color-navy-100);margin:0;}
+.ai-tags{display:flex;gap:10px;flex-wrap:wrap;}
+.ai-tags span{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--color-navy-100);background:var(--color-navy-500);border:1px solid var(--color-navy-400);padding:8px 14px;border-radius:var(--radius-chip);}
+.ai-tags span .d{width:6px;height:6px;border-radius:50%;background:var(--color-school-500);}
 
-  /* ── PROJECTS ── */
-  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-  .card{
-    background:var(--card);border:1px solid var(--rule);border-radius:14px;
-    padding:26px 24px;transition:transform .16s,box-shadow .16s;
-    display:flex;flex-direction:column;
-  }
-  .card:hover{transform:translateY(-3px);box-shadow:0 16px 34px -18px rgba(16,42,67,.28);}
-  .card .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:10px;}
-  .card h3{font-size:18px;font-weight:700;color:var(--navy);}
-  .status{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.02em;white-space:nowrap;}
-  .s-live{background:#E3F4EC;color:#1B7A4B;}
-  .s-dev{background:#FFF3DC;color:#9A6B12;}
-  .s-design{background:#EEF0FA;color:#3D4DAB;}
-  .s-concept{background:var(--light);color:var(--teal-d);}
-  .s-past{background:#EEF0F2;color:var(--grey);}
-  .card .desc{font-size:14px;color:var(--grey);margin:8px 0 16px;flex:1;}
-  .tech{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;}
-  .tech span{
-    font-size:11.5px;font-weight:600;color:var(--teal-d);background:var(--light);
-    padding:4px 10px;border-radius:6px;
-  }
-  .card .link{font-size:13px;font-weight:600;color:var(--teal-d);}
-  .card .link.muted{color:var(--grey-l);}
+/* Projects */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;}
+.proj{border:1px solid var(--border-subtle);border-radius:var(--radius-card);background:var(--bg-canvas);padding:26px;display:flex;flex-direction:column;gap:14px;}
+.badge{display:inline-flex;align-items:center;font-size:12px;font-weight:600;padding:4px 10px;border-radius:var(--radius-tag);width:fit-content;}
+.badge.success{background:var(--color-success-50);color:var(--color-success-700);}
+.badge.warning{background:var(--color-warning-50);color:var(--color-warning-700);}
+.badge.info{background:var(--color-info-50);color:var(--color-info-700);}
+.badge.product{background:var(--color-school-50);color:var(--color-school-700);}
+.badge.neutral{background:var(--color-neutral-100);color:var(--color-neutral-600);}
+.proj h3{font-size:20px;font-weight:700;color:var(--text-primary);}
+.proj p{font-size:14px;line-height:1.55;color:var(--text-secondary);margin:0;}
+.proj-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;}
+.proj-tags span{font-family:var(--font-mono);font-size:11px;font-weight:500;color:var(--text-tertiary);background:var(--bg-surface-sunken);padding:4px 9px;border-radius:var(--radius-tag);}
+.proj-link{margin-top:auto;padding-top:6px;font-size:14px;font-weight:600;color:var(--color-school-600);}
 
-  /* ── SKILLS ── */
-  .skills{background:#fff;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);}
-  .skill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
-  .skill-col h4{font-size:13px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
-  .skill-col ul{list-style:none;}
-  .skill-col li{font-size:13.5px;color:var(--ink);padding:5px 0;border-bottom:1px solid var(--rule);}
-  .skill-col li:last-child{border-bottom:none;}
+/* Services */
+.serv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.serv{border:1px solid var(--border-subtle);border-radius:var(--radius-card);background:var(--bg-surface);padding:24px;box-shadow:var(--shadow-elev-1);display:flex;gap:16px;align-items:flex-start;}
+.serv-ic{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:44px;height:44px;border-radius:var(--radius-md);background:var(--color-product-soft);color:var(--color-school-600);}
+.serv h3{font-size:16px;font-weight:700;margin:0 0 6px;color:var(--text-primary);}
+.serv p{font-size:14px;line-height:1.55;color:var(--text-secondary);margin:0;}
 
-  /* ── SERVICES ── */
-  .serv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
-  .serv{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:24px 22px;}
-  .serv .ic{
-    width:38px;height:38px;border-radius:9px;background:var(--light);color:var(--teal-d);
-    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;margin-bottom:14px;
-  }
-  .serv h4{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px;}
-  .serv p{font-size:13.5px;color:var(--grey);}
+/* Contact */
+section.contact{background:var(--color-navy-600);color:var(--text-inverse);}
+section.contact .kicker{color:var(--color-school-400);}
+section.contact h2{font-family:var(--font-serif);font-size:clamp(28px,3.6vw,44px);line-height:1.08;letter-spacing:-.015em;font-weight:800;max-width:16ch;margin:0 0 16px;color:var(--text-inverse);}
+section.contact .lead{font-size:17px;line-height:1.6;color:var(--color-navy-100);max-width:52ch;margin:0 0 36px;}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:12px;}
+.c-method{display:flex;align-items:center;gap:14px;border:1px solid var(--color-navy-500);border-radius:var(--radius-card);background:var(--color-navy-700);padding:18px;color:var(--text-inverse);transition:border-color .1s;}
+.c-method:hover{border-color:var(--color-school-400);}
+.c-ic{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-md);background:var(--color-navy-500);color:var(--color-school-400);}
+.c-method .lbl{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-navy-200);font-family:var(--font-accent);}
+.c-method .val{display:block;font-size:14px;font-weight:600;color:var(--text-inverse);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.foot{margin-top:48px;padding-top:24px;border-top:1px solid var(--color-navy-500);font-size:13px;color:var(--color-navy-200);}
 
-  /* ── CONTACT ── */
-  .contact{background:var(--navy);color:#fff;}
-  .contact h2.sec{color:#fff;}
-  .contact .sec-sub{color:#9FB3C8;}
-  .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:680px;}
-  .c-item{
-    display:flex;flex-direction:column;gap:2px;background:var(--navy-2);
-    border:1px solid #2C4257;border-radius:12px;padding:16px 18px;transition:border-color .15s;
-  }
-  .c-item:hover{border-color:#5FD0C4;}
-  .c-item .lbl{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#5FD0C4;}
-  .c-item .val{font-size:14px;font-weight:500;color:#fff;word-break:break-word;}
-
-  footer{background:var(--navy);color:#7E93A8;font-size:12.5px;padding:26px 0;border-top:1px solid #2C4257;text-align:center;}
-
-  /* ── RESPONSIVE ── */
-  @media (max-width:860px){
-    .nav-links{display:none;}
-    .hero-grid{grid-template-columns:1fr;gap:38px;}
-    .photo-card{max-width:300px;}
-    .hero h1{font-size:34px;}
-    .about-grid,.proj-grid,.skill-grid,.serv-grid,.contact-grid,.dom-grid,.split-grid{grid-template-columns:1fr;}
-    .facts{grid-template-columns:1fr 1fr;}
-    section{padding:56px 0;}
-  }
+@media (max-width:640px){
+  nav.links{display:none;}
+  .stats{grid-template-columns:1fr 1fr;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;scroll-behavior:auto!important;}
+}
 </style>
 </head>
 <body>
+<div id="app"></div>
 
-<header>
-  <div class="wrap nav">
-    <div class="brand">Salomon <span>Foe</span></div>
-    <nav class="nav-links">
-      <a href="#domaines">Domaines</a>
-      <a href="#projets">Projets</a>
-      <a href="#strategie">Stratégie</a>
-      <a href="#pedagogie">Pédagogie</a>
-      <a href="#competences">Compétences</a>
-      <a href="#services">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <a href="#contact" class="nav-cta">Me contacter</a>
-  </div>
-</header>
+<script>
+const ICONS = {
+  'layout-dashboard':'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  'workflow':'<rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/>',
+  'target':'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  'graduation-cap':'<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>',
+  'compass':'<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+  'network':'<rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/>',
+  'globe':'<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>',
+  'credit-card':'<rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/>',
+  'sparkles':'<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"/>',
+  'mail':'<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
+  'phone':'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  'linkedin':'<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/>'
+};
+function icon(name,size){size=size||26;return '<svg xmlns="http://www.w3.org/2000/svg" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(ICONS[name]||'')+'</svg>';}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-<!-- HERO -->
-<section class="hero">
-  <div class="wrap hero-grid">
-    <div>
-      <div class="kicker">Fondateur · Enseignant · Stratège · Brand Auditor</div>
-      <h1>De la <span class="accent">salle de classe</span> au produit, de la <span class="accent">stratégie</span> à l'exécution.</h1>
-      <div class="role">Fondateur SmartLearn · Enseignant Maths &amp; Info · Concepteur de stratégies &amp; de systèmes · Brand Auditor</div>
-      <p class="lead">
-        Je conçois et déploie des solutions éducatives numériques. J'unis trois métiers
-        rarement réunis : la pédagogie (transmettre), la stratégie (comprendre, décider,
-        piloter) et l'ingénierie produit (concevoir et construire). J'élabore aussi
-        des stratégies commerciales B2B et des audits de marque sous la signature
-        <b>SmartLearn — Brand &amp; Strategy Consulting</b>, en m'appuyant sur une
-        maîtrise opérationnelle des outils d'IA.
-      </p>
-      <div class="facets">
-        <span>Fondateur EdTech</span>
-        <span>Maths &amp; Informatique</span>
-        <span>Stratégie commerciale</span>
-        <span>Audit de marque</span>
-        <span>Conception de CRM</span>
-        <span>Plateformes SaaS</span>
-        <span>Mobile Money</span>
-        <span>Outils IA avancés</span>
-      </div>
-      <div class="btns">
-        <a href="#projets" class="btn btn-primary">Voir mes projets</a>
-        <a href="#contact" class="btn btn-ghost">Travailler avec moi</a>
-      </div>
-    </div>
-    <div class="photo-card">
-      <img src="salomon.jpg" alt="Salomon Foe — Fondateur SmartLearn" />
-      <div class="photo-badge">Disponible · <b>Conseil &amp; missions</b></div>
-    </div>
-  </div>
-</section>
+const CONTENT = {
+  fr: {
+    nav:{expertise:'Expertise',projets:'Projets',services:'Services',contact:'Contact',cta:'Me contacter'},
+    hero:{kicker:'Fondateur · Enseignant · Stratège · Brand Auditor',title:"De la salle de classe au produit. De la stratégie à l'exécution.",lead:"Je conçois et déploie des solutions éducatives numériques — en réunissant trois métiers rarement réunis : la pédagogie, la stratégie et l'ingénierie produit.",ctaPrimary:'Travailler avec moi',ctaSecondary:'Voir mes projets',availability:'Disponible · Conseil & missions',tags:['Fondateur EdTech','Stratégie B2B','Audit de marque','Conception de CRM','SaaS','Mobile Money','IA avancée'],proofLabel:'Écosystème en production',proof:['SmartLearn Edu','SmartLearn School','SmartLearn CRM']},
+    about:{kicker:'À propos',title:'Un profil qui relie pédagogie, stratégie et ingénierie.',body:["Fondateur de SmartLearn, enseignant de Mathématiques et d'Informatique, et concepteur de systèmes : je porte un produit de bout en bout — comprendre le problème, le formaliser, en concevoir la stratégie, l'architecturer et le construire.","J'ai mis en production SmartLearn Edu (50+ cours alignés MINESEC) et j'architecture SmartLearn School (SaaS de gestion scolaire offline-first, paiement Mobile Money) et SmartLearn CRM. Au-delà de l'EdTech, je livre des stratégies commerciales B2B et des audits de marque sous la signature SmartLearn — Brand & Strategy Consulting.","Formation : Master 1 Génie Logiciel (Université de Yaoundé I), Licence en Informatique (Université de Douala). Basé à Douala, disponible à distance."],stats:[{value:'3',label:'produits SmartLearn conçus'},{value:'50+',label:'cours alignés MINESEC'},{value:'Full-cycle',label:'stratégie → design → code'},{value:'Douala',label:'missions locales & à distance'}]},
+    expertise:{kicker:'Expertise',title:'Quatre pôles, un seul fil : penser, concevoir, exécuter.',lead:"Une approche systémique — chaque pôle nourrit les autres, et l'IA traverse tout.",poles:[{icon:'layout-dashboard',title:'Produit & EdTech',desc:'De la vision au produit livré : architecture, exécution, modèle économique.',tags:['Vision produit','Architecture SaaS','Offline-first','Mobile Money']},{icon:'workflow',title:'Stratégie & systèmes',desc:'Concevoir avant de construire : audits, roadmaps, CRM, spécifications.',tags:['Audits produit/business','Roadmaps & KPI','Architecture fonctionnelle','Modélisation']},{icon:'target',title:'Commercial & Brand Audit',desc:'Sous la signature SmartLearn — Brand & Strategy Consulting.',tags:['Plan de lancement B2B','Marketing multicanal','Audit de marque','SWOT & plan P1–P8']},{icon:'graduation-cap',title:'Pédagogie Maths & Info',desc:"L'Approche Par Compétences, vraiment appliquée — du collège au lycée.",tags:['Programme MINESEC','Algorithmique','Évaluations','Tutorat & mentorat']}],aiKicker:'Le fil conducteur',aiTitle:"L'IA comme environnement de travail — pas comme simple assistant.",aiBody:"Claude, ChatGPT, Google AI Studio, Google Antigravity : prompts structurés, chaînage d'étapes, génération de livrables exécutables — rapports, code, design systems.",aiTags:['Claude (API & produit)','ChatGPT','Google AI Studio','Antigravity','Prompt engineering']},
+    projets:{kicker:'Projets',title:'Des réalisations conduites de bout en bout.',lead:'Des produits, des systèmes et des stratégies — de la vision à la mise en ligne.',items:[{status:'En production',statusVar:'success',title:'SmartLearn Edu',desc:"Plateforme d'apprentissage en ligne : paiement Mobile Money (MTN, Orange), 50+ cours Maths & Info alignés MINESEC.",tags:['Next.js','React','MongoDB'],link:'https://smartlearn-edu.org',linkLabel:'Voir le site'},{status:'En développement',statusVar:'warning',title:'SmartLearn School',desc:'SaaS multi-tenant de gestion scolaire, offline-first, paiement Mobile Money intégré pour les zones à faible connectivité.',tags:['Node.js','PWA','Multi-tenant'],link:'https://school.smartlearn-edu.org',linkLabel:'Voir le site'},{status:'En conception',statusVar:'info',title:'SmartLearn CRM',desc:"Moteur de rétention : scoring d'engagement, automatisation des relances pédagogiques, modélisation des parcours.",tags:['Architecture','Modélisation','Automatisation'],link:'',linkLabel:''},{status:'Livré · 29 pages',statusVar:'product',title:'GVEO — Stratégie commerciale',desc:'Plan de lancement B2B complet pour BUHT Sarl : ciblage, multicanal 8 réseaux, pipeline 7 étapes, ROI, rémunération.',tags:['Stratégie B2B','Pipeline','KPI & ROI'],link:'',linkLabel:''},{status:'Livré · 22 pages',statusVar:'product',title:'Wisdom International — Audit de marque',desc:'Audit complet SL-AUDIT-2026-WIL sous SmartLearn — Brand & Strategy : charte, persuasion, SWOT, plan P1–P8.',tags:['Brand audit','Charte','SWOT'],link:'',linkLabel:''},{status:'Présenté · JSI 2026',statusVar:'neutral',title:'EduTrack',desc:'App de suivi académique : notes, absences, alertes parents, bulletins PDF — terrain, wireframes, specs.',tags:['Flutter','UX','Specs'],link:'',linkLabel:''}]},
+    services:{kicker:'Services',title:'Des manières de travailler ensemble.',lead:"Du conseil stratégique à la mise en production, de l'audit de marque à la stratégie commerciale.",items:[{icon:'compass',title:'Conseil stratégique',desc:"Audits, plans d'action, roadmaps — clarifier la direction avant de construire."},{icon:'network',title:'Conception de CRM & systèmes',desc:'Modélisation des processus, architecture fonctionnelle, spécifications.'},{icon:'globe',title:'Sites & plateformes web',desc:'Vitrines, apps web et plateformes SaaS modernes et performantes.'},{icon:'credit-card',title:'Intégration de paiement',desc:'Tunnels de paiement, dont Mobile Money (MTN, Orange) et Chariow.'},{icon:'target',title:'Stratégie commerciale B2B',desc:'Plan de lancement complet : ciblage, pipeline, KPI, ROI, rémunération.'},{icon:'sparkles',title:'Automatisation & IA',desc:"Workflows automatisés, intégration d'outils IA, gain de temps mesurable."}]},
+    contact:{kicker:'Contact',title:'Parlons de votre projet.',lead:'Disponible pour le conseil, les missions techniques et les collaborations EdTech — Douala et à distance.',methods:[{icon:'mail',label:'Email',value:'salomonfoe97@smartlearn-edu.org',href:'mailto:salomonfoe97@smartlearn-edu.org'},{icon:'phone',label:'Téléphone',value:'+237 691 276 334',href:'tel:+237691276334'},{icon:'globe',label:'Site',value:'smartlearn-edu.org',href:'https://smartlearn-edu.org'},{icon:'linkedin',label:'LinkedIn',value:'salomon-foe',href:'https://www.linkedin.com/in/salomon-foe-939266198'}]},
+    footer:'© 2026 Salomon Foe — Fondateur SmartLearn · Enseignant Maths & Info · Douala, Cameroun'
+  },
+  en: {
+    nav:{expertise:'Expertise',projets:'Projects',services:'Services',contact:'Contact',cta:'Get in touch'},
+    hero:{kicker:'Founder · Teacher · Strategist · Brand Auditor',title:'From the classroom to the product. From strategy to execution.',lead:'I design and ship digital education solutions — bringing together three rarely-combined crafts: teaching, strategy and product engineering.',ctaPrimary:'Work with me',ctaSecondary:'See my projects',availability:'Available · Consulting & missions',tags:['EdTech Founder','B2B Strategy','Brand Audit','CRM Design','SaaS','Mobile Money','Advanced AI'],proofLabel:'Ecosystem in production',proof:['SmartLearn Edu','SmartLearn School','SmartLearn CRM']},
+    about:{kicker:'About',title:'A profile that links teaching, strategy and engineering.',body:['Founder of SmartLearn, teacher of Mathematics and Computer Science, and systems designer: I carry a product end to end — understand the problem, frame it, design the strategy, architect it and build it.',"I shipped SmartLearn Edu (50+ MINESEC-aligned courses) and I'm architecting SmartLearn School (offline-first school-management SaaS with Mobile Money) and SmartLearn CRM. Beyond EdTech, I deliver B2B commercial strategies and brand audits under the SmartLearn — Brand & Strategy Consulting signature.",'Education: MSc-1 Software Engineering (University of Yaoundé I), BSc Computer Science (University of Douala). Based in Douala, available remotely.'],stats:[{value:'3',label:'SmartLearn products designed'},{value:'50+',label:'MINESEC-aligned courses'},{value:'Full-cycle',label:'strategy → design → code'},{value:'Douala',label:'local & remote missions'}]},
+    expertise:{kicker:'Expertise',title:'Four pillars, one thread: think, design, execute.',lead:'A systemic approach — each pillar feeds the others, and AI runs through all of it.',poles:[{icon:'layout-dashboard',title:'Product & EdTech',desc:'From vision to shipped product: architecture, execution, business model.',tags:['Product vision','SaaS architecture','Offline-first','Mobile Money']},{icon:'workflow',title:'Strategy & systems',desc:'Design before you build: audits, roadmaps, CRM, specifications.',tags:['Product/business audits','Roadmaps & KPIs','Functional architecture','Data modeling']},{icon:'target',title:'Commercial & Brand Audit',desc:'Under the SmartLearn — Brand & Strategy Consulting signature.',tags:['B2B launch plan','Multichannel marketing','Brand audit','SWOT & P1–P8 plan']},{icon:'graduation-cap',title:'Maths & CS teaching',desc:'Competency-Based Approach, genuinely applied — secondary school.',tags:['MINESEC curriculum','Algorithmics','Assessment','Tutoring & mentoring']}],aiKicker:'The connecting thread',aiTitle:'AI as a full working environment — not a mere assistant.',aiBody:'Claude, ChatGPT, Google AI Studio, Google Antigravity: structured prompts, step chaining, generation of executable deliverables — reports, code, design systems.',aiTags:['Claude (API & product)','ChatGPT','Google AI Studio','Antigravity','Prompt engineering']},
+    projets:{kicker:'Projects',title:'Work carried end to end.',lead:'Products, systems and strategies — from vision to launch.',items:[{status:'In production',statusVar:'success',title:'SmartLearn Edu',desc:'Online learning platform: Mobile Money payment (MTN, Orange), 50+ Maths & CS courses aligned with MINESEC.',tags:['Next.js','React','MongoDB'],link:'https://smartlearn-edu.org',linkLabel:'Visit site'},{status:'In development',statusVar:'warning',title:'SmartLearn School',desc:'Multi-tenant school-management SaaS, offline-first, integrated Mobile Money payment for low-connectivity areas.',tags:['Node.js','PWA','Multi-tenant'],link:'https://school.smartlearn-edu.org',linkLabel:'Visit site'},{status:'In design',statusVar:'info',title:'SmartLearn CRM',desc:'Retention engine: engagement scoring, automated pedagogical follow-ups, learning-path modeling.',tags:['Architecture','Modeling','Automation'],link:'',linkLabel:''},{status:'Delivered · 29 pages',statusVar:'product',title:'GVEO — Commercial strategy',desc:'Full B2B launch plan for BUHT Sarl: targeting, 8-channel marketing, 7-step pipeline, ROI, compensation.',tags:['B2B strategy','Pipeline','KPI & ROI'],link:'',linkLabel:''},{status:'Delivered · 22 pages',statusVar:'product',title:'Wisdom International — Brand audit',desc:'Full audit SL-AUDIT-2026-WIL under SmartLearn — Brand & Strategy: identity, persuasion, SWOT, P1–P8 plan.',tags:['Brand audit','Identity','SWOT'],link:'',linkLabel:''},{status:'Presented · JSI 2026',statusVar:'neutral',title:'EduTrack',desc:'Academic-tracking app: grades, absences, parent alerts, PDF report cards — field research, wireframes, specs.',tags:['Flutter','UX','Specs'],link:'',linkLabel:''}]},
+    services:{kicker:'Services',title:'Ways we can work together.',lead:'From strategic consulting to production, from brand audit to commercial strategy.',items:[{icon:'compass',title:'Strategic consulting',desc:'Audits, action plans, roadmaps — clarify direction before building.'},{icon:'network',title:'CRM & systems design',desc:'Process modeling, functional architecture, specifications.'},{icon:'globe',title:'Websites & platforms',desc:'Showcase sites, web apps and modern, performant SaaS platforms.'},{icon:'credit-card',title:'Payment integration',desc:'Payment funnels, including Mobile Money (MTN, Orange) and Chariow.'},{icon:'target',title:'B2B commercial strategy',desc:'Full launch plan: targeting, pipeline, KPIs, ROI, compensation.'},{icon:'sparkles',title:'Automation & AI',desc:'Automated workflows, AI-tool integration, measurable time savings.'}]},
+    contact:{kicker:'Contact',title:"Let's talk about your project.",lead:'Available for consulting, technical missions and EdTech collaborations — Douala and remote.',methods:[{icon:'mail',label:'Email',value:'salomonfoe97@smartlearn-edu.org',href:'mailto:salomonfoe97@smartlearn-edu.org'},{icon:'phone',label:'Phone',value:'+237 691 276 334',href:'tel:+237691276334'},{icon:'globe',label:'Website',value:'smartlearn-edu.org',href:'https://smartlearn-edu.org'},{icon:'linkedin',label:'LinkedIn',value:'salomon-foe',href:'https://www.linkedin.com/in/salomon-foe-939266198'}]},
+    footer:'© 2026 Salomon Foe — SmartLearn Founder · Maths & CS Teacher · Douala, Cameroon'
+  }
+};
 
-<!-- ABOUT -->
-<section class="about" id="apropos">
-  <div class="wrap">
-    <div class="kicker">À propos</div>
-    <h2 class="sec">Un profil qui relie pédagogie, stratégie et ingénierie</h2>
-    <div class="about-grid">
-      <div>
-        <p>
-          Je suis fondateur de <b>SmartLearn</b>, plateforme éducative en ligne, enseignant
-          de <b>Mathématiques et d'Informatique</b>, et concepteur de <b>stratégies et de
-          systèmes</b> (CRM, plateformes EdTech, architectures SaaS, stratégies commerciales B2B).
-          Je porte un produit de bout en bout — comprendre le problème, le formaliser, en
-          concevoir la stratégie, l'architecturer et le construire.
-        </p>
-        <p>
-          Mon parcours est hybride par construction : enseignant qui code, fondateur qui
-          enseigne, ingénieur qui pense produit et marché. J'ai conçu et mis en
-          production SmartLearn (50+ cours alignés sur le programme MINESEC), j'architecture
-          actuellement <b>SmartLearn School</b> (SaaS de gestion scolaire offline-first
-          avec paiement Mobile Money) et <b>SmartLearn CRM</b> (système de pilotage de
-          l'engagement et de la rétention).
-        </p>
-        <p>
-          Au-delà de l'EdTech, j'élabore des documents stratégiques de haut niveau pour des
-          tierces parties : <b>stratégies commerciales B2B</b> (plan de lancement complet,
-          ciblage, marketing multicanal, prospection terrain, KPI, pipeline, ROI, plan de
-          rémunération) et <b>audits de marque</b> à signature <b>SmartLearn — Brand &amp;
-          Strategy Consulting</b> (charte graphique, marketing &amp; persuasion, analyse
-          psychologique, SWOT, plan d'action priorisé).
-        </p>
-        <p>
-          Je m'appuie au quotidien sur une <b>maîtrise opérationnelle des outils d'IA</b> —
-          Claude, ChatGPT, Google AI Studio, Google Antigravity — utilisés non comme de
-          simples assistants, mais comme un environnement de travail complet : prompts
-          structurés, chaînage d'étapes, génération de livrables exécutables (rapports,
-          scripts, code, design system).
-        </p>
-        <p>
-          Formation : Master 1 en Génie Logiciel (Université de Yaoundé I), Licence en
-          Informatique (Université de Douala). Basé à Douala, disponible aussi à distance
-          pour le conseil, l'accompagnement stratégique, l'audit de marque et les missions techniques.
-        </p>
-      </div>
-      <div class="facts">
-        <div class="fact"><div class="n">Full-cycle</div><div class="l">Stratégie · design · code · mise en ligne</div></div>
-        <div class="fact"><div class="n">SmartLearn</div><div class="l">Plateforme EdTech en production</div></div>
-        <div class="fact"><div class="n">Maths · Info</div><div class="l">Enseignement &amp; conception pédagogique</div></div>
-        <div class="fact"><div class="n">Douala · Remote</div><div class="l">Missions locales &amp; à distance</div></div>
+const PORTRAIT = 'salomon.jpg';
+let lang = 'fr';
+
+function toggleLang(){ lang = (lang==='fr')?'en':'fr'; document.documentElement.lang = lang; render(); }
+
+function render(){
+  const L = CONTENT[lang];
+  const other = lang==='fr' ? 'EN' : 'FR';
+  const app = document.getElementById('app');
+  app.innerHTML = `
+  <header class="site">
+    <div class="wrap bar">
+      <a href="#top" class="brand"><span class="name serif">Salomon Foe</span><span class="kicker">SmartLearn</span></a>
+      <nav class="links">
+        <a href="#expertise">${esc(L.nav.expertise)}</a>
+        <a href="#projets">${esc(L.nav.projets)}</a>
+        <a href="#services">${esc(L.nav.services)}</a>
+        <a href="#contact">${esc(L.nav.contact)}</a>
+      </nav>
+      <div class="head-actions">
+        <button class="lang-btn" onclick="toggleLang()" aria-label="Switch language">${other}</button>
+        <a href="#contact" class="btn-cta">${esc(L.nav.cta)}</a>
       </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<!-- DOMAINES -->
-<section id="domaines">
-  <div class="wrap">
-    <div class="kicker">Mes domaines</div>
-    <h2 class="sec">Neuf casquettes, un seul fil : penser, concevoir, exécuter.</h2>
-    <p class="sec-sub">
-      Une approche systémique — chaque casquette nourrit les autres : la pédagogie
-      ouvre sur la stratégie, la stratégie ouvre sur le produit, le produit ouvre sur
-      la marque, et l'IA traverse tout.
-    </p>
-    <div class="dom-grid">
-
-      <div class="dom">
-        <div class="ic">●</div>
-        <h3>Fondateur EdTech</h3>
-        <p>Identifier des problèmes éducatifs réels et transformer la vision en produit livré.</p>
-        <ul>
-          <li>Vision &amp; produit</li>
-          <li>Architecture &amp; exécution</li>
-          <li>Modèle économique</li>
-          <li>Mobilisation des ressources</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">∑</div>
-        <h3>Enseignant de Mathématiques</h3>
-        <p>Vulgariser les concepts complexes, transmettre une démarche rigoureuse.</p>
-        <ul>
-          <li>Approche par compétences</li>
-          <li>Conception d'exercices &amp; d'évaluations</li>
-          <li>Esprit logique &amp; critique</li>
-          <li>Programme MINESEC, collège au lycée</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">&lt;/&gt;</div>
-        <h3>Enseignant d'Informatique</h3>
-        <p>Initier à l'algorithmique, à la programmation et aux outils numériques.</p>
-        <ul>
-          <li>Algorithmique &amp; logique</li>
-          <li>Programmation, résolution de problèmes</li>
-          <li>Outils numériques, bureautique</li>
-          <li>Parcours d'apprentissage structurés</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">◆</div>
-        <h3>Concepteur de stratégies</h3>
-        <p>De l'audit au plan d'exécution — transformer une vision en feuille de route.</p>
-        <ul>
-          <li>Audits produit &amp; business</li>
-          <li>Plans d'exécution, roadmaps</li>
-          <li>Objectifs &amp; indicateurs (KPI)</li>
-          <li>Accompagnement à la décision</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">▦</div>
-        <h3>Concepteur de CRM</h3>
-        <p>Modéliser la relation client / élève et automatiser les flux qui comptent.</p>
-        <ul>
-          <li>Architecture fonctionnelle</li>
-          <li>Cartographie des parcours utilisateurs</li>
-          <li>Automatisation des workflows</li>
-          <li>Spécifications &amp; données</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">◐</div>
-        <h3>EdTech &amp; innovation pédagogique</h3>
-        <p>Combiner pédagogie, données et IA pour des parcours d'apprentissage réellement efficaces.</p>
-        <ul>
-          <li>Conception de contenus éducatifs</li>
-          <li>Apprentissage en ligne &amp; offline-first</li>
-          <li>Mesure de l'engagement &amp; rétention</li>
-          <li>IA appliquée à l'éducation</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">★</div>
-        <h3>Stratège commercial B2B</h3>
-        <p>Concevoir des stratégies commerciales complètes — du positionnement au plan de rémunération.</p>
-        <ul>
-          <li>Plan de lancement &amp; ciblage géographique</li>
-          <li>Marketing multicanal (LinkedIn, WhatsApp, social)</li>
-          <li>Prospection terrain &amp; pipeline 7 étapes</li>
-          <li>KPI, ROI &amp; plan de rémunération commerciale</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">◑</div>
-        <h3>Brand Auditor</h3>
-        <p>Auditer une marque comme un cabinet de conseil — <i>SmartLearn Brand &amp; Strategy Consulting</i>.</p>
-        <ul>
-          <li>Audit visuel &amp; charte graphique</li>
-          <li>Marketing, persuasion &amp; psychologie de marque</li>
-          <li>SWOT &amp; matrices de priorisation</li>
-          <li>Plan d'action priorisé (P1 — P8)</li>
-        </ul>
-      </div>
-
-      <div class="dom">
-        <div class="ic">✦</div>
-        <h3>Praticien d'outils IA avancés</h3>
-        <p>L'IA comme environnement de travail complet, pas comme simple assistant.</p>
-        <ul>
-          <li>Claude (API &amp; produit) &amp; ChatGPT</li>
-          <li>Google AI Studio &amp; Google Antigravity</li>
-          <li>Prompt engineering &amp; chaînage d'étapes</li>
-          <li>Génération de livrables exécutables</li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section class="about" id="projets">
-  <div class="wrap">
-    <div class="kicker">Projets</div>
-    <h2 class="sec">Réalisations concrètes</h2>
-    <p class="sec-sub">
-      Des produits, des systèmes et des stratégies conçus et conduits de bout en bout.
-    </p>
-    <div class="proj-grid">
-
-      <div class="card">
-        <div class="top">
-          <h3>SmartLearn edu</h3>
-          <span class="status s-live">En production</span>
+  <div id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker" style="margin-bottom:20px;">${esc(L.hero.kicker)}</div>
+          <h1>${esc(L.hero.title)}</h1>
+          <p class="lead">${esc(L.hero.lead)}</p>
+          <div class="hero-btns">
+            <a href="#contact" class="btn-primary">${esc(L.hero.ctaPrimary)}</a>
+            <a href="#projets" class="btn-secondary">${esc(L.hero.ctaSecondary)}</a>
+          </div>
+          <div class="chips">${L.hero.tags.map(t=>`<span class="chip">${esc(t)}</span>`).join('')}</div>
         </div>
-        <p class="desc">
-          Plateforme d'apprentissage en ligne : authentification, intégration de paiement
-          Mobile Money (MTN, Orange), gestion de contenus et catalogue de 50+ cours en
-          Mathématiques et Informatique alignés sur le programme MINESEC.
-        </p>
-        <div class="tech"><span>Next.js</span><span>React</span><span>Tailwind</span><span>MongoDB</span></div>
-        <a class="link" href="https://smartlearn-edu.org" target="_blank" rel="noopener">Voir le site en ligne →</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>SmartLearn School</h3>
-          <span class="status s-dev">En développement</span>
+        <div class="portrait-wrap">
+          <div class="portrait"><img src="${PORTRAIT}" alt="Salomon Foe" loading="lazy"></div>
+          <div class="avail"><span class="dot"></span><span class="t">${esc(L.hero.availability)}</span></div>
         </div>
-        <p class="desc">
-          SaaS multi-tenant de gestion scolaire pensé offline-first : modèle de données
-          isolé par établissement, synchronisation hors-ligne et paiement Mobile Money
-          intégré, pour les zones à faible connectivité.
-        </p>
-        <div class="tech"><span>Node.js</span><span>MongoDB</span><span>PWA</span><span>Multi-tenant</span></div>
-        <a class="link muted">Étude de cas à venir</a>
       </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>SmartLearn CRM</h3>
-          <span class="status s-design">En conception</span>
-        </div>
-        <p class="desc">
-          Système de gestion d'élèves et moteur de rétention pour piloter l'engagement et
-          la réussite sur SmartLearn — modélisation des parcours d'apprentissage,
-          scoring d'engagement, automatisation des relances pédagogiques. Démontre mes
-          compétences en architecture fonctionnelle et en conception de systèmes.
-        </p>
-        <div class="tech"><span>Architecture</span><span>Modélisation</span><span>Automatisation</span><span>Données</span></div>
-        <a class="link muted">Projet en cours — documentation interne</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>GVEO — Stratégie commerciale</h3>
-          <span class="status s-concept">Livré — 29 pages</span>
-        </div>
-        <p class="desc">
-          Document stratégique complet pour le lancement commercial de GVEO (SaaS de
-          gestion de flotte de BUHT Sarl) : positionnement, ciblage Douala/Yaoundé,
-          stratégie multicanal 8 réseaux, budget de lancement, plan de prospection
-          terrain, KPI cascade, pipeline 7 étapes, scénarios ROI, plan de rémunération
-          du responsable commercial.
-        </p>
-        <div class="tech"><span>Stratégie B2B</span><span>Marketing multicanal</span><span>Pipeline</span><span>KPI &amp; ROI</span><span>Plan de rémunération</span></div>
-        <a class="link muted">Mission BUHT Sarl — document confidentiel</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>Wisdom International — Audit de marque</h3>
-          <span class="status s-concept">Livré — 22 pages</span>
-        </div>
-        <p class="desc">
-          Audit complet de marque (ref. SL-AUDIT-2026-WIL) sous la signature
-          <b>SmartLearn — Brand &amp; Strategy Consulting</b> : synthèse exécutive
-          scorée, analyse de la charte graphique, marketing &amp; persuasion,
-          psychologie de marque, analyse d'égérie, business intelligence, SWOT et
-          plan d'action priorisé P1 — P8 avec impact estimé et délais.
-        </p>
-        <div class="tech"><span>Brand audit</span><span>Charte graphique</span><span>Marketing psychology</span><span>SWOT</span><span>Plan d'action priorisé</span></div>
-        <a class="link muted">SmartLearn Brand &amp; Strategy — livrable client</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>EduTrack</h3>
-          <span class="status s-concept">Présenté — JSI 2026</span>
-        </div>
-        <p class="desc">
-          Conception d'une application de suivi académique (notes, absences, alertes
-          parents, génération de bulletins PDF) : analyse terrain, wireframes UX et
-          spécifications techniques. Projet fondateur du module SmartLearn School.
-        </p>
-        <div class="tech"><span>Flutter</span><span>UX</span><span>Spécifications</span></div>
-        <a class="link muted">Projet de conception produit</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>Site institutionnel — BUHT</h3>
-          <span class="status s-past">2021 — 2023</span>
-        </div>
-        <p class="desc">
-          Développement et maintenance du site institutionnel, gestion de la présence
-          digitale (réseaux sociaux, WhatsApp Business) et production de communications
-          événementielles.
-        </p>
-        <div class="tech"><span>Web</span><span>HTML/CSS</span><span>Présence digitale</span></div>
-        <a class="link muted">Mission passée</a>
-      </div>
-
-      <div class="card">
-        <div class="top">
-          <h3>Tutorat &amp; encadrement</h3>
-          <span class="status s-live">2015 — Présent</span>
-        </div>
-        <p class="desc">
-          Cours de soutien en Mathématiques et Informatique du collège au lycée, et
-          tutorat de niveau universitaire en mathématiques. Encadrement de travaux
-          dirigés et pratiques (Collège de la Vallée, 2015-2016).
-        </p>
-        <div class="tech"><span>Maths</span><span>Informatique</span><span>Pédagogie</span></div>
-        <a class="link muted">Suivi individualisé</a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- STRATÉGIE & SYSTÈMES -->
-<section class="split" id="strategie">
-  <div class="wrap">
-    <div class="kicker">Stratégie &amp; systèmes</div>
-    <h2 class="sec">Au-delà du code — concevoir avant de construire</h2>
-    <p class="sec-sub">
-      Mon premier livrable est rarement du code : c'est une compréhension, une
-      cartographie, une stratégie, un audit ou une spécification.
-    </p>
-    <div class="split-grid">
-      <div class="split-col">
-        <h3 class="sub">Conception de stratégies</h3>
-        <p>De l'analyse de marché ou d'organisation à la feuille de route exécutable.</p>
-        <ul>
-          <li>Audit produit, business &amp; technique</li>
-          <li>Stratégie de développement &amp; plan d'action</li>
-          <li>Définition d'objectifs &amp; d'indicateurs (KPI, métriques de rétention)</li>
-          <li>Roadmaps par horizon (court, moyen, long terme)</li>
-          <li>Accompagnement à la prise de décision</li>
-          <li>Suivi &amp; amélioration continue</li>
-        </ul>
-      </div>
-      <div class="split-col">
-        <h3 class="sub">Conception de CRM &amp; de systèmes</h3>
-        <p>Modéliser le métier, organiser les données, automatiser ce qui doit l'être.</p>
-        <ul>
-          <li>Architecture fonctionnelle &amp; modèle de données</li>
-          <li>Cartographie des parcours utilisateurs</li>
-          <li>Modélisation des processus métiers</li>
-          <li>Automatisation des flux de travail</li>
-          <li>Rédaction de spécifications fonctionnelles</li>
-          <li>Conception d'expériences utilisateurs adaptées</li>
-        </ul>
+      <div class="proof">
+        <span class="kicker" style="color:var(--text-tertiary);">${esc(L.hero.proofLabel)}</span>
+        <div class="items">${L.hero.proof.map(i=>`<span>${esc(i)}</span>`).join('')}</div>
       </div>
     </div>
-    <div class="split-grid" style="margin-top:42px;">
-      <div class="split-col">
-        <h3 class="sub">Stratégie commerciale B2B</h3>
-        <p>Concevoir un plan de lancement commercial complet — du positionnement à la rémunération de l'équipe.</p>
-        <ul>
-          <li>Positionnement concurrentiel &amp; ciblage géographique</li>
-          <li>Stratégie marketing multicanal (LinkedIn, WhatsApp Business, Facebook, YouTube, TikTok, X, Email)</li>
-          <li>Plan de prospection terrain &amp; scripts commerciaux</li>
-          <li>Pipeline commercial 7 étapes &amp; reporting (quotidien / hebdo / mensuel)</li>
-          <li>Budget de lancement, scénarios ROI, calendrier 6 mois</li>
-          <li>Plan de rémunération (fixe + variable + bonus + perspectives)</li>
-        </ul>
-      </div>
-      <div class="split-col">
-        <h3 class="sub">Audit de marque &amp; Brand Strategy</h3>
-        <p>L'audit de marque conduit comme un cabinet — signature <i>SmartLearn — Brand &amp; Strategy Consulting</i>.</p>
-        <ul>
-          <li>Synthèse exécutive scorée (identité, marketing, business, opportunité)</li>
-          <li>Audit visuel &amp; analyse psychologique de la charte graphique</li>
-          <li>Analyse des techniques de persuasion (FOMO, ancrage, USPs)</li>
-          <li>Analyse de l'égérie / ambassadeur (archétype, storytelling)</li>
-          <li>Business intelligence &amp; SWOT</li>
-          <li>Plan d'action priorisé P1 — P8 (impact estimé + délais)</li>
-        </ul>
+  </section>
+
+  <section class="band">
+    <div class="wrap sec-pad">
+      <div class="kicker" style="margin-bottom:16px;">${esc(L.about.kicker)}</div>
+      <h2 class="sec-title">${esc(L.about.title)}</h2>
+      <div class="about-grid">
+        <div class="about-body">${L.about.body.map(p=>`<p>${esc(p)}</p>`).join('')}</div>
+        <div class="stats">${L.about.stats.map(s=>`<div class="stat"><div class="v mono">${esc(s.value)}</div><div class="l">${esc(s.label)}</div></div>`).join('')}</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- PÉDAGOGIE -->
-<section id="pedagogie">
-  <div class="wrap">
-    <div class="kicker">Pédagogie</div>
-    <h2 class="sec">Transmettre avant d'enseigner</h2>
-    <p class="sec-sub">
-      Une approche centrée sur la compréhension, la rigueur et l'autonomie de l'apprenant.
-    </p>
-    <div class="split-grid">
-      <div class="split-col">
-        <h3 class="sub">Mathématiques</h3>
-        <p>Vulgariser sans diluer. Construire un raisonnement plutôt que mémoriser une formule.</p>
-        <ul>
-          <li>Vulgarisation des concepts complexes</li>
-          <li>Approche par compétences</li>
-          <li>Conception d'exercices et d'évaluations</li>
-          <li>Développement de l'esprit critique et logique</li>
-          <li>Programme MINESEC — collège &amp; lycée, toutes séries</li>
-          <li>Préparation aux examens officiels</li>
-        </ul>
+  <section id="expertise">
+    <div class="wrap sec-pad">
+      <div class="kicker" style="margin-bottom:16px;">${esc(L.expertise.kicker)}</div>
+      <h2 class="sec-title">${esc(L.expertise.title)}</h2>
+      <p class="sec-lead">${esc(L.expertise.lead)}</p>
+      <div class="poles">
+        ${L.expertise.poles.map(p=>`
+          <div class="pole">
+            <span class="pole-ic">${icon(p.icon,26)}</span>
+            <h3>${esc(p.title)}</h3>
+            <p>${esc(p.desc)}</p>
+            <div class="pole-tags">${p.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+          </div>`).join('')}
       </div>
-      <div class="split-col">
-        <h3 class="sub">Informatique</h3>
-        <p>De la machine à la pensée algorithmique — résoudre des problèmes par la programmation.</p>
-        <ul>
-          <li>Initiation aux outils numériques</li>
-          <li>Algorithmique &amp; logique informatique</li>
-          <li>Programmation &amp; résolution de problèmes</li>
-          <li>Conception de parcours d'apprentissage structurés</li>
-          <li>Accompagnement individualisé</li>
-          <li>Création de contenus éducatifs numériques</li>
-        </ul>
+      <div class="ai-ribbon">
+        <div>
+          <div class="kicker" style="color:var(--color-school-400);margin-bottom:14px;">${esc(L.expertise.aiKicker)}</div>
+          <h3>${esc(L.expertise.aiTitle)}</h3>
+          <p>${esc(L.expertise.aiBody)}</p>
+        </div>
+        <div class="ai-tags">${L.expertise.aiTags.map(t=>`<span><span class="d"></span>${esc(t)}</span>`).join('')}</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- SKILLS -->
-<section class="skills" id="competences">
-  <div class="wrap">
-    <div class="kicker">Compétences</div>
-    <h2 class="sec">Une palette qui couvre la chaîne complète</h2>
-    <p class="sec-sub">Pédagogie · stratégie · ingénierie · données · IA.</p>
-    <div class="skill-grid">
-      <div class="skill-col">
-        <h4>Stratégie &amp; conception</h4>
-        <ul>
-          <li>Audit produit / business / technique</li>
-          <li>Plans d'exécution &amp; roadmaps</li>
-          <li>Cartographie de processus</li>
-          <li>Spécifications fonctionnelles</li>
-          <li>Architecture de systèmes (CRM, SaaS)</li>
-          <li>Définition d'indicateurs &amp; mesure</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Pédagogie</h4>
-        <ul>
-          <li>Vulgarisation Maths &amp; Info</li>
-          <li>Conception de contenus éducatifs</li>
-          <li>Évaluations &amp; suivi des progrès</li>
-          <li>Approche par compétences</li>
-          <li>Programme MINESEC</li>
-          <li>Tutorat &amp; accompagnement</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Développement</h4>
-        <ul>
-          <li>Next.js · React · Tailwind</li>
-          <li>Node.js · MongoDB · PostgreSQL</li>
-          <li>Flutter · Dart · PWA</li>
-          <li>HTML / CSS / JavaScript / TypeScript</li>
-          <li>SaaS multi-tenant · Offline-first</li>
-          <li>Git · CI/CD · Vercel</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Systèmes &amp; intégrations</h4>
-        <ul>
-          <li>Intégration Mobile Money (MTN, Orange)</li>
-          <li>Configuration Chariow</li>
-          <li>Automatisation de workflows (n8n)</li>
-          <li>Architecture multi-tenant</li>
-          <li>Synchronisation offline</li>
-          <li>Modélisation de données</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Produit &amp; UX</h4>
-        <ul>
-          <li>Recherche utilisateur</li>
-          <li>Wireframes &amp; UI/UX (Figma)</li>
-          <li>Design system</li>
-          <li>Itération guidée par la donnée</li>
-          <li>Conception d'onboarding</li>
-          <li>Accessibilité &amp; mobile-first</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>IA &amp; outils avancés</h4>
-        <ul>
-          <li>Claude (API &amp; produit Anthropic)</li>
-          <li>ChatGPT (OpenAI) — usage opérationnel</li>
-          <li>Google AI Studio &amp; Google Antigravity</li>
-          <li>Prompt engineering &amp; chaînage d'étapes</li>
-          <li>Automatisation assistée par IA</li>
-          <li>Analytics, scoring, feedback loops</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Stratégie commerciale</h4>
-        <ul>
-          <li>Plan de lancement B2B complet</li>
-          <li>Marketing multicanal (8 réseaux sociaux)</li>
-          <li>Prospection terrain &amp; scripts</li>
-          <li>Pipeline commercial 7 étapes</li>
-          <li>KPI &amp; ROI (acquisition, conversion, rétention)</li>
-          <li>Plans de rémunération commerciaux</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Brand &amp; Audit</h4>
-        <ul>
-          <li>Audit visuel &amp; charte graphique</li>
-          <li>Marketing &amp; persuasion (FOMO, ancrage, USPs)</li>
-          <li>Analyse psychologique de marque</li>
-          <li>Analyse d'égérie / ambassadeur</li>
-          <li>SWOT &amp; matrices de priorisation</li>
-          <li>Plans d'action priorisés P1 — P8</li>
-        </ul>
-      </div>
-      <div class="skill-col">
-        <h4>Marketing digital &amp; contenus</h4>
-        <ul>
-          <li>Stratégie LinkedIn &amp; WhatsApp Business</li>
-          <li>Facebook, YouTube, TikTok, X (Twitter)</li>
-          <li>Email marketing &amp; calendriers éditoriaux</li>
-          <li>Production de contenus de valeur</li>
-          <li>Reporting hebdo / mensuel (réseaux &amp; ventes)</li>
-          <li>Approche réaliste marché africain</li>
-        </ul>
+  <section id="projets" class="band">
+    <div class="wrap sec-pad">
+      <div class="kicker" style="margin-bottom:16px;">${esc(L.projets.kicker)}</div>
+      <h2 class="sec-title">${esc(L.projets.title)}</h2>
+      <p class="sec-lead">${esc(L.projets.lead)}</p>
+      <div class="proj-grid">
+        ${L.projets.items.map(p=>`
+          <div class="proj">
+            <span class="badge ${p.statusVar}">${esc(p.status)}</span>
+            <h3>${esc(p.title)}</h3>
+            <p>${esc(p.desc)}</p>
+            <div class="proj-tags">${p.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>
+            ${p.link?`<a class="proj-link" href="${p.link}" target="_blank" rel="noopener">${esc(p.linkLabel)} →</a>`:''}
+          </div>`).join('')}
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- SERVICES -->
-<section id="services">
-  <div class="wrap">
-    <div class="kicker">Services</div>
-    <h2 class="sec">Neuf manières de travailler ensemble</h2>
-    <p class="sec-sub">Du conseil stratégique à la mise en production, de l'audit de marque à la stratégie commerciale.</p>
-    <div class="serv-grid">
-      <div class="serv">
-        <div class="ic">◆</div>
-        <h4>Conseil stratégique</h4>
-        <p>Audits, plans d'action, roadmaps. Je vous aide à clarifier la direction avant de construire.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">▦</div>
-        <h4>Conception de CRM &amp; systèmes</h4>
-        <p>Modélisation des processus, architecture fonctionnelle, spécifications. Concevoir avant de coder.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">■</div>
-        <h4>Sites &amp; plateformes web</h4>
-        <p>Sites vitrines, applications web et plateformes SaaS modernes, responsives et performantes.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">●</div>
-        <h4>Intégration de paiement</h4>
-        <p>Mise en place de tunnels de paiement, dont Mobile Money (MTN, Orange) et Chariow.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">∑</div>
-        <h4>Accompagnement pédagogique</h4>
-        <p>Tutorat Maths &amp; Informatique, conception de contenus éducatifs, parcours structurés.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">◐</div>
-        <h4>Automatisation &amp; IA</h4>
-        <p>Workflows automatisés, intégration d'outils d'IA, gain de temps mesurable sur les opérations.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">★</div>
-        <h4>Stratégie commerciale B2B</h4>
-        <p>Plan de lancement complet : positionnement, marketing multicanal, prospection terrain, pipeline, KPI, ROI, rémunération.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">◑</div>
-        <h4>Audit de marque &amp; Brand Strategy</h4>
-        <p>Audit complet signature <i>SmartLearn — Brand &amp; Strategy</i> : charte, marketing, psychologie de marque, SWOT, plan d'action priorisé.</p>
-      </div>
-      <div class="serv">
-        <div class="ic">✦</div>
-        <h4>Coaching outils IA</h4>
-        <p>Accompagnement sur Claude, ChatGPT, Google AI Studio, Google Antigravity — prompts, chaînage, livrables exécutables.</p>
+  <section id="services">
+    <div class="wrap sec-pad">
+      <div class="kicker" style="margin-bottom:16px;">${esc(L.services.kicker)}</div>
+      <h2 class="sec-title">${esc(L.services.title)}</h2>
+      <p class="sec-lead">${esc(L.services.lead)}</p>
+      <div class="serv-grid">
+        ${L.services.items.map(sv=>`
+          <div class="serv">
+            <span class="serv-ic">${icon(sv.icon,26)}</span>
+            <div><h3>${esc(sv.title)}</h3><p>${esc(sv.desc)}</p></div>
+          </div>`).join('')}
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="wrap">
-    <div class="kicker" style="color:#5FD0C4;">Contact</div>
-    <h2 class="sec">Parlons de votre projet</h2>
-    <p class="sec-sub">Disponible pour le conseil, les missions techniques et les collaborations EdTech — Douala et à distance.</p>
-    <div class="contact-grid">
-      <a class="c-item" href="mailto:salomonfoe97@smartlearn-edu.org">
-        <span class="lbl">Email</span>
-        <span class="val">salomonfoe97@smartlearn-edu.org</span>
-      </a>
-      <a class="c-item" href="tel:+237691276334">
-        <span class="lbl">Téléphone</span>
-        <span class="val">+237 691 276 334</span>
-      </a>
-      <a class="c-item" href="https://smartlearn-edu.org" target="_blank" rel="noopener">
-        <span class="lbl">Site</span>
-        <span class="val">smartlearn-edu.org</span>
-      </a>
-      <a class="c-item" href="https://www.linkedin.com/in/salomon-foe-939266198" target="_blank" rel="noopener">
-        <span class="lbl">LinkedIn</span>
-        <span class="val">linkedin.com/in/salomon-foe-939266198</span>
-      </a>
+  <section id="contact" class="contact">
+    <div class="wrap sec-pad">
+      <div class="kicker" style="margin-bottom:16px;">${esc(L.contact.kicker)}</div>
+      <h2>${esc(L.contact.title)}</h2>
+      <p class="lead">${esc(L.contact.lead)}</p>
+      <div class="contact-grid">
+        ${L.contact.methods.map(m=>`
+          <a href="${m.href}" class="c-method"${m.href.startsWith('http')?' target="_blank" rel="noopener"':''}>
+            <span class="c-ic">${icon(m.icon,20)}</span>
+            <span style="min-width:0;"><span class="lbl">${esc(m.label)}</span><span class="val">${esc(m.value)}</span></span>
+          </a>`).join('')}
+      </div>
+      <div class="foot">${esc(L.footer)}</div>
     </div>
-  </div>
-</section>
-
-<footer>
-  © 2026 Salomon Foe — Fondateur SmartLearn · Enseignant Maths &amp; Info · Concepteur de stratégies &amp; de systèmes · Brand Auditor · Douala, Cameroun
-</footer>
-
+  </section>
+  </div>`;
+}
+render();
+</script>
 </body>
 </html>
